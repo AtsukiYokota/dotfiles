@@ -174,6 +174,7 @@ let g:ycm_key_list_select_completion   = ['<tab>', '<c-j>']
 let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_show_diagnostic_ui = 1
-let g:ycm_use_ultisnips_completer = 0 
+let g:ycm_global_ycm_extra_conf = '/home/yokota/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+let g:ycm_use_ultisnips_completer = 0
 "NOTE: comments after Bundle command are not allowed..
 set clipboard=unnamedplus
