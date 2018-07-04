@@ -137,6 +137,7 @@ source /opt/ros/kinetic/setup.bash
 alias cdr="cd ~/Dropbox"
 alias cdt="cd ~/Dropbox/works/toybox"
 alias cdw="cd ~/Dropbox/works"
+alias cdx="cd ~/Dropbox/works/tex"
 alias robo="roboware-studio"
 alias cw="cd ~/catkin_ws"
 alias cs="cd ~/catkin_ws/src"
