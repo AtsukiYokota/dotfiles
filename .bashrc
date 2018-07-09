@@ -145,4 +145,5 @@ alias cm="cd ~/catkin_ws && catkin_make"
 alias er="cd .."
 alias l="ls"
 alias png2eps="~/bin/png2eps.sh"
+alias sshm="ssh yokota@150.69.46.178"
 

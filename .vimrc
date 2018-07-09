@@ -167,6 +167,9 @@ Bundle 'https://github.com/davidhalter/jedi-vim.git'
 " ...
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'tyru/caw.vim'
+Bundle 'plasticboy/vim-markdown'
+Bundle 'suan/vim-instant-markdown'
+Bundle 'altercation/vim-colors-solarized'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -196,3 +199,17 @@ let g:ycm_global_ycm_extra_conf = '/home/yokota/.vim/bundle/YouCompleteMe/third_
 let g:ycm_use_ultisnips_completer = 0
 "NOTE: comments after Bundle command are not allowed..
 set clipboard=unnamedplus
+" -- Syntax Highlighting ---------------------------------------
+let g:solarized_termcolors = 16
+let g:solarized_termtrans  =  1
+let g:solarized_degrade    =  0
+let g:solarized_bold       =  1
+let g:solarized_italic     =  1
+let g:solarized_underline  =  1
+let g:solarized_contrast   = 'normal'
+let g:solarized_visibility = 'normal'
+syntax enable
+set background=light
+colorscheme solarized
+highlight MatchParen ctermbg=none
+highlight LineNr     ctermbg=none
