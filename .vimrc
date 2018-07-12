@@ -167,8 +167,8 @@ Bundle 'https://github.com/davidhalter/jedi-vim.git'
 " ...
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'tyru/caw.vim'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'suan/vim-instant-markdown'
+" Bundle 'plasticboy/vim-markdown'
+" Bundle 'suan/vim-instant-markdown'
 Bundle 'altercation/vim-colors-solarized'
 filetype plugin indent on     " required!
 "

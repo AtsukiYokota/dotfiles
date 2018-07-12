@@ -38,17 +38,17 @@ sudo add-apt-repository ppa:webupd8team/atom
 sudo apt update && sudo apt install -y atom
 
 # -- Compilers -------------------------------------------------
-sudo add-apt-repository -y ppa:jonathonf/gcc-7.1
+sudo add-apt-repository -y ppa:jonathonf/gcc-7.udo
 sudo apt update && sudo apt install -y gcc-7 g++-7
 
 # -- Slack(requirement:Ubuntu16.04 or newer version to use snap)-
 sudo snap install slack --classic
 
 # -- GoogleChrome -------------------------------------------------
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -y -
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 sudo apt update && sudo apt install google-chrome-stable
 
 # -- kazam -------------------------------------------------
 sudo add-apt-repository ppa:kazam-team/unstable-series
-sudo apt update && sudo apt install kazam python3-cairo python3-xlib
+sudo apt update && sudo apt install python3-cairo python3-xlib kazam 
