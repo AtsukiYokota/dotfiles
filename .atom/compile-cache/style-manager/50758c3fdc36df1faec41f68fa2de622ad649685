@@ -1,0 +1,1 @@
+{"source":"autocomplete-paths-status-bar {\n  display: inline-block;\n  margin-left: 10px;\n}\nautocomplete-paths-status-bar:last-child {\n  margin-right: 0;\n}\n"}

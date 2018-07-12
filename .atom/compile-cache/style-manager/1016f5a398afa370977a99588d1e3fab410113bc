@@ -1,0 +1,1 @@
+{"source":"atom-panel.top .build .resizer,\natom-panel.bottom .build .resizer {\n  cursor: row-resize;\n  width: 100%;\n}\natom-panel.top .build .terminal,\natom-panel.bottom .build .terminal {\n  height: 150px;\n}\natom-panel.top .build .resizer {\n  bottom: 0;\n}\natom-panel.bottom .build .resizer {\n  top: 0;\n}\n"}

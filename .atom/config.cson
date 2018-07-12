@@ -1,0 +1,19 @@
+"*":
+  "Sublime-Style-Column-Selection": {}
+  core:
+    telemetryConsent: "no"
+  editor:
+    fontFamily: "SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace"
+    fontSize: 15
+  "exception-reporting":
+    userId: "33ed0bbe-d877-4f38-8fb0-ba2d00c58774"
+  minimap:
+    plugins:
+      cursorline: true
+      cursorlineDecorationsZIndex: 0
+      "find-and-replace": true
+      "find-and-replaceDecorationsZIndex": 0
+      "highlight-selected": true
+      "highlight-selectedDecorationsZIndex": 0
+  welcome:
+    showOnStartup: false
