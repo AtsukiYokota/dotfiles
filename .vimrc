@@ -176,6 +176,9 @@ Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'chenzhiwo/ycm-extra-conf-ros'
 Bundle 'scrooloose/nerdtree'
+Bundle 'Shougo/neocomplcache'
+Bundle 'Shougo/neosnippet'
+Bundle 'Shougo/neosnippet-snippets'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -222,6 +225,27 @@ highlight LineNr     ctermbg=none
 
 let g:vim_markdown_folding_disabled=1
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
+
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+"set snippet file dir
+let g:neosnippet#snippets_directory='~/.vim/bundle/neosnippet-snippets/neosnippets/'
 
 " unicode symbols
 let g:airline_symbols = {}
