@@ -2,6 +2,8 @@
 
 dotfiles=$(cd "$(dirname $0)"; pwd)
 
+sudo npm install -g instant-markdown-d
+
 for f in $dotfiles/.??*
 do
   test $f = $dotfiles/.git && continue
