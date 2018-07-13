@@ -31,6 +31,7 @@ set matchpairs& matchpairs+=<:>
 " inoremap <>  <><left>
 " inoremap []  []<left>
 "
+inoremap {<Enter> {}<Left><CR><ESC><S-o>
 
 vnoremap :  :s/
 vnoremap >  >gv
@@ -299,7 +300,10 @@ inoremap /**  /**<cr><left><left><bs><right><right><cr><bs>/<up>
 
 let               &tabstop = 2
 let &shiftwidth = &tabstop
-set expandtab smarttab
+set autoindent
+set smartindent
+set expandtab
+set smarttab
 
 autocmd BufRead,BufNewFile *.cmake    let &filetype = 'cmake'
 autocmd BufRead,BufNewFile *.launch   let &filetype = 'xml'
