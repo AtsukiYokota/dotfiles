@@ -263,3 +263,16 @@ endfunction
 " augroup END
 let g:airline_theme='solarized'
 set t_Co=16
+
+inoremap /**  /**<cr><left><left><bs><right><right><cr><bs>/<up>
+
+let               &tabstop = 2
+let &shiftwidth = &tabstop
+set expandtab smarttab
+
+autocmd BufRead,BufNewFile *.cmake    let &filetype = 'cmake'
+autocmd BufRead,BufNewFile *.launch   let &filetype = 'xml'
+autocmd BufRead,BufNewFile *.md       let &filetype = 'markdown'
+autocmd BufRead,BufNewFile .tmux.conf let &filetype = 'tmux'
+
+autocmd BufWritePre * :%s/\s\+$//ge
