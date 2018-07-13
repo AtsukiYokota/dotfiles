@@ -175,6 +175,7 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'chenzhiwo/ycm-extra-conf-ros'
+Bundle 'scrooloose/nerdtree'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -220,6 +221,7 @@ highlight MatchParen ctermbg=none
 highlight LineNr     ctermbg=none
 
 let g:vim_markdown_folding_disabled=1
+nnoremap <silent><C-e> :NERDTreeToggle<CR>
 
 " unicode symbols
 let g:airline_symbols = {}
