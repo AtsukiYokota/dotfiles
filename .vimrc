@@ -30,6 +30,8 @@ set matchpairs& matchpairs+=<:>
 " inoremap ()  ()<left>
 " inoremap <>  <><left>
 " inoremap []  []<left>
+"
+
 vnoremap :  :s/
 vnoremap >  >gv
 vnoremap <  <gvnoremap {}  {}<left>
@@ -167,11 +169,12 @@ Bundle 'https://github.com/davidhalter/jedi-vim.git'
 " ...
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'tyru/caw.vim'
-" Bundle 'plasticboy/vim-markdown'
-" Bundle 'suan/vim-instant-markdown'
+Bundle 'plasticboy/vim-markdown'
+Bundle 'suan/vim-instant-markdown'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
+Bundle 'chenzhiwo/ycm-extra-conf-ros'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -215,6 +218,8 @@ set background=light
 colorscheme solarized
 highlight MatchParen ctermbg=none
 highlight LineNr     ctermbg=none
+
+let g:vim_markdown_folding_disabled=1
 
 " unicode symbols
 let g:airline_symbols = {}
@@ -272,7 +277,6 @@ set expandtab smarttab
 
 autocmd BufRead,BufNewFile *.cmake    let &filetype = 'cmake'
 autocmd BufRead,BufNewFile *.launch   let &filetype = 'xml'
-autocmd BufRead,BufNewFile *.md       let &filetype = 'markdown'
 autocmd BufRead,BufNewFile .tmux.conf let &filetype = 'tmux'
 
 autocmd BufWritePre * :%s/\s\+$//ge
