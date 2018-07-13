@@ -24,12 +24,12 @@ set matchtime=3         " 対応括弧のハイライト表示を3秒にする
 
 " 対応括弧に'<'と'>'のペアを追加
 set matchpairs& matchpairs+=<:>
-inoremap ""  ""<left>
-inoremap $$  $$<left>
-inoremap ''  ''<left>
-inoremap ()  ()<left>
-inoremap <>  <><left>
-inoremap []  []<left>
+" inoremap ""  ""<left>
+" inoremap $$  $$<left>
+" inoremap ''  ''<left>
+" inoremap ()  ()<left>
+" inoremap <>  <><left>
+" inoremap []  []<left>
 vnoremap :  :s/
 vnoremap >  >gv
 vnoremap <  <gvnoremap {}  {}<left>
@@ -43,7 +43,7 @@ set backspace=indent,eol,start
 " 'unnamedplus'が存在しているかどうかで設定を分ける必要がある
 if has('unnamedplus')
     " set clipboard& clipboard+=unnamedplus " 2013-07-03 14:30 unnamed 追加
-        set clipboard& clipboard+=unnamedplus,unnamed 
+        set clipboard& clipboard+=unnamedplus,unnamed
         else
             " set clipboard& clipboard+=unnamed,autoselect 2013-06-24 10:00
             " autoselect 削除
@@ -147,7 +147,7 @@ function! s:mkdir(dir, force)
 
 set nocompatible               " be iMproved
 filetype off                   " required!
-set rtp+=~/.vim/bundle/vundle/ 
+set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 " let Vundle manage Vundle
 " required!
