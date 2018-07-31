@@ -310,3 +310,4 @@ autocmd BufRead,BufNewFile *.launch   let &filetype = 'xml'
 autocmd BufRead,BufNewFile .tmux.conf let &filetype = 'tmux'
 
 autocmd BufWritePre * :%s/\s\+$//ge
+:command ReopenWinFile e ++enc=cp932
