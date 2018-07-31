@@ -3,6 +3,7 @@
 dotfiles=$(cd "$(dirname $0)"; pwd)
 
 sudo npm install -g instant-markdown-d
+ln -s $dotfiles/.vim ~/
 
 for f in $dotfiles/.??*
 do

@@ -35,7 +35,7 @@ git config --global color.status auto
 git config --global color.branch auto
 
 # -- Atom -------------------------------------------------------
-sudo add-apt-repository ppa:webupd8team/atom
+sudo add-apt-repository -y  ppa:webupd8team/atom
 sudo apt update
 sudo apt install -y atom
 
@@ -51,9 +51,9 @@ sudo snap install slack --classic
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 sudo apt update
-sudo apt install google-chrome-stable
+sudo apt install -y google-chrome-stable
 
 # -- kazam -------------------------------------------------
-sudo add-apt-repository ppa:kazam-team/unstable-series
+sudo add-apt-repository -y ppa:kazam-team/unstable-series
 sudo apt update
-sudo apt install python3-cairo python3-xlib kazam
+sudo apt install -y python3-cairo python3-xlib kazam
