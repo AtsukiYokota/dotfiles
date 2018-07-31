@@ -64,6 +64,11 @@ export LC_TIME=en_US.UTF-8
 export LESSCHARSET=utf-8
 export locale=en_US.UTF-8
 
+case $TERM in
+    linux) LANG=C ;;
+    *) LANG=ja_JP.UTF-8 ;;
+esac
+
 export marked="$HOME/marked"
 
 if test -e /opt/ros; then source ~/.rosrc; fi
@@ -75,7 +80,7 @@ cd()
 }
 
 alias ls='ls -avF --color=auto'
-alias sl='ls'
+# alias sl='ls'
 alias ks='ls'
 
 alias cdm='echo "move marked path: $(cat $marked/unnamed)"; cd $(cat $marked/unnamed)'
@@ -146,4 +151,5 @@ alias er="cd .."
 alias l="ls"
 alias png2eps="~/bin/png2eps.sh"
 alias sshm="ssh yokota@150.69.46.178"
+alias sshm6="ssh yokota@150.69.46.178 -p26"
 
