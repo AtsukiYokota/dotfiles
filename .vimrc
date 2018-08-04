@@ -16,6 +16,7 @@ Bundle 'suan/vim-instant-markdown'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
+Bundle 'richq/vim-cmake-completion'
 " Bundle 'chenzhiwo/ycm-extra-conf-ros'
 filetype plugin indent on     " required!
 "
