@@ -167,6 +167,7 @@ let g:solarized_contrast   = 'normal'
 let g:solarized_visibility = 'normal'
 syntax enable
 set background=light
+" set background=dark
 colorscheme solarized
 highlight MatchParen ctermbg=none
 highlight LineNr     ctermbg=none
