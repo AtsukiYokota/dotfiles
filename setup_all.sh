@@ -45,13 +45,14 @@ sudo apt update
 sudo apt install -y gcc-7 g++-7
 
 # -- Slack(requirement:Ubuntu16.04 or newer version to use snap)-
-sudo snap install slack --classic
+curl -s https://packagecloud.io/install/repositories/slacktechnologies/slack/script.deb.sh | sudo bash
 
 # -- GoogleChrome -------------------------------------------------
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-sudo apt update
-sudo apt install -y google-chrome-stable
+cd ~/Downloads
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i ./google-chrome*.deb
+sudo apt-get -fy install
+cd $dotfiles
 
 # -- kazam -------------------------------------------------
 sudo add-apt-repository -y ppa:kazam-team/unstable-series
