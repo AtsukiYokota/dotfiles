@@ -8,9 +8,11 @@ file-icons@2.1.21
 highlight-selected@0.13.1
 language-latex@1.1.1
 markdown-pdf@2.2.0
+markdown-preview-plus@3.3.4
 markdown-scroll-sync@2.1.2
 markdown-toc@0.4.2
-markdown-writer@2.8.0
+markdown-writer@2.9.0
+mathjax-wrapper@0.1.0
 minimap@4.29.8
 minimap-cursorline@0.2.0
 minimap-find-and-replace@4.5.2
@@ -18,6 +20,6 @@ minimap-highlight-selected@4.6.1
 pdf-view@0.70.0
 platformio-ide-terminal@2.8.1
 tool-bar@1.1.7
-tool-bar-markdown-writer@0.3.1
+tool-bar-markdown-writer@0.4.0
 wordcount@3.0.0
 
