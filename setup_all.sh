@@ -57,3 +57,9 @@ sudo apt install -y google-chrome-stable
 sudo add-apt-repository -y ppa:kazam-team/unstable-series
 sudo apt update
 sudo apt install -y python3-cairo python3-xlib kazam
+
+# -- install -----------------------------------------------
+$dotfiles/install.sh
+
+# -- ROS ---------------------------------------------------
+$dotfiles/setup_ros.sh

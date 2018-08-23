@@ -1,6 +1,7 @@
 #!/bin/bash -eu
 
-dotfiles=$(cd "$(dirname $0)"; pwd)
+scripts=$(cd "$(dirname $0)"; pwd)
+dotfiles=$(cd "$(dirname $0)"; cd ..; pwd)
 
 sudo npm install -g instant-markdown-d
 $dotfiles/.atom/install_packages.bash
@@ -22,3 +23,4 @@ then
 fi
 
 vi -c PluginInstall -c qa
+$scripts/install_vimycm.sh
