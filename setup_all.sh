@@ -60,7 +60,7 @@ sudo apt update
 sudo apt install -y python3-cairo python3-xlib kazam
 
 # -- install -----------------------------------------------
-$dotfiles/install.sh
+$dotfiles/scripts/install.sh
 
 # -- ROS ---------------------------------------------------
-$dotfiles/setup_ros.sh
+$dotfiles/scripts/setup_ros.sh
