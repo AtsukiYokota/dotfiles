@@ -13,13 +13,10 @@ sudo apt -y install $libpkgs
 sudo apt -y install $devpkgs
 sudo apt -y install $devenvs
 sudo apt -y install $texpkgs
-
 sudo apt -y install inkscape
 
-# source $dotfiles/install.sh
-
 # -- Terminator -------------------------------------------------------
-sudo apt install terminator
+sudo apt -y install terminator
 
 # -- Vim -------------------------------------------------------
 sudo apt-add-repository -y ppa:jonathonf/vim
