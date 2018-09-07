@@ -29,17 +29,6 @@ then
   fi
 fi
 
-pyenvinfo()
-{
-  if [ -e $HOME/.pyenv ];
-  then
-    if `pyenv version | grep -q 'anaconda'`;
-    then
-      echo "[Anaconda], "
-    fi
-  fi
-}
-
 gitinfo()
 {
   if git status &> /dev/null
@@ -64,7 +53,7 @@ cyan="\[\e[0;36m\]"
 green="\[\e[0;32m\]"
 yellow="\[\e[0;33m\]"
 
-face="$cyan( ^q^) < \[\e[0m\]\$(pyenvinfo)\$(gitinfo)\$(bgjobs) $cyan)"
+face="$cyan( ^q^) < \[\e[0m\]\$(gitinfo)\$(bgjobs) $cyan)"
 
 export PS1="\n$face\n${debian_chroot:+($debian_chroot)}$green\u@\H: $yellow\w\[\e[0m\]\$ "
 
@@ -163,9 +152,3 @@ alias l="ls"
 alias png2eps="~/bin/png2eps.sh"
 alias sshm="ssh yokota@150.69.46.178"
 alias sshm6="ssh yokota@150.69.46.178 -p26"
-alias py3="pyenv global anaconda3-5.2.0"
-alias py2="pyenv global system"
-
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
