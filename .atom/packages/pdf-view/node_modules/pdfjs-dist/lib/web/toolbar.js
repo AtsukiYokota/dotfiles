@@ -19,38 +19,56 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Toolbar = undefined;
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _ui_utils = require('./ui_utils');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var PAGE_NUMBER_LOADING_INDICATOR = 'visiblePageIsLoading';
 var SCALE_SELECT_CONTAINER_PADDING = 8;
 var SCALE_SELECT_PADDING = 22;
-var Toolbar = function ToolbarClosure() {
+
+var Toolbar = function () {
   function Toolbar(options, mainContainer, eventBus) {
+    var l10n = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : _ui_utils.NullL10n;
+
+    _classCallCheck(this, Toolbar);
+
     this.toolbar = options.container;
     this.mainContainer = mainContainer;
     this.eventBus = eventBus;
+    this.l10n = l10n;
     this.items = options;
     this._wasLocalized = false;
     this.reset();
     this._bindListeners();
   }
-  Toolbar.prototype = {
-    setPageNumber: function setPageNumber(pageNumber, pageLabel) {
+
+  _createClass(Toolbar, [{
+    key: 'setPageNumber',
+    value: function setPageNumber(pageNumber, pageLabel) {
       this.pageNumber = pageNumber;
       this.pageLabel = pageLabel;
       this._updateUIState(false);
-    },
-    setPagesCount: function setPagesCount(pagesCount, hasPageLabels) {
+    }
+  }, {
+    key: 'setPagesCount',
+    value: function setPagesCount(pagesCount, hasPageLabels) {
       this.pagesCount = pagesCount;
       this.hasPageLabels = hasPageLabels;
       this._updateUIState(true);
-    },
-    setPageScale: function setPageScale(pageScaleValue, pageScale) {
+    }
+  }, {
+    key: 'setPageScale',
+    value: function setPageScale(pageScaleValue, pageScale) {
       this.pageScaleValue = pageScaleValue;
       this.pageScale = pageScale;
       this._updateUIState(false);
-    },
-    reset: function reset() {
+    }
+  }, {
+    key: 'reset',
+    value: function reset() {
       this.pageNumber = 0;
       this.pageLabel = null;
       this.hasPageLabels = false;
@@ -58,12 +76,16 @@ var Toolbar = function ToolbarClosure() {
       this.pageScaleValue = _ui_utils.DEFAULT_SCALE_VALUE;
       this.pageScale = _ui_utils.DEFAULT_SCALE;
       this._updateUIState(true);
-    },
+    }
+  }, {
+    key: '_bindListeners',
+    value: function _bindListeners() {
+      var _this = this;
 
-    _bindListeners: function Toolbar_bindClickListeners() {
-      var eventBus = this.eventBus;
+      var eventBus = this.eventBus,
+          items = this.items;
+
       var self = this;
-      var items = this.items;
       items.previous.addEventListener('click', function () {
         eventBus.dispatch('previouspage');
       });
@@ -94,68 +116,63 @@ var Toolbar = function ToolbarClosure() {
           value: this.value
         });
       });
-      items.presentationModeButton.addEventListener('click', function (e) {
+      items.presentationModeButton.addEventListener('click', function () {
         eventBus.dispatch('presentationmode');
       });
-      items.openFile.addEventListener('click', function (e) {
+      items.openFile.addEventListener('click', function () {
         eventBus.dispatch('openfile');
       });
-      items.print.addEventListener('click', function (e) {
+      items.print.addEventListener('click', function () {
         eventBus.dispatch('print');
       });
-      items.download.addEventListener('click', function (e) {
+      items.download.addEventListener('click', function () {
         eventBus.dispatch('download');
       });
       items.scaleSelect.oncontextmenu = _ui_utils.noContextMenuHandler;
-      _ui_utils.localized.then(this._localized.bind(this));
-    },
-    _localized: function Toolbar_localized() {
+      eventBus.on('localized', function () {
+        _this._localized();
+      });
+    }
+  }, {
+    key: '_localized',
+    value: function _localized() {
       this._wasLocalized = true;
       this._adjustScaleWidth();
       this._updateUIState(true);
-    },
-    _updateUIState: function Toolbar_updateUIState(resetNumPages) {
-      function selectScaleOption(value, scale) {
-        var options = items.scaleSelect.options;
-        var predefinedValueFound = false;
-        for (var i = 0, ii = options.length; i < ii; i++) {
-          var option = options[i];
-          if (option.value !== value) {
-            option.selected = false;
-            continue;
-          }
-          option.selected = true;
-          predefinedValueFound = true;
-        }
-        if (!predefinedValueFound) {
-          var customScale = Math.round(scale * 10000) / 100;
-          items.customScaleOption.textContent = _ui_utils.mozL10n.get('page_scale_percent', { scale: customScale }, '{{scale}}%');
-          items.customScaleOption.selected = true;
-        }
-      }
+    }
+  }, {
+    key: '_updateUIState',
+    value: function _updateUIState() {
+      var resetNumPages = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
       if (!this._wasLocalized) {
         return;
       }
-      var pageNumber = this.pageNumber;
+      var pageNumber = this.pageNumber,
+          pagesCount = this.pagesCount,
+          items = this.items;
+
       var scaleValue = (this.pageScaleValue || this.pageScale).toString();
       var scale = this.pageScale;
-      var items = this.items;
-      var pagesCount = this.pagesCount;
       if (resetNumPages) {
         if (this.hasPageLabels) {
           items.pageNumber.type = 'text';
         } else {
           items.pageNumber.type = 'number';
-          items.numPages.textContent = _ui_utils.mozL10n.get('of_pages', { pagesCount: pagesCount }, 'of {{pagesCount}}');
+          this.l10n.get('of_pages', { pagesCount: pagesCount }, 'of {{pagesCount}}').then(function (msg) {
+            items.numPages.textContent = msg;
+          });
         }
         items.pageNumber.max = pagesCount;
       }
       if (this.hasPageLabels) {
         items.pageNumber.value = this.pageLabel;
-        items.numPages.textContent = _ui_utils.mozL10n.get('page_of_pages', {
+        this.l10n.get('page_of_pages', {
           pageNumber: pageNumber,
           pagesCount: pagesCount
-        }, '({{pageNumber}} of {{pagesCount}})');
+        }, '({{pageNumber}} of {{pagesCount}})').then(function (msg) {
+          items.numPages.textContent = msg;
+        });
       } else {
         items.pageNumber.value = pageNumber;
       }
@@ -163,17 +180,40 @@ var Toolbar = function ToolbarClosure() {
       items.next.disabled = pageNumber >= pagesCount;
       items.zoomOut.disabled = scale <= _ui_utils.MIN_SCALE;
       items.zoomIn.disabled = scale >= _ui_utils.MAX_SCALE;
-      selectScaleOption(scaleValue, scale);
-    },
-    updateLoadingIndicatorState: function Toolbar_updateLoadingIndicatorState(loading) {
+      var customScale = Math.round(scale * 10000) / 100;
+      this.l10n.get('page_scale_percent', { scale: customScale }, '{{scale}}%').then(function (msg) {
+        var options = items.scaleSelect.options;
+        var predefinedValueFound = false;
+        for (var i = 0, ii = options.length; i < ii; i++) {
+          var option = options[i];
+          if (option.value !== scaleValue) {
+            option.selected = false;
+            continue;
+          }
+          option.selected = true;
+          predefinedValueFound = true;
+        }
+        if (!predefinedValueFound) {
+          items.customScaleOption.textContent = msg;
+          items.customScaleOption.selected = true;
+        }
+      });
+    }
+  }, {
+    key: 'updateLoadingIndicatorState',
+    value: function updateLoadingIndicatorState() {
+      var loading = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
       var pageNumberInput = this.items.pageNumber;
       if (loading) {
         pageNumberInput.classList.add(PAGE_NUMBER_LOADING_INDICATOR);
       } else {
         pageNumberInput.classList.remove(PAGE_NUMBER_LOADING_INDICATOR);
       }
-    },
-    _adjustScaleWidth: function Toolbar_adjustScaleWidth() {
+    }
+  }, {
+    key: '_adjustScaleWidth',
+    value: function _adjustScaleWidth() {
       var container = this.items.scaleSelectContainer;
       var select = this.items.scaleSelect;
       _ui_utils.animationStarted.then(function () {
@@ -188,7 +228,9 @@ var Toolbar = function ToolbarClosure() {
         }
       });
     }
-  };
+  }]);
+
   return Toolbar;
 }();
+
 exports.Toolbar = Toolbar;

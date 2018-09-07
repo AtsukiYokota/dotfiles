@@ -135,6 +135,16 @@ It's probably a caching issue. Do the following:
 
 
 
+<a name="ruby-files-look-weird"></a>
+#### Ruby files are showing the [wrong font][14]:
+If [`language-ethereum`][15] is installed, remove it.
+This is a [known issue][16] with the package, which is no longer maintained.
+For Solidity support, use [`linter-solidity`][17] or [`language-solidity`][18] instead.
+
+If `language-ethereum` *isn't* installed, please [follow these steps][19] and file an issue.
+
+
+
 <a name="the-tree-views-files-are-borked"></a>
 #### The tree-view's files are borked and [look like this][6]:
 If you haven't restarted Atom since upgrading to [File-Icons v2][v2.0], do so now.
@@ -250,10 +260,18 @@ fileIcon.onDestroy(() => disposable.dispose());
 ```
 
 
+Backers
+------------------------------------------------------------------------------------------
+If you enjoy these icons, help support the project by [becoming a backer][20]. Huge thanks
+to our current backers for their generous support:
+
+<a title="Tipe" href="https://tipe.io/"><img alt="Tipe" height="32" src="https://camo.githubusercontent.com/cc8c116a0174ba6f6884fda5415ccd232173d0c7/68747470733a2f2f63646e2e746970652e696f2f746970652f746970652d3130323478313032342e706e67"/></a>
+
+
 Acknowledgements
 ------------------------------------------------------------------------------------------
-Originally based on [sommerper/filetype-color][8], but now sporting a shiny new file-icons
-API in `v2` thanks to [Alhadis][11]! Also thanks to all the [contributors][9].
+`v1` was originally based on [sommerper/filetype-color][8]. `v2` was completely rewritten.
+Both versions owe their success to innumerable [contributions][9] from the Atom community.
 
 
 [Referenced links]: ____________________________________________________
@@ -268,4 +286,11 @@ API in `v2` thanks to [Alhadis][11]! Also thanks to all the [contributors][9].
 [11]: https://github.com/Alhadis
 [12]: https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
 [13]: https://github.com/file-icons/atom#integration-with-other-packages
+[14]: https://user-images.githubusercontent.com/4875955/40267919-1829d17e-5b65-11e8-9ea4-974a6bd79c37.png
+[15]: https://atom.io/packages/language-ethereum
+[16]: https://github.com/caktux/language-ethereum/pull/13
+[17]: https://atom.io/packages/linter-solidity
+[18]: https://atom.io/packages/language-solidity
+[19]: https://github.com/file-icons/atom/issues/708#issuecomment-366959765
+[20]: https://opencollective.com/file-icons/#support
 [v2.0]: https://github.com/file-icons/atom/releases/tag/v2.0.0

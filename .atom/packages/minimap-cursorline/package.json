@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
+        "raw": "/tmp/d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
-        "spec": "/tmp/d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
+        "rawSpec": "/tmp/d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
+        "spec": "/tmp/d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-11849-7039-69bnts.fpskmx6r"
+      "/tmp/apm-install-dir-11888-3026-pf7r05.nyi1jj1yvi"
     ]
   ],
-  "_from": "../d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
+  "_from": "../d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
   "_id": "minimap-cursorline@0.2.0",
   "_inCache": true,
   "_location": "/minimap-cursorline",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
+    "raw": "/tmp/d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
-    "spec": "/tmp/d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
+    "rawSpec": "/tmp/d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
+    "spec": "/tmp/d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
+  "_resolved": "file:../d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
   "_shasum": "e453900a4e932f1aa23b34a850b19d8cca186207",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-11849-7039-tfk8jz.l240ybvs4i/package.tgz",
-  "_where": "/tmp/apm-install-dir-11849-7039-69bnts.fpskmx6r",
+  "_spec": "/tmp/d-11888-3026-8t28ld.hwj5bwewmi/package.tgz",
+  "_where": "/tmp/apm-install-dir-11888-3026-pf7r05.nyi1jj1yvi",
   "bugs": {
     "url": "https://github.com/atom-minimap/minimap-cursorline/issues"
   },

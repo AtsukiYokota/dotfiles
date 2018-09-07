@@ -31,6 +31,8 @@ var PDFFindBar = function () {
   function PDFFindBar(options) {
     var _this = this;
 
+    var l10n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _ui_utils.NullL10n;
+
     _classCallCheck(this, PDFFindBar);
 
     this.opened = false;
@@ -46,6 +48,7 @@ var PDFFindBar = function () {
     this.findNextButton = options.findNextButton || null;
     this.findController = options.findController || null;
     this.eventBus = options.eventBus;
+    this.l10n = l10n;
     if (this.findController === null) {
       throw new Error('PDFFindBar cannot be used without a ' + 'PDFFindController instance.');
     }
@@ -103,24 +106,26 @@ var PDFFindBar = function () {
   }, {
     key: 'updateUIState',
     value: function updateUIState(state, previous, matchCount) {
+      var _this2 = this;
+
       var notFound = false;
       var findMsg = '';
       var status = '';
       switch (state) {
-        case _pdf_find_controller.FindStates.FIND_FOUND:
+        case _pdf_find_controller.FindState.FOUND:
           break;
-        case _pdf_find_controller.FindStates.FIND_PENDING:
+        case _pdf_find_controller.FindState.PENDING:
           status = 'pending';
           break;
-        case _pdf_find_controller.FindStates.FIND_NOTFOUND:
-          findMsg = _ui_utils.mozL10n.get('find_not_found', null, 'Phrase not found');
+        case _pdf_find_controller.FindState.NOT_FOUND:
+          findMsg = this.l10n.get('find_not_found', null, 'Phrase not found');
           notFound = true;
           break;
-        case _pdf_find_controller.FindStates.FIND_WRAPPED:
+        case _pdf_find_controller.FindState.WRAPPED:
           if (previous) {
-            findMsg = _ui_utils.mozL10n.get('find_reached_top', null, 'Reached top of document, continued from bottom');
+            findMsg = this.l10n.get('find_reached_top', null, 'Reached top of document, continued from bottom');
           } else {
-            findMsg = _ui_utils.mozL10n.get('find_reached_bottom', null, 'Reached end of document, continued from top');
+            findMsg = this.l10n.get('find_reached_bottom', null, 'Reached end of document, continued from top');
           }
           break;
       }
@@ -130,9 +135,11 @@ var PDFFindBar = function () {
         this.findField.classList.remove('notFound');
       }
       this.findField.setAttribute('data-status', status);
-      this.findMsg.textContent = findMsg;
+      Promise.resolve(findMsg).then(function (msg) {
+        _this2.findMsg.textContent = msg;
+        _this2._adjustWidth();
+      });
       this.updateResultsCount(matchCount);
-      this._adjustWidth();
     }
   }, {
     key: 'updateResultsCount',
@@ -142,10 +149,12 @@ var PDFFindBar = function () {
       }
       if (!matchCount) {
         this.findResultsCount.classList.add('hidden');
-        return;
+        this.findResultsCount.textContent = '';
+      } else {
+        this.findResultsCount.textContent = matchCount.toLocaleString();
+        this.findResultsCount.classList.remove('hidden');
       }
-      this.findResultsCount.textContent = matchCount.toLocaleString();
-      this.findResultsCount.classList.remove('hidden');
+      this._adjustWidth();
     }
   }, {
     key: 'open',

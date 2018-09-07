@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
+        "raw": "/tmp/d-11888-3026-b22ohv.r7royfogvi/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
-        "spec": "/tmp/d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
+        "rawSpec": "/tmp/d-11888-3026-b22ohv.r7royfogvi/package.tgz",
+        "spec": "/tmp/d-11888-3026-b22ohv.r7royfogvi/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118511-28265-kht13n.zoz2a6pqfr"
+      "/tmp/apm-install-dir-11888-3026-1mp7dkg.fjgw6x0f6r"
     ]
   ],
-  "_from": "../d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
-  "_id": "atom-beautify@0.32.5",
+  "_from": "../d-11888-3026-b22ohv.r7royfogvi/package.tgz",
+  "_id": "atom-beautify@0.33.1",
   "_inCache": true,
   "_location": "/atom-beautify",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
+    "raw": "/tmp/d-11888-3026-b22ohv.r7royfogvi/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
-    "spec": "/tmp/d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
+    "rawSpec": "/tmp/d-11888-3026-b22ohv.r7royfogvi/package.tgz",
+    "spec": "/tmp/d-11888-3026-b22ohv.r7royfogvi/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
-  "_shasum": "d3b89954adc7994bbaa4e7de3079159eba23b270",
+  "_resolved": "file:../d-11888-3026-b22ohv.r7royfogvi/package.tgz",
+  "_shasum": "96867b954e93b57274abd5a817433a20171cf5a2",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118511-28265-6hmi8o.hecocu9pb9/package.tgz",
-  "_where": "/tmp/apm-install-dir-118511-28265-kht13n.zoz2a6pqfr",
+  "_spec": "/tmp/d-11888-3026-b22ohv.r7royfogvi/package.tgz",
+  "_where": "/tmp/apm-install-dir-11888-3026-1mp7dkg.fjgw6x0f6r",
   "activationCommands": {
     "atom-workspace": [
       "atom-beautify:help-debug-editor",
@@ -324,7 +324,6 @@
     "jscs": "^3.0.7",
     "lodash": "^4.17.4",
     "loophole": "^1.1.0",
-    "marko-prettyprint": "^1.4.0",
     "nginxbeautify": "^2.0.1",
     "node-cljfmt": "0.5.3",
     "node-dir": "0.1.17",
@@ -527,5 +526,5 @@
     "pretest": "npm run lint",
     "test": "atom --test spec"
   },
-  "version": "0.32.5"
+  "version": "0.33.1"
 }

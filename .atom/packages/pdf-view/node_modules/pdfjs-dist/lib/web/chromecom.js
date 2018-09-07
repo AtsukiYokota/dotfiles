@@ -27,9 +27,9 @@ var _preferences = require('./preferences');
 
 var _download_manager = require('./download_manager');
 
-var _overlay_manager = require('./overlay_manager');
+var _genericl10n = require('./genericl10n');
 
-var _pdfjs = require('./pdfjs');
+var _pdf = require('../pdf');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -57,9 +57,9 @@ ChromeCom.request = function ChromeCom_request(action, data, callback) {
     chrome.runtime.sendMessage(message);
   }
 };
-ChromeCom.resolvePDFFile = function ChromeCom_resolvePDFFile(file, callback) {
+ChromeCom.resolvePDFFile = function (file, overlayManager, callback) {
   file = file.replace(/^drive:/i, 'filesystem:' + location.origin + '/external/');
-  if (/^filesystem:/.test(file) && !_pdfjs.PDFJS.disableWorker) {
+  if (/^filesystem:/.test(file) && !_pdf.PDFJS.disableWorker) {
     var resolveLocalFileSystemURL = window.resolveLocalFileSystemURL || window.webkitResolveLocalFileSystemURL;
     resolveLocalFileSystemURL(file, function onResolvedFSURL(fileEntry) {
       fileEntry.file(function (fileObject) {
@@ -88,7 +88,7 @@ ChromeCom.resolvePDFFile = function ChromeCom_resolvePDFFile(file, callback) {
         if (isAllowedAccess) {
           callback(file);
         } else {
-          requestAccessToLocalFile(file);
+          requestAccessToLocalFile(file, overlayManager);
         }
       });
     });
@@ -124,18 +124,18 @@ function reloadIfRuntimeIsUnavailable() {
   }
 }
 var chromeFileAccessOverlayPromise;
-function requestAccessToLocalFile(fileUrl) {
+function requestAccessToLocalFile(fileUrl, overlayManager) {
   var onCloseOverlay = null;
   if (top !== window) {
     window.addEventListener('focus', reloadIfRuntimeIsUnavailable);
     onCloseOverlay = function onCloseOverlay() {
       window.removeEventListener('focus', reloadIfRuntimeIsUnavailable);
       reloadIfRuntimeIsUnavailable();
-      _overlay_manager.OverlayManager.close('chromeFileAccessOverlay');
+      overlayManager.close('chromeFileAccessOverlay');
     };
   }
   if (!chromeFileAccessOverlayPromise) {
-    chromeFileAccessOverlayPromise = _overlay_manager.OverlayManager.register('chromeFileAccessOverlay', document.getElementById('chromeFileAccessOverlay'), onCloseOverlay, true);
+    chromeFileAccessOverlayPromise = overlayManager.register('chromeFileAccessOverlay', document.getElementById('chromeFileAccessOverlay'), onCloseOverlay, true);
   }
   chromeFileAccessOverlayPromise.then(function () {
     var iconPath = chrome.runtime.getManifest().icons[48];
@@ -204,7 +204,7 @@ function requestAccessToLocalFile(fileUrl) {
       ChromeCom.request('openExtensionsPageForFileAccess', { newTab: e.ctrlKey || e.metaKey || e.button === 1 || window !== top });
     };
     document.getElementById('chrome-url-of-local-file').textContent = fileUrl;
-    _overlay_manager.OverlayManager.open('chromeFileAccessOverlay');
+    overlayManager.open('chromeFileAccessOverlay');
   });
 }
 if (window === top) {
@@ -287,7 +287,13 @@ var ChromePreferences = function (_BasePreferences) {
           });
         };
         if (chrome.storage.managed) {
-          chrome.storage.managed.get(_this3.defaults, getPreferences);
+          chrome.storage.managed.get(_this3.defaults, function (items) {
+            if (items && items.enableHandToolOnLoad && !items.cursorToolOnLoad) {
+              items.enableHandToolOnLoad = false;
+              items.cursorToolOnLoad = 1;
+            }
+            getPreferences(items);
+          });
         } else {
           getPreferences(_this3.defaults);
         }
@@ -300,8 +306,10 @@ var ChromePreferences = function (_BasePreferences) {
 
 var ChromeExternalServices = Object.create(_app.DefaultExternalServices);
 ChromeExternalServices.initPassiveLoading = function (callbacks) {
-  var appConfig = _app.PDFViewerApplication.appConfig;
-  ChromeCom.resolvePDFFile(appConfig.defaultUrl, function (url, length, originalURL) {
+  var appConfig = _app.PDFViewerApplication.appConfig,
+      overlayManager = _app.PDFViewerApplication.overlayManager;
+
+  ChromeCom.resolvePDFFile(appConfig.defaultUrl, overlayManager, function (url, length, originalURL) {
     callbacks.onOpenWithURL(url, length, originalURL);
   });
 };
@@ -310,6 +318,9 @@ ChromeExternalServices.createDownloadManager = function () {
 };
 ChromeExternalServices.createPreferences = function () {
   return new ChromePreferences();
+};
+ChromeExternalServices.createL10n = function () {
+  return new _genericl10n.GenericL10n(navigator.language);
 };
 _app.PDFViewerApplication.externalServices = ChromeExternalServices;
 exports.ChromeCom = ChromeCom;

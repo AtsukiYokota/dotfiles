@@ -88,7 +88,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -96,12 +96,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
+
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
-  var globalScope = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : undefined;
+  var globalScope = typeof window !== 'undefined' && window.Math === Math ? window : typeof global !== 'undefined' && global.Math === Math ? global : typeof self !== 'undefined' && self.Math === Math ? self :  false ? undefined : {};
   var userAgent = typeof navigator !== 'undefined' && navigator.userAgent || '';
   var isAndroid = /Android/.test(userAgent);
   var isAndroidPre3 = /Android\s[0-2][^\d]/.test(userAgent);
@@ -749,6 +749,22 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
       }
     };
   })();
+  (function checkNumberIsNaN() {
+    if (Number.isNaN) {
+      return;
+    }
+    Number.isNaN = function (value) {
+      return typeof value === 'number' && isNaN(value);
+    };
+  })();
+  (function checkNumberIsInteger() {
+    if (Number.isInteger) {
+      return;
+    }
+    Number.isInteger = function (value) {
+      return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+    };
+  })();
   (function checkPromise() {
     if (globalScope.Promise) {
       if (typeof globalScope.Promise.all !== 'function') {
@@ -1021,10 +1037,13 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
     }
     WeakMap.prototype = {
       has: function has(obj) {
+        if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== 'object' && typeof obj !== 'function' || obj === null) {
+          return false;
+        }
         return !!Object.getOwnPropertyDescriptor(obj, this.id);
       },
-      get: function get(obj, defaultValue) {
-        return this.has(obj) ? obj[this.id] : defaultValue;
+      get: function get(obj) {
+        return this.has(obj) ? obj[this.id] : undefined;
       },
       set: function set(obj, value) {
         Object.defineProperty(obj, this.id, {
@@ -1478,81 +1497,81 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
         }
         return this.protocol + (this._isRelative ? '//' + authority + this.host : '') + this.pathname + this._query + this._fragment;
       },
-      set href(href) {
+      set href(value) {
         clear.call(this);
-        parse.call(this, href);
+        parse.call(this, value);
       },
       get protocol() {
         return this._scheme + ':';
       },
-      set protocol(protocol) {
+      set protocol(value) {
         if (this._isInvalid) {
           return;
         }
-        parse.call(this, protocol + ':', 'scheme start');
+        parse.call(this, value + ':', 'scheme start');
       },
       get host() {
         return this._isInvalid ? '' : this._port ? this._host + ':' + this._port : this._host;
       },
-      set host(host) {
+      set host(value) {
         if (this._isInvalid || !this._isRelative) {
           return;
         }
-        parse.call(this, host, 'host');
+        parse.call(this, value, 'host');
       },
       get hostname() {
         return this._host;
       },
-      set hostname(hostname) {
+      set hostname(value) {
         if (this._isInvalid || !this._isRelative) {
           return;
         }
-        parse.call(this, hostname, 'hostname');
+        parse.call(this, value, 'hostname');
       },
       get port() {
         return this._port;
       },
-      set port(port) {
+      set port(value) {
         if (this._isInvalid || !this._isRelative) {
           return;
         }
-        parse.call(this, port, 'port');
+        parse.call(this, value, 'port');
       },
       get pathname() {
         return this._isInvalid ? '' : this._isRelative ? '/' + this._path.join('/') : this._schemeData;
       },
-      set pathname(pathname) {
+      set pathname(value) {
         if (this._isInvalid || !this._isRelative) {
           return;
         }
         this._path = [];
-        parse.call(this, pathname, 'relative path start');
+        parse.call(this, value, 'relative path start');
       },
       get search() {
         return this._isInvalid || !this._query || this._query === '?' ? '' : this._query;
       },
-      set search(search) {
+      set search(value) {
         if (this._isInvalid || !this._isRelative) {
           return;
         }
         this._query = '?';
-        if (search[0] === '?') {
-          search = search.slice(1);
+        if (value[0] === '?') {
+          value = value.slice(1);
         }
-        parse.call(this, search, 'query');
+        parse.call(this, value, 'query');
       },
       get hash() {
         return this._isInvalid || !this._fragment || this._fragment === '#' ? '' : this._fragment;
       },
-      set hash(hash) {
+      set hash(value) {
         if (this._isInvalid) {
           return;
         }
         this._fragment = '#';
-        if (hash[0] === '#') {
-          hash = hash.slice(1);
+        if (value[0] === '#') {
+          value = value.slice(1);
         }
-        parse.call(this, hash, 'fragment');
+        parse.call(this, value, 'fragment');
       },
       get origin() {
         var host;
@@ -1564,6 +1583,11 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
           case 'file':
           case 'javascript':
           case 'mailto':
+            return 'null';
+          case 'blob':
+            try {
+              return new JURL(this._schemeData).origin || 'null';
+            } catch (_) {}
             return 'null';
         }
         host = this.host;
@@ -1585,30 +1609,9 @@ if (typeof PDFJS === 'undefined' || !PDFJS.compatibilityChecked) {
     globalScope.URL = JURL;
   })();
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var g;
-g = function () {
-  return this;
-}();
-try {
-  g = g || Function("return this")() || (1, eval)("this");
-} catch (e) {
-  if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
-}
-module.exports = g;
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

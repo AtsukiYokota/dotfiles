@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
+        "raw": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
-        "spec": "/tmp/d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
+        "rawSpec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
+        "spec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118511-27997-1w01p6l.l9gi3blnmi"
+      "/tmp/apm-install-dir-11888-3026-crehcc.fkmbh2gldi"
     ]
   ],
-  "_from": "../d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
+  "_from": "../d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
   "_id": "Sublime-Style-Column-Selection@1.7.4",
   "_inCache": true,
   "_location": "/Sublime-Style-Column-Selection",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
+    "raw": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
-    "spec": "/tmp/d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
+    "rawSpec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
+    "spec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
+  "_resolved": "file:../d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
   "_shasum": "8a7616726d6983b13b01187599d95db084988a21",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118511-27997-1n92w80.jj8f4xi529/package.tgz",
-  "_where": "/tmp/apm-install-dir-118511-27997-1w01p6l.l9gi3blnmi",
+  "_spec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
+  "_where": "/tmp/apm-install-dir-11888-3026-crehcc.fkmbh2gldi",
   "bugs": {
     "url": "https://github.com/bigfive/atom-sublime-select/issues"
   },

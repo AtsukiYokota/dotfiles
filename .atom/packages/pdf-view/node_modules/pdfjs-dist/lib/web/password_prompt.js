@@ -23,15 +23,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _ui_utils = require('./ui_utils');
 
-var _overlay_manager = require('./overlay_manager');
-
-var _pdfjs = require('./pdfjs');
+var _pdf = require('../pdf');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var PasswordPrompt = function () {
-  function PasswordPrompt(options) {
+  function PasswordPrompt(options, overlayManager) {
     var _this = this;
+
+    var l10n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : _ui_utils.NullL10n;
 
     _classCallCheck(this, PasswordPrompt);
 
@@ -41,6 +41,8 @@ var PasswordPrompt = function () {
     this.input = options.input;
     this.submitButton = options.submitButton;
     this.cancelButton = options.cancelButton;
+    this.overlayManager = overlayManager;
+    this.l10n = l10n;
     this.updateCallback = null;
     this.reason = null;
     this.submitButton.addEventListener('click', this.verify.bind(this));
@@ -50,7 +52,7 @@ var PasswordPrompt = function () {
         _this.verify();
       }
     });
-    _overlay_manager.OverlayManager.register(this.overlayName, this.container, this.close.bind(this), true);
+    this.overlayManager.register(this.overlayName, this.container, this.close.bind(this), true);
   }
 
   _createClass(PasswordPrompt, [{
@@ -58,13 +60,17 @@ var PasswordPrompt = function () {
     value: function open() {
       var _this2 = this;
 
-      _overlay_manager.OverlayManager.open(this.overlayName).then(function () {
+      this.overlayManager.open(this.overlayName).then(function () {
         _this2.input.focus();
-        var promptString = _ui_utils.mozL10n.get('password_label', null, 'Enter the password to open this PDF file.');
-        if (_this2.reason === _pdfjs.PasswordResponses.INCORRECT_PASSWORD) {
-          promptString = _ui_utils.mozL10n.get('password_invalid', null, 'Invalid password. Please try again.');
+        var promptString = void 0;
+        if (_this2.reason === _pdf.PasswordResponses.INCORRECT_PASSWORD) {
+          promptString = _this2.l10n.get('password_invalid', null, 'Invalid password. Please try again.');
+        } else {
+          promptString = _this2.l10n.get('password_label', null, 'Enter the password to open this PDF file.');
         }
-        _this2.label.textContent = promptString;
+        promptString.then(function (msg) {
+          _this2.label.textContent = msg;
+        });
       });
     }
   }, {
@@ -72,7 +78,7 @@ var PasswordPrompt = function () {
     value: function close() {
       var _this3 = this;
 
-      _overlay_manager.OverlayManager.close(this.overlayName).then(function () {
+      this.overlayManager.close(this.overlayName).then(function () {
         _this3.input.value = '';
       });
     }

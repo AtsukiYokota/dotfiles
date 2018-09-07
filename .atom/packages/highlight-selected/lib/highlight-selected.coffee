@@ -33,6 +33,18 @@ module.exports =
       type: 'boolean'
       default: true
       description: 'Highlight selection in another panes'
+    statusBarString:
+      type: 'string'
+      default: 'Highlighted: %c'
+      description: 'The text to show in the status bar. %c = number of occurrences'
+    allowedCharactersToSelect:
+      type: 'string'
+      default: '$@%-'
+      description: 'Non Word Characters that are allowed to be selected'
+    showResultsOnScrollBar:
+      type: 'boolean'
+      default: false
+      description: 'Show highlight on the scroll bar'
 
   areaView: null
 
@@ -42,6 +54,7 @@ module.exports =
 
     @subscriptions.add atom.commands.add "atom-workspace",
         'highlight-selected:toggle': => @toggle()
+        'highlight-selected:select-all': => @selectAll()
 
   deactivate: ->
     @areaView?.destroy()
@@ -61,3 +74,9 @@ module.exports =
       @areaView.enable()
     else
       @areaView.disable()
+
+  selectAll: ->
+    @areaView.selectAll()
+
+  consumeScrollMarker: (scrollMarkerAPI) ->
+    @areaView.setScrollMarker scrollMarkerAPI

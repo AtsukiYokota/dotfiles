@@ -1,3 +1,18 @@
+## 2.8.4 - PlatformIO
+
+* Add city-lights theme
+* atom-space-pen-views: bump to v2.2.0
+
+## 2.8.3 - PlatformIO
+
+* Add compatibility for Atom 1.28
+
+## 2.8.2 - PlatformIO
+
+* Remove the 3D shadow (#535)
+* Fix "Copy and Paste" (#523)
+* Fix to enable insert-selected-text on Mac (#534)
+
 ## 2.8.1 - PlatformIO
 
 * Add compatibility with Atom 1.25

@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
+        "raw": "/tmp/d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
-        "spec": "/tmp/d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
+        "rawSpec": "/tmp/d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
+        "spec": "/tmp/d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118421-4353-axmemw.xwyn45cdi"
+      "/tmp/apm-install-dir-11888-3026-1efofmr.20c04quxr"
     ]
   ],
-  "_from": "../d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
-  "_id": "platformio-ide-terminal@2.8.1",
+  "_from": "../d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
+  "_id": "platformio-ide-terminal@2.8.4",
   "_inCache": true,
   "_location": "/platformio-ide-terminal",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
+    "raw": "/tmp/d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
-    "spec": "/tmp/d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
+    "rawSpec": "/tmp/d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
+    "spec": "/tmp/d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
-  "_shasum": "5a478e94174a7d3d79b92ec55f914afa9e2cca66",
+  "_resolved": "file:../d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
+  "_shasum": "0c757212efe8fb0cf02bde9b96ccbc9348a4e3e2",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118421-4353-ttd1p5.j14m9rudi/package.tgz",
-  "_where": "/tmp/apm-install-dir-118421-4353-axmemw.xwyn45cdi",
+  "_spec": "/tmp/d-11888-3026-hh9zdz.b6mnqgds4i/package.tgz",
+  "_where": "/tmp/apm-install-dir-11888-3026-1efofmr.20c04quxr",
   "activationHooks": [
     "core:loaded-shell-environment"
   ],
@@ -64,7 +64,7 @@
     }
   ],
   "dependencies": {
-    "atom-space-pen-views": "^2.1.0",
+    "atom-space-pen-views": "^2.2.0",
     "pty.js": "https://github.com/platformio/pty.js/tarball/prebuilt",
     "term.js": "https://github.com/jeremyramin/term.js/tarball/master",
     "underscore": "^1.8.3"
@@ -113,5 +113,5 @@
     "type": "git",
     "url": "git+https://github.com/platformio/platformio-atom-ide-terminal.git"
   },
-  "version": "2.8.1"
+  "version": "2.8.4"
 }

@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118421-4353-5es0du.36l3hrrudi/package.tgz",
+        "raw": "/tmp/d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118421-4353-5es0du.36l3hrrudi/package.tgz",
-        "spec": "/tmp/d-118421-4353-5es0du.36l3hrrudi/package.tgz",
+        "rawSpec": "/tmp/d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
+        "spec": "/tmp/d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118421-4353-1p7yq0y.r4214np14i"
+      "/tmp/apm-install-dir-11888-3026-i2bqcc.43fpwuerk9"
     ]
   ],
-  "_from": "../d-118421-4353-5es0du.36l3hrrudi/package.tgz",
+  "_from": "../d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
   "_id": "language-latex@1.1.1",
   "_inCache": true,
   "_location": "/language-latex",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118421-4353-5es0du.36l3hrrudi/package.tgz",
+    "raw": "/tmp/d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118421-4353-5es0du.36l3hrrudi/package.tgz",
-    "spec": "/tmp/d-118421-4353-5es0du.36l3hrrudi/package.tgz",
+    "rawSpec": "/tmp/d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
+    "spec": "/tmp/d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118421-4353-5es0du.36l3hrrudi/package.tgz",
+  "_resolved": "file:../d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
   "_shasum": "c85acd386a8b85d32a765bac137f524dc700c327",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118421-4353-5es0du.36l3hrrudi/package.tgz",
-  "_where": "/tmp/apm-install-dir-118421-4353-1p7yq0y.r4214np14i",
+  "_spec": "/tmp/d-11888-3026-4ztu8g.niysfnipb9/package.tgz",
+  "_where": "/tmp/apm-install-dir-11888-3026-i2bqcc.43fpwuerk9",
   "bugs": {
     "url": "https://github.com/area/language-latex/issues"
   },

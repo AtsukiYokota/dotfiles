@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
+        "raw": "/tmp/d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
-        "spec": "/tmp/d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
+        "rawSpec": "/tmp/d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
+        "spec": "/tmp/d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-11849-7172-rzwwnz.ntyki6bt9"
+      "/tmp/apm-install-dir-11888-3026-1bg2qqo.lzej7tlnmi"
     ]
   ],
-  "_from": "../d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
+  "_from": "../d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
   "_id": "minimap-highlight-selected@4.6.1",
   "_inCache": true,
   "_location": "/minimap-highlight-selected",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
+    "raw": "/tmp/d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
-    "spec": "/tmp/d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
+    "rawSpec": "/tmp/d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
+    "spec": "/tmp/d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
+  "_resolved": "file:../d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
   "_shasum": "6a794f616ac22fce6f97e23106b46bbda2d01d1d",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-11849-7172-14dgq85.3m4ntawcdi/package.tgz",
-  "_where": "/tmp/apm-install-dir-11849-7172-rzwwnz.ntyki6bt9",
+  "_spec": "/tmp/d-11888-3026-g99f8y.ggbfenrk9/package.tgz",
+  "_where": "/tmp/apm-install-dir-11888-3026-1bg2qqo.lzej7tlnmi",
   "bugs": {
     "url": "https://github.com/atom-minimap/minimap-highlight-selected/issues"
   },

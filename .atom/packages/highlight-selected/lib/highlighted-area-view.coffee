@@ -7,8 +7,24 @@ class HighlightedAreaView
 
   constructor: ->
     @emitter = new Emitter
+    @editorToMarkerLayerMap = {}
     @markerLayers = []
     @resultCount = 0
+
+    @editorSubscriptions = new CompositeDisposable()
+    @editorSubscriptions.add(atom.workspace.observeTextEditors((editor) =>
+      @setupMarkerLayers(editor)
+      @setScrollMarkerView(editor)
+    ))
+
+    @editorSubscriptions.add(atom.workspace.onWillDestroyPaneItem((item) =>
+      return unless item.item.constructor.name == 'TextEditor'
+      editor = item.item
+      @removeMarkers(editor.id)
+      delete @editorToMarkerLayerMap[editor.id]
+      @destroyScrollMarkers(editor)
+    ))
+
     @enable()
     @listenForTimeoutChange()
     @activeItemSubscription = atom.workspace.onDidChangeActivePaneItem =>
@@ -17,10 +33,20 @@ class HighlightedAreaView
     @subscribeToActiveTextEditor()
     @listenForStatusBarChange()
 
+    @enableScrollViewObserveSubscription =
+      atom.config.observe 'highlight-selected.showResultsOnScrollBar', (enabled) =>
+        if enabled
+          @ensureScrollViewInstalled()
+          atom.workspace.getTextEditors().forEach(@setScrollMarkerView)
+        else
+          atom.workspace.getTextEditors().forEach(@destroyScrollMarkers)
+
   destroy: =>
     clearTimeout(@handleSelectionTimeout)
     @activeItemSubscription.dispose()
     @selectionSubscription?.dispose()
+    @enableScrollViewObserveSubscription?.dispose()
+    @editorSubscriptions?.dispose()
     @statusBarView?.removeElement()
     @statusBarTile?.destroy()
     @statusBarTile = null
@@ -46,7 +72,7 @@ class HighlightedAreaView
 
   disable: =>
     @disabled = true
-    @removeMarkers()
+    @removeAllMarkers()
 
   enable: =>
     @disabled = false
@@ -91,74 +117,80 @@ class HighlightedAreaView
       activeItem if activeItem and activeItem.constructor.name == 'TextEditor'
 
   handleSelection: =>
-    @removeMarkers()
+    editor = @getActiveEditor()
+    return unless editor
+
+    @removeAllMarkers()
 
     return if @disabled
-
-    editor = @getActiveEditor()
-
-    return unless editor
     return if editor.getLastSelection().isEmpty()
 
-    if atom.config.get('highlight-selected.onlyHighlightWholeWords')
-      return unless @isWordSelected(editor.getLastSelection())
-
     @selections = editor.getSelections()
+    lastSelection = editor.getLastSelection()
+    text = lastSelection.getText()
 
-    text = escapeRegExp(@selections[0].getText())
-    regex = new RegExp("\\S*\\w*\\b", 'gi')
-    result = regex.exec(text)
-
-    return unless result?
-    return if result[0].length < atom.config.get(
-      'highlight-selected.minimumLength') or
-              result.index isnt 0 or
-              result[0] isnt result.input
+    return if text.length < atom.config.get('highlight-selected.minimumLength')
+    regex = new RegExp("\\n")
+    return if regex.exec(text)
 
     regexFlags = 'g'
     if atom.config.get('highlight-selected.ignoreCase')
       regexFlags = 'gi'
 
-    @ranges = []
-    regexSearch = result[0]
+    regexSearch = escapeRegExp(text)
 
     if atom.config.get('highlight-selected.onlyHighlightWholeWords')
-      if regexSearch.indexOf("\$") isnt -1 \
-      and editor.getGrammar()?.name in ['PHP', 'HACK']
-        regexSearch = regexSearch.replace("\$", "\$\\b")
-      else
-        regexSearch =  "\\b" + regexSearch
-      regexSearch = regexSearch + "\\b"
+      return unless @isWordSelected(lastSelection)
+      nonWordCharacters = atom.config.get('editor.nonWordCharacters')
+      allowedCharactersToSelect = atom.config.get('highlight-selected.allowedCharactersToSelect')
+      nonWordCharactersToStrip = nonWordCharacters.replace(
+        new RegExp("[#{allowedCharactersToSelect}]", 'g'), '')
+      regexForWholeWord = new RegExp("[ \\t#{escapeRegExp(nonWordCharactersToStrip)}]", regexFlags)
+      return if regexForWholeWord.test(text)
+      regexSearch =
+        "(?:[ \\t#{escapeRegExp(nonWordCharacters)}]|^)(" +
+        regexSearch +
+        ")(?:[ \\t#{escapeRegExp(nonWordCharacters)}]|$)"
 
     @resultCount = 0
     if atom.config.get('highlight-selected.highlightInPanes')
+      originalEditor = editor
       @getActiveEditors().forEach (editor) =>
-        @highlightSelectionInEditor(editor, regexSearch, regexFlags)
+        @highlightSelectionInEditor(editor, regexSearch, regexFlags, originalEditor)
     else
       @highlightSelectionInEditor(editor, regexSearch, regexFlags)
 
     @statusBarElement?.updateCount(@resultCount)
 
-  highlightSelectionInEditor: (editor, regexSearch, regexFlags) ->
-    markerLayer = editor?.addMarkerLayer()
-    return unless markerLayer?
-    markerLayerForHiddenMarkers = editor.addMarkerLayer()
-    @markerLayers.push(markerLayer)
-    @markerLayers.push(markerLayerForHiddenMarkers)
+  highlightSelectionInEditor: (editor, regexSearch, regexFlags, originalEditor) ->
+    return unless editor?
+    markerLayers =  @editorToMarkerLayerMap[editor.id]
+    return unless markerLayers?
+    markerLayer = markerLayers['visibleMarkerLayer']
+    markerLayerForHiddenMarkers = markerLayers['selectedMarkerLayer']
 
-    range =  [[0, 0], editor.getEofBufferPosition()]
-
-    editor.scanInBufferRange new RegExp(regexSearch, regexFlags), range,
+    editor.scan new RegExp(regexSearch, regexFlags),
       (result) =>
+        newResult = result
+        if atom.config.get('highlight-selected.onlyHighlightWholeWords')
+          editor.scanInBufferRange(
+            new RegExp(escapeRegExp(result.match[1])),
+            result.range,
+            (e) -> newResult = e
+          )
+
+        return unless newResult?
         @resultCount += 1
-        if @showHighlightOnSelectedWord(result.range, @selections)
-          marker = markerLayerForHiddenMarkers.markBufferRange(result.range)
+
+        if @showHighlightOnSelectedWord(newResult.range, @selections) &&
+           originalEditor?.id == editor.id
+          marker = markerLayerForHiddenMarkers.markBufferRange(newResult.range)
           @emitter.emit 'did-add-selected-marker', marker
           @emitter.emit 'did-add-selected-marker-for-editor',
             marker: marker
             editor: editor
         else
-          marker = markerLayer.markBufferRange(result.range)
+          marker = markerLayer.markBufferRange(newResult.range)
           @emitter.emit 'did-add-marker', marker
           @emitter.emit 'did-add-marker-for-editor',
             marker: marker
@@ -190,10 +222,18 @@ class HighlightedAreaView
       break if outcome
     outcome
 
-  removeMarkers: =>
-    @markerLayers.forEach (markerLayer) ->
-      markerLayer.destroy()
-    @markerLayers = []
+  removeAllMarkers: =>
+    Object.keys(@editorToMarkerLayerMap).forEach(@removeMarkers)
+
+  removeMarkers: (editorId) =>
+    return unless @editorToMarkerLayerMap[editorId]?
+
+    markerLayer = @editorToMarkerLayerMap[editorId]['visibleMarkerLayer']
+    selectedMarkerLayer = @editorToMarkerLayerMap[editorId]['selectedMarkerLayer']
+
+    markerLayer.clear()
+    selectedMarkerLayer.clear()
+
     @statusBarElement?.updateCount(0)
     @emitter.emit 'did-remove-marker-layer'
 
@@ -246,3 +286,56 @@ class HighlightedAreaView
         @setupStatusBar()
       else
         @removeStatusBar()
+
+  selectAll: =>
+    editor = @getActiveEditor()
+    markerLayers = @editorToMarkerLayerMap[editor.id]
+    return unless markerLayers?
+    ranges = []
+    for markerLayer in [markerLayers['visibleMarkerLayer'], markerLayers['selectedMarkerLayer']]
+      for marker in markerLayer.getMarkers()
+        ranges.push marker.getBufferRange()
+
+    if ranges.length > 0
+      editor.setSelectedBufferRanges(ranges, flash: true)
+
+  setScrollMarker: (scrollMarkerAPI) =>
+    @scrollMarker = scrollMarkerAPI
+    if atom.config.get('highlight-selected.showResultsOnScrollBar')
+      @ensureScrollViewInstalled()
+      atom.workspace.getTextEditors().forEach(@setScrollMarkerView)
+
+  ensureScrollViewInstalled: ->
+    unless atom.inSpecMode()
+      require('atom-package-deps').install 'highlight-selected', true
+
+  setupMarkerLayers: (editor) =>
+    if @editorToMarkerLayerMap[editor.id]?
+      markerLayer = @editorToMarkerLayerMap[editor.id]['visibleMarkerLayer']
+      markerLayerForHiddenMarkers  = @editorToMarkerLayerMap[editor.id]['selectedMarkerLayer']
+    else
+      markerLayer = editor.addMarkerLayer()
+      markerLayerForHiddenMarkers = editor.addMarkerLayer()
+      @editorToMarkerLayerMap[editor.id] =
+        visibleMarkerLayer: markerLayer
+        selectedMarkerLayer: markerLayerForHiddenMarkers
+
+  setScrollMarkerView: (editor) =>
+    return unless atom.config.get('highlight-selected.showResultsOnScrollBar')
+    return unless @scrollMarker?
+
+    scrollMarkerView = @scrollMarker.scrollMarkerViewForEditor(editor)
+
+    markerLayer = @editorToMarkerLayerMap[editor.id]['visibleMarkerLayer']
+    selectedMarkerLayer = @editorToMarkerLayerMap[editor.id]['selectedMarkerLayer']
+
+    scrollMarkerView.getLayer("highlight-selected-marker-layer")
+                    .syncToMarkerLayer(markerLayer)
+    scrollMarkerView.getLayer("highlight-selected-selected-marker-layer")
+                    .syncToMarkerLayer(selectedMarkerLayer)
+
+  destroyScrollMarkers: (editor) =>
+    return unless @scrollMarker?
+
+    scrollMarkerView = @scrollMarker.scrollMarkerViewForEditor(editor)
+    scrollMarkerView.destroy()
