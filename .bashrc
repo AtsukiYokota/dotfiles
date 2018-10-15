@@ -156,3 +156,5 @@ alias sshm="ssh yokota@150.69.46.178"
 alias sshm6="ssh yokota@150.69.46.178 -p26"
 alias vimrc="vi ~/.vimrc"
 alias bashrc="vi ~/.bashrc"
+export PATH=/usr/local/cuda-10.0/bin:${PATH}
+export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64:${LD_LIBRARY_PATH}
