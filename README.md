@@ -1,5 +1,6 @@
 # dotfiles
 ## 使い方(Ubuntu16.04)
+
 ```
 ./setup_all.sh
 ```
@@ -15,9 +16,9 @@ Macの場合は`scripts/install.sh`あたりをいじって必要なもののみ
 - Atom
 - tex環境
 - 各種コンパイラ
-- Slack
 - GoogleChrome
 - kazam
 - 各種設定ファイル
 - ROS Kinetic
+
 
