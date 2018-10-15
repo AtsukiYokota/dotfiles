@@ -43,6 +43,7 @@ module.exports = class Beautifiers extends EventEmitter
     'cljfmt'
     'clang-format'
     'crystal'
+    'black'
     'dfmt'
     'elm-format'
     'hh_format'
@@ -87,6 +88,7 @@ module.exports = class Beautifiers extends EventEmitter
     'beautysh'
     'terraformfmt'
     'verilog-mode'
+    'ocamlformat'
   ]
 
   ###

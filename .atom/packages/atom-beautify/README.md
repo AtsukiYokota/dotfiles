@@ -10,7 +10,11 @@
 [![Bountysource](https://img.shields.io/bountysource/team/atom-beautify/activity.svg?style=flat-square)](https://www.bountysource.com/teams/atom-beautify)
 [![Paypal Donations](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=X2RK5DKN6YXPJ&lc=CA&item_name=Atom%2dBeautify&item_number=atom%2dbeautify&currency_code=CAD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
 
+<!--
 **Sign up for Unibeautify CI: [https://goo.gl/jmM4QN](https://goo.gl/jmM4QN)**
+-->
+
+[:tada: **Install Unibeautify CI for GitHub** :tada:](https://github.com/apps/unibeautify-ci)
 
 **Help improve Atom-Beautify by completing the quick questionnaire: [https://goo.gl/iEHBNr](https://goo.gl/iEHBNr)**
 
@@ -55,6 +59,8 @@ apm install atom-beautify
 
 Or Settings/Preferences ➔ Install ➔ Search for `atom-beautify`
 
+[:tada: **Install Unibeautify CI for GitHub** :tada:](https://github.com/apps/unibeautify-ci)
+
 ### Important Notice: Analytics
 
 [Atom-Beautify respects the `core.telemetryConsent` configuration option from Atom editor.](https://github.com/Glavin001/atom-beautify/issues/1179)
@@ -71,6 +77,8 @@ Thank you.
 
 Atom-Beautify is going to be completely rewritten with [Unibeautify](https://github.com/Unibeautify/unibeautify) at its core!
 See [`unibeautify` branch](../../tree/unibeautify) for work in progress and [Issue #1174](https://github.com/Glavin001/atom-beautify/issues/1174).
+
+[:tada: **Install Unibeautify CI for GitHub** :tada:](https://github.com/apps/unibeautify-ci)
 
 ### Poll: Improving installation of third-party beautifiers
 
@@ -93,6 +101,7 @@ Some of the supported beautifiers are developed for Node.js and are automaticall
 | align-yaml | :white_check_mark: | :ok_hand: Not necessary | :smiley: Nothing! |
 | autopep8 | :warning: 2 executables | :warning: Only 1 of 2 executables | :whale: With [Docker](https://www.docker.com/):<br/>1. Install [autopep8 (`autopep8`)](https://github.com/hhatto/autopep8) with `docker pull unibeautify/autopep8`<br/><br/>:bookmark_tabs: Manually:<br/>1. Install [autopep8 (`autopep8`)](https://github.com/hhatto/autopep8) by following https://github.com/hhatto/autopep8#installation<br/>2. Install [isort (`isort`)](https://github.com/timothycrosley/isort) by following https://github.com/timothycrosley/isort#installing-isort<br/> |
 | beautysh | :warning: 1 executable | :white_check_mark: :100:% of executables | :whale: With [Docker](https://www.docker.com/):<br/>1. Install [beautysh (`beautysh`)](https://github.com/bemeurer/beautysh) with `docker pull unibeautify/beautysh`<br/><br/>:bookmark_tabs: Manually:<br/>1. Install [beautysh (`beautysh`)](https://github.com/bemeurer/beautysh) by following https://github.com/bemeurer/beautysh#installation<br/> |
+| black | :warning: 1 executable | :x: No Docker support | :bookmark_tabs: Manually:<br/>1. Install [black (`black`)](https://github.com/ambv/black) by following https://github.com/ambv/black#installation<br/> |
 | brittany | :warning: Manual installation | :construction: Not an executable | :page_facing_up: Go to https://github.com/lspitzner/brittany and follow the instructions. |
 | clang-format | :warning: 1 executable | :white_check_mark: :100:% of executables | :whale: With [Docker](https://www.docker.com/):<br/>1. Install [ClangFormat (`clang-format`)](https://clang.llvm.org/docs/ClangFormat.html) with `docker pull unibeautify/clang-format`<br/><br/>:bookmark_tabs: Manually:<br/>1. Install [ClangFormat (`clang-format`)](https://clang.llvm.org/docs/ClangFormat.html) by following https://clang.llvm.org/docs/ClangFormat.html<br/> |
 | cljfmt | :white_check_mark: | :ok_hand: Not necessary | :smiley: Nothing! |
@@ -120,6 +129,7 @@ Some of the supported beautifiers are developed for Node.js and are automaticall
 | Lua beautifier | :white_check_mark: | :ok_hand: Not necessary | :smiley: Nothing! |
 | Marko Beautifier | :white_check_mark: | :ok_hand: Not necessary | :smiley: Nothing! |
 | Nginx Beautify | :white_check_mark: | :ok_hand: Not necessary | :smiley: Nothing! |
+| ocamlformat | :warning: 1 executable | :x: No Docker support | :bookmark_tabs: Manually:<br/>1. Install [ocamlformat (`ocamlformat`)](https://github.com/ocaml-ppx/ocamlformat) by following https://github.com/ocaml-ppx/ocamlformat#installation<br/> |
 | ocp-indent | :warning: 1 executable | :white_check_mark: :100:% of executables | :whale: With [Docker](https://www.docker.com/):<br/>1. Install [ocp-indent (`ocp-indent`)](https://www.typerex.org/ocp-indent.html) with `docker pull unibeautify/ocp-indent`<br/><br/>:bookmark_tabs: Manually:<br/>1. Install [ocp-indent (`ocp-indent`)](https://www.typerex.org/ocp-indent.html) by following https://www.typerex.org/ocp-indent.html#installation<br/> |
 | Perltidy | :warning: Manual installation | :construction: Not an executable | :page_facing_up: Go to http://perltidy.sourceforge.net/ and follow the instructions. |
 | PHP-CS-Fixer | :warning: 2 executables | :warning: Only 1 of 2 executables | :whale: With [Docker](https://www.docker.com/):<br/>1. Install [PHP-CS-Fixer (`php-cs-fixer`)](https://github.com/FriendsOfPHP/PHP-CS-Fixer) with `docker pull unibeautify/php-cs-fixer`<br/><br/>:bookmark_tabs: Manually:<br/>1. Install [PHP (`php`)](http://php.net/) by following http://php.net/manual/en/install.php<br/>2. Install [PHP-CS-Fixer (`php-cs-fixer`)](https://github.com/FriendsOfPHP/PHP-CS-Fixer) by following https://github.com/FriendsOfPHP/PHP-CS-Fixer#installation<br/> |
@@ -191,12 +201,12 @@ See [all supported options in the documentation at  `docs/options.md`](docs/opti
 | Nginx | `nginx` |`.conf` | **[`Nginx Beautify`](https://github.com/denysvitali/nginxbeautify)** |
 | Nunjucks | `Nunjucks`, `Nunjucks Templates`, `HTML (Nunjucks Templates)` |`.njk`, `.nunjucks` | **[`Pretty Diff`](https://github.com/prettydiff/prettydiff)** |
 | Objective-C | `Objective-C`, `Objective-C++` |`.m`, `.mm`, `.h` | **[`Uncrustify`](https://github.com/uncrustify/uncrustify)**, [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) |
-| OCaml | `OCaml` |`.ml` | **[`ocp-indent`](https://www.typerex.org/ocp-indent.html)** |
+| OCaml | `OCaml` |`.ml` | **[`ocp-indent`](https://www.typerex.org/ocp-indent.html)**, [`ocamlformat`](https://github.com/ocaml-ppx/ocamlformat) |
 | Pawn | `Pawn` | | **[`Uncrustify`](https://github.com/uncrustify/uncrustify)** |
 | Perl | `Perl`, `Perl 6` |`.pl`, `.PL`, `.pm`, `.pod`, `.t` | **[`Perltidy`](http://perltidy.sourceforge.net/)** |
 | PHP | `PHP` |`.php`, `.module`, `.inc` | **[`PHP-CS-Fixer`](https://github.com/FriendsOfPHP/PHP-CS-Fixer)**, [`PHPCBF`](http://php.net/manual/en/install.php), [`hh_format`](http://hhvm.com/) |
 | Puppet | `Puppet` |`.pp` | **[`puppet-lint`](http://puppet-lint.com/)** |
-| Python | `Python`, `MagicPython` |`.py` | **[`autopep8`](https://github.com/hhatto/autopep8)**, [`pybeautifier`](https://github.com/guyskk/pybeautifier), [`yapf`](https://github.com/google/yapf) |
+| Python | `Python`, `MagicPython` |`.py` | **[`autopep8`](https://github.com/hhatto/autopep8)**, [`black`](https://github.com/ambv/black), [`pybeautifier`](https://github.com/guyskk/pybeautifier), [`yapf`](https://github.com/google/yapf) |
 | R | `R` |`.r`, `.R` | **[`formatR`](https://github.com/yihui/formatR)** |
 | Riot.js | `Riot.js`, `HTML (Riot Tag)` |`.tag` | **[`Pretty Diff`](https://github.com/prettydiff/prettydiff)** |
 | Ruby | `Ruby`, `Ruby on Rails` |`.rb` | **[`Rubocop`](https://github.com/bbatsov/rubocop)**, [`Ruby Beautify`](https://github.com/erniebrodeur/ruby-beautify) |

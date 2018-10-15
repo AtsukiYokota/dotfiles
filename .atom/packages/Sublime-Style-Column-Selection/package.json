@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
+        "raw": "/tmp/d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
-        "spec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
+        "rawSpec": "/tmp/d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
+        "spec": "/tmp/d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-11888-3026-crehcc.fkmbh2gldi"
+      "/tmp/apm-install-dir-118916-10341-a3wosd.2oeuj1c3di"
     ]
   ],
-  "_from": "../d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
-  "_id": "Sublime-Style-Column-Selection@1.7.4",
+  "_from": "../d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
+  "_id": "Sublime-Style-Column-Selection@1.7.5",
   "_inCache": true,
   "_location": "/Sublime-Style-Column-Selection",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
+    "raw": "/tmp/d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
-    "spec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
+    "rawSpec": "/tmp/d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
+    "spec": "/tmp/d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
-  "_shasum": "8a7616726d6983b13b01187599d95db084988a21",
+  "_resolved": "file:../d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
+  "_shasum": "e81f69ac5fedc16aefb90a706b0b298c6ee7c0f5",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-11888-3026-jh2meb.n5x6ytx1or/package.tgz",
-  "_where": "/tmp/apm-install-dir-11888-3026-crehcc.fkmbh2gldi",
+  "_spec": "/tmp/d-118916-10341-1rbnt6v.4kgjlfecdi/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-10341-a3wosd.2oeuj1c3di",
   "bugs": {
     "url": "https://github.com/bigfive/atom-sublime-select/issues"
   },
@@ -55,5 +55,5 @@
     "type": "git",
     "url": "git+https://github.com/bigfive/atom-sublime-select.git"
   },
-  "version": "1.7.4"
+  "version": "1.7.5"
 }

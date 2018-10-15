@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
+        "raw": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
-        "spec": "/tmp/d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
+        "rawSpec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+        "spec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-11888-3026-16sfm8f.g3xdan61or"
+      "/tmp/apm-install-dir-118916-10341-7o9qlk.2ww4ivbo6r"
     ]
   ],
-  "_from": "../d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
+  "_from": "../d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
   "_id": "build@0.70.0",
   "_inCache": true,
   "_location": "/build",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
+    "raw": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
-    "spec": "/tmp/d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
+    "rawSpec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+    "spec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
+  "_resolved": "file:../d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
   "_shasum": "68057404570a0fb903caef88859380b2b1ee2b1e",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-11888-3026-1os5svy.j5iea02j4i/package.tgz",
-  "_where": "/tmp/apm-install-dir-11888-3026-16sfm8f.g3xdan61or",
+  "_spec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-10341-7o9qlk.2ww4ivbo6r",
   "bugs": {
     "url": "https://github.com/noseglid/atom-build/issues"
   },

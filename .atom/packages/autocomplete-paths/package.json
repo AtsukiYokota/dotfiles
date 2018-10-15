@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-11888-3026-i3iqvw.qji1he61or/package.tgz",
+        "raw": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-11888-3026-i3iqvw.qji1he61or/package.tgz",
-        "spec": "/tmp/d-11888-3026-i3iqvw.qji1he61or/package.tgz",
+        "rawSpec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+        "spec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-11888-3026-sedu69.cfbxvl5wmi"
+      "/tmp/apm-install-dir-118916-10341-1cy5zta.kin3oywrk9"
     ]
   ],
-  "_from": "../d-11888-3026-i3iqvw.qji1he61or/package.tgz",
+  "_from": "../d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
   "_id": "autocomplete-paths@2.12.2",
   "_inCache": true,
   "_location": "/autocomplete-paths",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-11888-3026-i3iqvw.qji1he61or/package.tgz",
+    "raw": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-11888-3026-i3iqvw.qji1he61or/package.tgz",
-    "spec": "/tmp/d-11888-3026-i3iqvw.qji1he61or/package.tgz",
+    "rawSpec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+    "spec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-11888-3026-i3iqvw.qji1he61or/package.tgz",
+  "_resolved": "file:../d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
   "_shasum": "fd934aa91d3cffa9a467d3760152c08917fa392f",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-11888-3026-i3iqvw.qji1he61or/package.tgz",
-  "_where": "/tmp/apm-install-dir-11888-3026-sedu69.cfbxvl5wmi",
+  "_spec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-10341-1cy5zta.kin3oywrk9",
   "bugs": {
     "url": "https://github.com/atom-community/autocomplete-paths/issues"
   },

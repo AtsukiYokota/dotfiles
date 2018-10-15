@@ -1,9 +1,25 @@
+# v0.33.3 (2018-09-28)
+
+- Fix [#2204](https://github.com/Glavin001/atom-beautify/issues/2204). Auto-remove docker containers after run.
+
+You can clean up old Docker containers by running:
+
+```bash
+docker ps --all | grep "unibeautify/" | awk '{ print $1 }' | xargs docker rm
+```
+
+# v0.33.2 (2018-09-26)
+- (BREAKING CHANGE) Added `inline` and `content_unformatted` options from `js-beautify` html settings and cleared `unformatted`.  Breaking change but generally improves the behavior to more accurately beautify html. ([#2210](https://github.com/Glavin001/atom-beautify/issues/2210), [#2215](https://github.com/Glavin001/atom-beautify/pull/2215), [js-beautify#1407](https://github.com/beautify-web/js-beautify/pull/1407))
+- ocamlformat formatter added for OCaml [#2207](https://github.com/Glavin001/atom-beautify/pull/2207)
+- [Black](https://github.com/ambv/black) beautifier added [#2189](https://github.com/Glavin001/atom-beautify/pull/2189)
+
 # v0.33.1 (2018-09-09)
 - Remove dependency marko-prettyprint in an effort to resolve installation and update issues
 
 # v0.33.0 (2018-08-10)
 - Fixes an issue where Atom Beautify would display a Docker error instead of an executable error ([#2146](https://github.com/Glavin001/atom-beautify/issues/2146))
 - Fixes Rubocop not excluding files with an exact pattern match (`db/schema.rb` vs `db/**/*`)
+- Add [Black](http://github.com/ambv/black) beautifier for Python.
 
 # v0.32.5 (2018-05-28)
 - Fixes an issue with Rubocop not working on Windows ([#2092](https://github.com/Glavin001/atom-beautify/issues/2092))

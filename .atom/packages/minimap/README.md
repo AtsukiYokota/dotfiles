@@ -214,8 +214,7 @@ If you want to hide the default editor scrollbar, edit your `style.less` (Open Y
 
 ```css
 atom-text-editor[with-minimap] .vertical-scrollbar {
-  opacity: 0;
-  width: 0;
+  display: none;
 }
 ```
 
@@ -357,7 +356,7 @@ To generate these comments you can use on these useful Atom packages:
 
 ### Developers Documentation
 
-- [Developers Documentation](http://github.com/atom-minimap/minimap/docs/Developers Documentation.md)
+- [Developers Documentation](https://github.com/atom-minimap/minimap/blob/master/docs/Developers%20Documentation.md)
 - [Minimap API Documentation](http://atom-minimap.github.io/minimap/)
 
 ### License

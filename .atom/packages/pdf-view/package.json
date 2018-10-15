@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
+        "raw": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
-        "spec": "/tmp/d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
+        "rawSpec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
+        "spec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-11888-3026-1xt5xw0.hyz0wcow29"
+      "/tmp/apm-install-dir-118916-10341-rgzgle.zd1afko6r"
     ]
   ],
-  "_from": "../d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
+  "_from": "../d-118916-10341-3griga.idbp2satt9/package.tgz",
   "_id": "pdf-view@0.71.0",
   "_inCache": true,
   "_location": "/pdf-view",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
+    "raw": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
-    "spec": "/tmp/d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
+    "rawSpec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
+    "spec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
+  "_resolved": "file:../d-118916-10341-3griga.idbp2satt9/package.tgz",
   "_shasum": "eb94a5ad0831610329b3120b595cd2c2077bb7e3",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-11888-3026-12rmbrp.d6sx8estt9/package.tgz",
-  "_where": "/tmp/apm-install-dir-11888-3026-1xt5xw0.hyz0wcow29",
+  "_spec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-10341-rgzgle.zd1afko6r",
   "bugs": {
     "url": "https://github.com/izuzak/atom-pdf-view/issues"
   },
