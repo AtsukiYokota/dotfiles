@@ -1,8 +1,9 @@
 "*":
   "Sublime-Style-Column-Selection": {}
   core:
+    autoHideMenuBar: true
     disabledPackages: [
-      "markdown-preview"
+      "markdown-preview-plus"
     ]
     telemetryConsent: "no"
   editor:
@@ -10,7 +11,12 @@
     fontSize: 15
   "exception-reporting":
     userId: "33ed0bbe-d877-4f38-8fb0-ba2d00c58774"
-  "markdown-preview-plus": {}
+  "markdown-preview-plus":
+    previewConfig:
+      activatePreviewWithEditor: true
+    saveConfig:
+      saveToPDFOptions:
+        printBackground: true
   minimap:
     plugins:
       cursorline: true
@@ -19,7 +25,6 @@
       "find-and-replaceDecorationsZIndex": 0
       "highlight-selected": true
       "highlight-selectedDecorationsZIndex": 0
-  "tool-bar":
-    visible: false
+  "tool-bar": {}
   welcome:
     showOnStartup: false

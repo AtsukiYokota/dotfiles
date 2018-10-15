@@ -1,18 +1,3 @@
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-7c5e3d.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-7c5e3d.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-55d207.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-55d207.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-7b299d.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-7b299d.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-7e11c2.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-7e11c2.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-0d677b.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-0d677b.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-b1eedb.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-b1eedb.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-15ca01.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-15ca01.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-8e72ca.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-8e72ca.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-3c16e2.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-3c16e2.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-805521.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-805521.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-b00dea.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-b00dea.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-3dc175.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-3dc175.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-079e2e.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-079e2e.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-91bdc2.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-91bdc2.md'
-Couldn't retain /home/yokota/.atom/recovery/pcl_data_structure-fbc6c1.md. Code: ENOENT. Message: ENOENT: no such file or directory, open '/home/yokota/.atom/recovery/pcl_data_structure-fbc6c1.md'
 Attempting to call a function in a renderer window that has been closed or released.
 Function provided here: worker.js:71:22
 Remote event names: destroyed, crashed
