@@ -43,6 +43,7 @@ sudo apt install -y gcc-7 g++-7
 
 # -- Slack(requirement:Ubuntu16.04 or newer version to use snap)-
 curl -s https://packagecloud.io/install/repositories/slacktechnologies/slack/script.deb.sh | sudo bash
+sudo apt install -y slack
 
 # -- GoogleChrome -------------------------------------------------
 cd ~/Downloads
