@@ -138,6 +138,8 @@ mark()
 }
 
 source /opt/ros/kinetic/setup.bash
+export PYTHONPATH=$PYTHONPATH:/home/yokota/.local/lib/python2.7/site-packages
+export PATH=$PATH:/home/yokota/.local/bin
 
 alias cdr="cd ~/Dropbox"
 alias cdt="cd ~/Dropbox/works/toybox"
@@ -152,3 +154,5 @@ alias l="ls"
 alias png2eps="~/bin/png2eps.sh"
 alias sshm="ssh yokota@150.69.46.178"
 alias sshm6="ssh yokota@150.69.46.178 -p26"
+alias vimrc="vi ~/.vimrc"
+alias bashrc="vi ~/.bashrc"

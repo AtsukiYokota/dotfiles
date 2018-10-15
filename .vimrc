@@ -1,3 +1,4 @@
+set scrolloff=5
 set nocompatible               " be iMproved
 filetype off                   " required!
 set rtp+=~/.vim/bundle/vundle/
@@ -10,6 +11,7 @@ Bundle 'gmarik/vundle'
 " Bundle 'https://github.com/davidhalter/jedi-vim.git'
 " ...
 Bundle 'Valloric/YouCompleteMe'
+Bundle 'davidhalter/jedi-vim'
 Bundle 'tyru/caw.vim'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'suan/vim-instant-markdown'
@@ -17,6 +19,7 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'richq/vim-cmake-completion'
+Bundle 'scrooloose/nerdtree'
 " Bundle 'chenzhiwo/ycm-extra-conf-ros'
 filetype plugin indent on     " required!
 "
@@ -27,6 +30,10 @@ filetype plugin indent on     " required!
 " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
 "
 " see :h vundle for more details or wiki for FAQ
+
+autocmd FileType python setlocal completeopt-=preview
+map <C-e> :NERDTreeToggle<CR>
+
 "" -- YouCompleteMe Plugin Configs --
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_complete_in_comments = 1
