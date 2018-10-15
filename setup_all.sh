@@ -8,12 +8,12 @@ devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-d
 devenvs="rxvt-unicode-256color tmux"
 texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
-sudo apt update && sudo apt dist-upgrade
-sudo apt -y install $libpkgs
-sudo apt -y install $devpkgs
-sudo apt -y install $devenvs
-sudo apt -y install $texpkgs
-sudo apt -y install inkscape
+sudo apt upgrade && sudo apt update && sudo apt dist-upgrade
+sudo apt install -y $libpkgs
+sudo apt install -y $devpkgs
+sudo apt install -y $devenvs
+sudo apt install -y $texpkgs
+sudo apt install -y inkscape
 
 # -- Terminator -------------------------------------------------------
 sudo apt -y install terminator
