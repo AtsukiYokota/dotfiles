@@ -13,8 +13,11 @@ Bundle 'gmarik/vundle'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'tyru/caw.vim'
+Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
-Bundle 'suan/vim-instant-markdown'
+" Bundle 'suan/vim-instant-markdown'
+Bundle 'iamcco/mathjax-support-for-mkdp'
+Bundle 'iamcco/markdown-preview.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
@@ -33,6 +36,8 @@ filetype plugin indent on     " required!
 
 autocmd FileType python setlocal completeopt-=preview
 map <C-e> :NERDTreeToggle<CR>
+
+let g:vim_markdown_folding_disabled = 1
 
 "" -- YouCompleteMe Plugin Configs --
 let g:ycm_autoclose_preview_window_after_insertion = 1
