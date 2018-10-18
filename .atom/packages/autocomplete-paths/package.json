@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+        "raw": "/tmp/d-118916-9770-1eltldb.kispirizfr/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
-        "spec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-1eltldb.kispirizfr/package.tgz",
+        "spec": "/tmp/d-118916-9770-1eltldb.kispirizfr/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-1cy5zta.kin3oywrk9"
+      "/tmp/apm-install-dir-118916-9770-1sdpr4g.qytthjjor"
     ]
   ],
-  "_from": "../d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+  "_from": "../d-118916-9770-1eltldb.kispirizfr/package.tgz",
   "_id": "autocomplete-paths@2.12.2",
   "_inCache": true,
   "_location": "/autocomplete-paths",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+    "raw": "/tmp/d-118916-9770-1eltldb.kispirizfr/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
-    "spec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-1eltldb.kispirizfr/package.tgz",
+    "spec": "/tmp/d-118916-9770-1eltldb.kispirizfr/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
+  "_resolved": "file:../d-118916-9770-1eltldb.kispirizfr/package.tgz",
   "_shasum": "fd934aa91d3cffa9a467d3760152c08917fa392f",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-14kdv7m.pjeeb9ms4i/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-1cy5zta.kin3oywrk9",
+  "_spec": "/tmp/d-118916-9770-1eltldb.kispirizfr/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-1sdpr4g.qytthjjor",
   "bugs": {
     "url": "https://github.com/atom-community/autocomplete-paths/issues"
   },

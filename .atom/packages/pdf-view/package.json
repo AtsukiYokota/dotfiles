@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
+        "raw": "/tmp/d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
-        "spec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
+        "spec": "/tmp/d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-rgzgle.zd1afko6r"
+      "/tmp/apm-install-dir-118916-9770-xhf2qi.ol90e8kt9"
     ]
   ],
-  "_from": "../d-118916-10341-3griga.idbp2satt9/package.tgz",
+  "_from": "../d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
   "_id": "pdf-view@0.71.0",
   "_inCache": true,
   "_location": "/pdf-view",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
+    "raw": "/tmp/d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
-    "spec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
+    "spec": "/tmp/d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-3griga.idbp2satt9/package.tgz",
+  "_resolved": "file:../d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
   "_shasum": "eb94a5ad0831610329b3120b595cd2c2077bb7e3",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-3griga.idbp2satt9/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-rgzgle.zd1afko6r",
+  "_spec": "/tmp/d-118916-9770-ccb8dw.crd52ep14i/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-xhf2qi.ol90e8kt9",
   "bugs": {
     "url": "https://github.com/izuzak/atom-pdf-view/issues"
   },

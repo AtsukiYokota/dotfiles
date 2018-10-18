@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
+        "raw": "/tmp/d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
-        "spec": "/tmp/d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
+        "spec": "/tmp/d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-h8lchg.73403pu8fr"
+      "/tmp/apm-install-dir-118916-9770-1st8z1p.r7b0a1nhfr"
     ]
   ],
-  "_from": "../d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
+  "_from": "../d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
   "_id": "minimap-find-and-replace@4.5.2",
   "_inCache": true,
   "_location": "/minimap-find-and-replace",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
+    "raw": "/tmp/d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
-    "spec": "/tmp/d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
+    "spec": "/tmp/d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
+  "_resolved": "file:../d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
   "_shasum": "b7f2d462efcfc9bc3ea9e29720a779fbd7805d58",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-12pigt8.5pdo7jh5mi/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-h8lchg.73403pu8fr",
+  "_spec": "/tmp/d-118916-9770-1d5vvyd.nd19d4pldi/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-1st8z1p.r7b0a1nhfr",
   "author": {
     "name": "Cédric Néhémie",
     "email": "cedric.nehemie@gmail.com"

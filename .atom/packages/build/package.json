@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+        "raw": "/tmp/d-118916-9770-ugqy72.tt4wmte29/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
-        "spec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-ugqy72.tt4wmte29/package.tgz",
+        "spec": "/tmp/d-118916-9770-ugqy72.tt4wmte29/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-7o9qlk.2ww4ivbo6r"
+      "/tmp/apm-install-dir-118916-9770-eppivx.98i614te29"
     ]
   ],
-  "_from": "../d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+  "_from": "../d-118916-9770-ugqy72.tt4wmte29/package.tgz",
   "_id": "build@0.70.0",
   "_inCache": true,
   "_location": "/build",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+    "raw": "/tmp/d-118916-9770-ugqy72.tt4wmte29/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
-    "spec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-ugqy72.tt4wmte29/package.tgz",
+    "spec": "/tmp/d-118916-9770-ugqy72.tt4wmte29/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
+  "_resolved": "file:../d-118916-9770-ugqy72.tt4wmte29/package.tgz",
   "_shasum": "68057404570a0fb903caef88859380b2b1ee2b1e",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-1e3akfk.zjfjs5g66r/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-7o9qlk.2ww4ivbo6r",
+  "_spec": "/tmp/d-118916-9770-ugqy72.tt4wmte29/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-eppivx.98i614te29",
   "bugs": {
     "url": "https://github.com/noseglid/atom-build/issues"
   },

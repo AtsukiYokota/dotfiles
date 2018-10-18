@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
+        "raw": "/tmp/d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
-        "spec": "/tmp/d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
+        "spec": "/tmp/d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-1iqupkz.l76erbpgb9"
+      "/tmp/apm-install-dir-118916-9770-xbc2im.kaiztzkt9"
     ]
   ],
-  "_from": "../d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
+  "_from": "../d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
   "_id": "minimap@4.29.9",
   "_inCache": true,
   "_location": "/minimap",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
+    "raw": "/tmp/d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
-    "spec": "/tmp/d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
+    "spec": "/tmp/d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
+  "_resolved": "file:../d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
   "_shasum": "46ec7ee6c2fb3eea45adca8ecef5a281d0a26644",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-1kb5oji.5ekfls1yvi/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-1iqupkz.l76erbpgb9",
+  "_spec": "/tmp/d-118916-9770-10paabw.k5rdnxko6r/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-xbc2im.kaiztzkt9",
   "author": {
     "name": "Fangdun Cai",
     "email": "cfddream@gmail.com"

@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
+        "raw": "/tmp/d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
-        "spec": "/tmp/d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
+        "spec": "/tmp/d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-pct153.uma6frms4i"
+      "/tmp/apm-install-dir-118916-9770-19brhnk.xgr07tx1or"
     ]
   ],
-  "_from": "../d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
+  "_from": "../d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
   "_id": "language-latex@1.2.0",
   "_inCache": true,
   "_location": "/language-latex",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
+    "raw": "/tmp/d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
-    "spec": "/tmp/d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
+    "spec": "/tmp/d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
+  "_resolved": "file:../d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
   "_shasum": "27d2de389cd8786ca93a24436bd41734d06ee842",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-1697gvn.vkyh4fs9k9/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-pct153.uma6frms4i",
+  "_spec": "/tmp/d-118916-9770-iktzqz.htp4dyrpb9/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-19brhnk.xgr07tx1or",
   "bugs": {
     "url": "https://github.com/area/language-latex/issues"
   },

@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-31287e.ouhkaqncdi/package.tgz",
+        "raw": "/tmp/d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-31287e.ouhkaqncdi/package.tgz",
-        "spec": "/tmp/d-118916-10341-31287e.ouhkaqncdi/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
+        "spec": "/tmp/d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-1gfj3mk.j4yi9q9f6r"
+      "/tmp/apm-install-dir-118916-9770-3ltcu4.f21vj6pqfr"
     ]
   ],
-  "_from": "../d-118916-10341-31287e.ouhkaqncdi/package.tgz",
+  "_from": "../d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
   "_id": "highlight-selected@0.14.0",
   "_inCache": true,
   "_location": "/highlight-selected",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-31287e.ouhkaqncdi/package.tgz",
+    "raw": "/tmp/d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-31287e.ouhkaqncdi/package.tgz",
-    "spec": "/tmp/d-118916-10341-31287e.ouhkaqncdi/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
+    "spec": "/tmp/d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-31287e.ouhkaqncdi/package.tgz",
+  "_resolved": "file:../d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
   "_shasum": "3c8c2c838b70beec0a4b108a5f7356bd70bb8b24",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-31287e.ouhkaqncdi/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-1gfj3mk.j4yi9q9f6r",
+  "_spec": "/tmp/d-118916-9770-1uir4qv.ubd8vt2o6r/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-3ltcu4.f21vj6pqfr",
   "bugs": {
     "url": "https://github.com/richrace/highlight-selected/issues"
   },

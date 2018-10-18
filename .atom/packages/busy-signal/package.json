@@ -2,39 +2,39 @@
   "_args": [
     [
       {
-        "raw": "/tmp/d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
+        "raw": "/tmp/d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
         "scope": null,
         "escapedName": null,
         "name": null,
-        "rawSpec": "/tmp/d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
-        "spec": "/tmp/d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
+        "rawSpec": "/tmp/d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
+        "spec": "/tmp/d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
         "type": "local"
       },
-      "/tmp/apm-install-dir-118916-10341-1jtgctz.8enuerk9"
+      "/tmp/apm-install-dir-118916-9770-1l097ik.krvu04quxr"
     ]
   ],
-  "_from": "../d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
+  "_from": "../d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
   "_id": "busy-signal@1.4.3",
   "_inCache": true,
   "_location": "/busy-signal",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "/tmp/d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
+    "raw": "/tmp/d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
     "scope": null,
     "escapedName": null,
     "name": null,
-    "rawSpec": "/tmp/d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
-    "spec": "/tmp/d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
+    "rawSpec": "/tmp/d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
+    "spec": "/tmp/d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
     "type": "local"
   },
   "_requiredBy": [
     "#USER"
   ],
-  "_resolved": "file:../d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
+  "_resolved": "file:../d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
   "_shasum": "6baf37a38bf9468d9bfd491817102a70b50e05f3",
   "_shrinkwrap": null,
-  "_spec": "/tmp/d-118916-10341-1rrh0c8.v7544mquxr/package.tgz",
-  "_where": "/tmp/apm-install-dir-118916-10341-1jtgctz.8enuerk9",
+  "_spec": "/tmp/d-118916-9770-423ddw.u2wdayk3xr/package.tgz",
+  "_where": "/tmp/apm-install-dir-118916-9770-1l097ik.krvu04quxr",
   "bugs": {
     "url": "https://github.com/steelbrain/busy-signal/issues"
   },
