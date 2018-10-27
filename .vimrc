@@ -15,7 +15,6 @@ Bundle 'davidhalter/jedi-vim'
 Bundle 'tyru/caw.vim'
 Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
-" Bundle 'suan/vim-instant-markdown'
 Bundle 'iamcco/mathjax-support-for-mkdp'
 Bundle 'iamcco/markdown-preview.vim'
 Bundle 'altercation/vim-colors-solarized'
@@ -23,7 +22,6 @@ Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'richq/vim-cmake-completion'
 Bundle 'scrooloose/nerdtree'
-" Bundle 'chenzhiwo/ycm-extra-conf-ros'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -84,12 +82,12 @@ set matchtime=3         " 対応括弧のハイライト表示を3秒にする
 
 " 対応括弧に'<'と'>'のペアを追加
 set matchpairs& matchpairs+=<:>
-" inoremap ""  ""<left>
-" inoremap $$  $$<left>
-" inoremap ''  ''<left>
-" inoremap ()  ()<left>
-" inoremap <>  <><left>
-" inoremap []  []<left>
+inoremap ""  ""<left>
+inoremap $$  $$<left>
+inoremap ''  ''<left>
+inoremap ()  ()<left>
+inoremap <>  <><left>
+inoremap []  []<left>
 "
 inoremap {<Enter> {}<Left><CR><ESC><S-o>
 
