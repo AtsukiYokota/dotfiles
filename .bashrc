@@ -156,7 +156,6 @@ alias sshm="ssh yokota@150.69.46.178"
 alias sshm6="ssh yokota@150.69.46.178 -p26"
 alias vimrc="vi ~/.vimrc"
 alias bashrc="vi ~/.bashrc"
+alias gpu="watch -n 0.1 nvidia-smi"
 export PATH=/usr/local/cuda-9.0/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:${LD_LIBRARY_PATH}
-
-tmux -2u
