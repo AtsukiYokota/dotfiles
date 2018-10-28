@@ -17,6 +17,7 @@ Macの場合は`scripts/install.sh`あたりをいじって必要なもののみ
 - 各種コンパイラ
 - GoogleChrome
 - kazam
+- Albert
 - 各種設定ファイル
 - ROS Kinetic
 

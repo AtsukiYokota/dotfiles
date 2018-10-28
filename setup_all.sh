@@ -57,6 +57,11 @@ sudo add-apt-repository -y ppa:kazam-team/unstable-series
 sudo apt update
 sudo apt install -y python3-cairo python3-xlib kazam
 
+# -- Albert -------------------------------------------------
+sudo add-apt-repository -y ppa:nilarimogard/webupd8
+sudo apt update
+sudo apt install -y albert
+
 # -- install -----------------------------------------------
 $dotfiles/scripts/install.sh
 
