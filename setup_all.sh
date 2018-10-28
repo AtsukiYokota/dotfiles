@@ -5,7 +5,7 @@ dotfiles="$scripts"
 
 libpkgs="clang-4.0"
 devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev npm"
-devenvs="rxvt-unicode-256color tmux"
+devenvs="rxvt-unicode-256color tmux xsel"
 texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
 sudo apt upgrade && sudo apt update && sudo apt dist-upgrade
