@@ -10,6 +10,7 @@
 
 Macの場合は`scripts/install.sh`あたりをいじって必要なもののみインストールする
 ## インストールされるもの
+- Terminator
 - tmux
 - vim-gnome
 - Atom

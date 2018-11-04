@@ -16,7 +16,7 @@ sudo apt install -y $texpkgs
 sudo apt install -y inkscape
 
 # -- Terminator -------------------------------------------------------
-# sudo apt -y install terminator
+sudo apt -y install terminator
 
 # -- Vim -------------------------------------------------------
 sudo apt-add-repository -y ppa:jonathonf/vim

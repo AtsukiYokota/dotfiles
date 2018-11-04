@@ -13,7 +13,6 @@ do
 done
 
 sudo npm install -g instant-markdown-d
-$dotfiles/.atom/install_packages.bash
 
 mkdir -p $dotfiles/.vim/bundle
 
