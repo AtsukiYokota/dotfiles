@@ -1,5 +1,7 @@
 # dotfiles
-** NOTE: Under development**
+
+**NOTE: Under development**
+
 ## 使い方(MacOS Mojeve 10.14)
 
 ```
