@@ -1,7 +1,5 @@
 [[ $- != *i* ]] && return
 
-eval `dircolors ~/.dircolors`
-
 HISTCONTROL=ignoreboth
 
 shopt -s histappend
@@ -34,7 +32,7 @@ gitinfo()
   if git status &> /dev/null
   then
     git_branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
-    echo -e "$git_branch[echo $(git status -s | wc -l)]"
+    echo -e "$git_branch[$(echo $(git status -s | wc -l))]"
 
   else
     echo "norepo"
@@ -58,7 +56,6 @@ face="$cyan( ^q^) < \[\e[0m\]\$(gitinfo)\$(bgjobs) $cyan)"
 
 export PS1="\n$face\n${debian_chroot:+($debian_chroot)}$green\u@\H: $yellow\w\[\e[0m\]\$ "
 
-
 export LANG=C
 export LC_MESSAGE=C
 export LC_TIME=en_US.UTF-8
@@ -72,15 +69,12 @@ esac
 
 export marked="$HOME/marked"
 
-if test -e /opt/ros; then source ~/.rosrc; fi
-
-
 cd()
 {
-  builtin cd "$@" && ls -avF --color=auto
+  builtin cd "$@" && ls -avFG
 }
 
-alias ls='ls -avF --color=auto'
+alias ls='ls -avFG'
 # alias sl='ls'
 alias ks='ls'
 
@@ -100,11 +94,6 @@ compare()
   fi
 
   diff -Bbyw $@ | less -R
-}
-
-update()
-{
-  sudo apt update && sudo apt upgrade
 }
 
 cxx()
@@ -138,7 +127,6 @@ mark()
   echo "$info: $(pwd | tee $marked/$file)";
 }
 
-source /opt/ros/kinetic/setup.bash
 export PYTHONPATH=$PYTHONPATH:/home/yokota/.local/lib/python2.7/site-packages
 export PATH=$PATH:/home/yokota/.local/bin
 
@@ -146,16 +134,7 @@ alias cdr="cd ~/Dropbox"
 alias cdt="cd ~/Dropbox/works/toybox"
 alias cdw="cd ~/Dropbox/works"
 alias cdx="cd ~/Dropbox/works/tex"
-alias robo="roboware-studio"
-alias cw="cd ~/catkin_ws"
-alias cs="cd ~/catkin_ws/src"
-alias cm="cd ~/catkin_ws && catkin_make"
 alias er="cd .."
 alias l="ls"
-alias png2eps="~/bin/png2eps.sh"
-alias sshm="ssh yokota@150.69.46.178"
-alias sshm6="ssh yokota@150.69.46.178 -p26"
 alias vimrc="vi ~/.vimrc"
 alias bashrc="vi ~/.bashrc"
-export PATH=/usr/local/cuda-9.0/bin:${PATH}
-export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:${LD_LIBRARY_PATH}
