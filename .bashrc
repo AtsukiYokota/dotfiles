@@ -138,7 +138,7 @@ mark()
 }
 
 source /opt/ros/kinetic/setup.bash
-export PYTHONPATH=$PYTHONPATH:/home/yokota/.local/lib/python2.7/site-packages
+export PYTHONPATH=/home/yokota/.local/lib/python2.7/site-packages:$PYTHONPATH
 export PATH=$PATH:/home/yokota/.local/bin
 
 alias cdr="cd ~/Dropbox"

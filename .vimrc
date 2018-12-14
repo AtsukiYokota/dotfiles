@@ -22,6 +22,7 @@ Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'richq/vim-cmake-completion'
 Bundle 'scrooloose/nerdtree'
+Bundle 'lervag/vimtex'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -237,6 +238,21 @@ endfunction
 " augroup END
 let g:airline_theme='solarized'
 set t_Co=16
+
+let g:vimtex_compiler_latexmk = {
+      \ 'background': 1,
+      \ 'build_dir': '',
+      \ 'continuous': 1,
+      \ 'options': [
+      \    '-pdfdvi',
+      \    '-verbose',
+      \    '-file-line-error',
+      \    '-synctex=1',
+      \    '-interaction=nonstopmode',
+      \],
+      \}
+
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
 
 inoremap /**  /**<cr><left><left><bs><right><right><cr><bs>/<up>
 
