@@ -38,7 +38,7 @@ map <C-e> :NERDTreeToggle<CR>
 
 let g:vim_markdown_folding_disabled = 1
 
-"" -- YouCompleteMe Plugin Configs --
+" -- YouCompleteMe Plugin Configs --
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
