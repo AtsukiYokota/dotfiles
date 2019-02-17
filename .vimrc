@@ -23,6 +23,8 @@ Bundle 'vim-airline/vim-airline-themes'
 Bundle 'richq/vim-cmake-completion'
 Bundle 'scrooloose/nerdtree'
 Bundle 'lervag/vimtex'
+Bundle 'mattn/vim-starwars'
+Bundle 'deris/vim-shot-f'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -55,6 +57,12 @@ let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_show_diagnostic_ui = 1
 let g:ycm_global_ycm_extra_conf = '~/dotfiles/ycmconfig/youcompleteme.conf.py'
 let g:ycm_use_ultisnips_completer = 0
+
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+
 "NOTE: comments after Bundle command are not allowed..
 "
 " -- Standard Settings --
@@ -95,6 +103,8 @@ inoremap {<Enter> {}<Left><CR><ESC><S-o>
 vnoremap :  :s/
 vnoremap >  >gv
 vnoremap <  <gvnoremap {}  {}<left>
+" for US keyboard
+nnoremap ; :
 nnoremap + <c-a>
 nnoremap - <c-x>
 

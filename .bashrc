@@ -139,7 +139,7 @@ mark()
 
 source /opt/ros/kinetic/setup.bash
 export PYTHONPATH=/home/yokota/.local/lib/python2.7/site-packages:$PYTHONPATH
-export PATH=$PATH:/home/yokota/.local/bin
+export PATH=$PATH:/home/yokota/.local/bin:/home/yokota/bin
 
 alias cdr="cd ~/Dropbox"
 alias cdt="cd ~/Dropbox/works/toybox"
@@ -147,6 +147,8 @@ alias cdw="cd ~/Dropbox/works"
 alias cdx="cd ~/Dropbox/works/tex"
 alias l="ls"
 alias png2eps="~/bin/png2eps.sh"
+alias jpg2eps="~/bin/jpg2eps.sh"
+alias fetchall="~/bin/fetchall.sh"
 alias sshm="ssh yokota@150.69.46.178"
 alias sshm6="ssh yokota@150.69.46.178 -p26"
 # alias sshm6gui="ssh -Y -C yokota@150.69.46.178 -p26"
@@ -156,3 +158,5 @@ alias bashrc="vi ~/.bashrc"
 alias gpu="watch -n 0.1 nvidia-smi"
 export PATH=/usr/local/cuda-9.0/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:${LD_LIBRARY_PATH}
+export PATH=$PATH:/home/yokota/mixcell/QTCode
+export PYTHONPATH=$PYTHONPATH:/home/yokota/mixcell/source_code
