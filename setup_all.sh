@@ -62,6 +62,9 @@ sudo add-apt-repository -y ppa:nilarimogard/webupd8
 sudo apt update
 sudo apt install -y albert
 
+# -- themes -----------------------------------------------
+$dotfiles/scripts/prepare_themes.sh
+
 # -- install -----------------------------------------------
 $dotfiles/scripts/install.sh
 
