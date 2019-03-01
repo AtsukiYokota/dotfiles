@@ -4,7 +4,7 @@ scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles="$scripts"
 
 libpkgs="clang-4.0"
-devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev npm"
+devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev npm python-pip python3-pip"
 devenvs="rxvt-unicode-256color tmux xsel"
 texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
@@ -14,6 +14,9 @@ sudo apt install -y $devpkgs
 sudo apt install -y $devenvs
 sudo apt install -y $texpkgs
 sudo apt install -y inkscape
+
+# -- General settings -------------------------------------------------------
+$dotfiles/scripts/nocaps.sh
 
 # -- Terminator -------------------------------------------------------
 sudo apt -y install terminator
@@ -41,10 +44,6 @@ sudo add-apt-repository -y ppa:jonathonf/gcc-7.udo
 sudo apt update
 sudo apt install -y gcc-7 g++-7
 
-# -- Slack(requirement:Ubuntu16.04 or newer version to use snap)-
-# curl -s https://packagecloud.io/install/repositories/slacktechnologies/slack/script.deb.sh | sudo bash
-# sudo apt install -y slack
-
 # -- GoogleChrome -------------------------------------------------
 cd ~/Downloads
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -68,5 +67,10 @@ $dotfiles/scripts/prepare_themes.sh
 # -- install -----------------------------------------------
 $dotfiles/scripts/install.sh
 
+# -- upgrade pip ----------------------------------------
+python -m pip install --upgrade pip
+python3 -m pip install --upgrade pip
+
 # -- ROS ---------------------------------------------------
 $dotfiles/scripts/setup_ros.sh
+

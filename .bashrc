@@ -138,7 +138,7 @@ mark()
 }
 
 source /opt/ros/kinetic/setup.bash
-export PYTHONPATH=/home/yokota/.local/lib/python2.7/site-packages:$PYTHONPATH
+export PYTHONPATH=$PYTHONPATH:/home/yokota/.local/lib/python2.7/site-packages
 export PATH=$PATH:/home/yokota/.local/bin:/home/yokota/bin
 
 alias cdr="cd ~/Dropbox"
@@ -160,3 +160,5 @@ export PATH=/usr/local/cuda-9.0/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:${LD_LIBRARY_PATH}
 export PATH=$PATH:/home/yokota/mixcell/QTCode
 export PYTHONPATH=$PYTHONPATH:/home/yokota/mixcell/source_code
+export PATH=$PATH:/home/yokota/Dropbox/works/mixcell/QTCode
+export PYTHONPATH=$PYTHONPATH:/home/yokota/Dropbox/works/mixcell/source_code

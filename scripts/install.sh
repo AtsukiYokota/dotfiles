@@ -5,6 +5,8 @@ dotfiles=$(cd "$(dirname $0)"; cd ..; pwd)
 
 ln -s $dotfiles/.vim ~/
 
+cp -R $dotfiles/commands ~/bin
+
 for f in $dotfiles/.??*
 do
   test $f = $dotfiles/.git && continue

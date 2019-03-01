@@ -103,8 +103,6 @@ inoremap {<Enter> {}<Left><CR><ESC><S-o>
 vnoremap :  :s/
 vnoremap >  >gv
 vnoremap <  <gvnoremap {}  {}<left>
-" for US keyboard
-nnoremap ; :
 nnoremap + <c-a>
 nnoremap - <c-x>
 
