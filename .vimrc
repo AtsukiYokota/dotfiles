@@ -66,7 +66,7 @@ let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 "NOTE: comments after Bundle command are not allowed..
 "
 " -- Standard Settings --
-set guifont=SF\ Mono\ 13
+set guifont=Ubuntu\ Mono\ 13
 set linespace=0
 let                 &encoding = 'utf-8'
 let &fileencoding = &encoding
