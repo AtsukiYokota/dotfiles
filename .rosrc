@@ -41,6 +41,19 @@ function sros()
   popd
 }
 
+function dros()
+{
+  pushd $(cat $marked/catkin) && rosdep install -iry --from-paths src
+  popd
+}
+
+function ros_test_results()
+{
+  pushd $(cat $marked/catkin) > /dev/null
+  catkin_test_results
+  popd > /dev/null
+}
+
 function recursive_wstool_update()
 {
   pushd $(cat $marked/catkin)
