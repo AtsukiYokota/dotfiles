@@ -47,9 +47,10 @@ function dros()
   popd
 }
 
-function ros_test_results()
+function tros()
 {
   pushd $(cat $marked/catkin) > /dev/null
+  catkin run_tests
   catkin_test_results
   popd > /dev/null
 }
