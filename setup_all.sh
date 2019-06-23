@@ -67,6 +67,9 @@ $dotfiles/scripts/prepare_themes.sh
 # -- install -----------------------------------------------
 $dotfiles/scripts/install.sh
 
+# -- NTP(For Kyutech cntl NTP server) -----------------------------------------------
+$dotfiles/scripts/setup_kyutech_cntl_ntp.sh
+
 # -- upgrade pip ----------------------------------------
 python -m pip install --upgrade pip
 python3 -m pip install --upgrade pip
