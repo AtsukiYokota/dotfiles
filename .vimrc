@@ -261,6 +261,7 @@ let g:vimtex_compiler_latexmk = {
      \}
 
 let g:vimtex_view_general_options = '-r @line @pdf @tex'
+let g:vimtex_quickfix_open_on_warning = 0
 
 inoremap /**  /**<cr><left><left><bs><right><right><cr><bs>/<up>
 
