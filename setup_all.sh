@@ -34,10 +34,15 @@ git config --global color.diff auto
 git config --global color.status auto
 git config --global color.branch auto
 
-# -- Atom -------------------------------------------------------
-sudo add-apt-repository -y  ppa:webupd8team/atom
+# -- VS Code -------------------------------------------------------
+cd ~/Downloads
+sudo apt install codecurl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+sudo apt install -y apt-transport-https
 sudo apt update
-sudo apt install -y atom
+sudo apt install -y code
+cd $dotfiles
 
 # -- Compilers -------------------------------------------------
 sudo add-apt-repository -y ppa:jonathonf/gcc-7.udo

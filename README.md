@@ -30,11 +30,16 @@ NASから
 - teamviewer
 のdebファイルを拾ってきてインストール
 
+#### VSCode
+- settings syncをインストール
+- Githubで連携ログインしてgistを指定
+- Alt+Shift+Dで設定を同期
+
 ## インストールされるもの
 - Terminator
 - tmux
 - vim-gnome
-- Atom
+- VSCode
 - tex環境
 - pip
 - pip3
