@@ -279,3 +279,4 @@ autocmd BufRead,BufNewFile .tmux.conf let &filetype = 'tmux'
 autocmd BufWritePre * :%s/\s\+$//ge
 
 :command ReopenWinFile e ++enc=cp932
+command! DeleteAnsi %s/<1b>\[[0-9;]*m//g$

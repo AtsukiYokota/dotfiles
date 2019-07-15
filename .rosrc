@@ -71,3 +71,13 @@ function recursive_wstool_update()
   rm /tmp/wstool_outputs
   popd
 }
+
+function clang_autoformat()
+{
+  clang-format-3.8 -i -style=file $@
+}
+
+function recursive_clang_autoformat()
+{
+  find . -name '*.h' -or -name '*.hpp' -or -name '*.cpp' | xargs clang-format-3.8 -i -style=file $1
+}
