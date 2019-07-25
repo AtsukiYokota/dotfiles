@@ -22,8 +22,9 @@ Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'richq/vim-cmake-completion'
 Bundle 'scrooloose/nerdtree'
+Bundle 'scrooloose/syntastic'
 Bundle 'lervag/vimtex'
-Bundle 'mattn/vim-starwars'
+Bundle 'airblade/vim-gitgutter'
 Bundle 'deris/vim-shot-f'
 filetype plugin indent on     " required!
 "
@@ -262,6 +263,38 @@ let g:vimtex_compiler_latexmk = {
 
 let g:vimtex_view_general_options = '-r @line @pdf @tex'
 let g:vimtex_quickfix_open_on_warning = 0
+
+" Python formatter
+let g:syntastic_python_checkers = ['flake8']
+function! Preserve(command)
+    " Save the last search.
+    let search = @/
+    " Save the current cursor position.
+    let cursor_position = getpos('.')
+    " Save the current window position.
+    normal! H
+    let window_position = getpos('.')
+    call setpos('.', cursor_position)
+    " Execute the command.
+    execute a:command
+    " Restore the last search.
+    let @/ = search
+    " Restore the previous window position.
+    call setpos('.', window_position)
+    normal! zt
+    " Restore the previous cursor position.
+    call setpos('.', cursor_position)
+endfunction
+
+function! Autopep8()
+    call Preserve(':silent %!autopep8 --aggressive --aggressive -')
+endfunction
+
+:command AutoPep8 call Autopep8()<CR>
+
+
+" Git gutter
+set updatetime=250
 
 inoremap /**  /**<cr><left><left><bs><right><right><cr><bs>/<up>
 

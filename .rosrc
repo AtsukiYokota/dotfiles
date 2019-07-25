@@ -81,3 +81,13 @@ function recursive_clang_autoformat()
 {
   find . -name '*.h' -or -name '*.hpp' -or -name '*.cpp' | xargs clang-format-3.8 -i -style=file $1
 }
+
+function pep8_autoformat()
+{
+  autopep8 --in-place --aggressive --aggressive $@
+}
+
+function recursive_pep8_autoformat()
+{
+  find . -name '*.py' | xargs autopep8 --in-place --aggressive --aggressive $1
+}
