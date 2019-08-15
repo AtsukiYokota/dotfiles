@@ -69,6 +69,12 @@ sudo apt install -y albert
 # -- themes -----------------------------------------------
 $dotfiles/scripts/prepare_themes.sh
 
+# -- PlantUML -----------------------------------------------
+sudo apt install -y default-jdk graphviz fonts-takao fonts-ipafont fonts-ipaexfont
+cd $dotfiles
+mkdir utils
+wget 'https://downloads.sourceforge.net/project/plantuml/plantuml.jar?r=http%3A%2F%2Fplantuml.com%2Fstarting&ts=1538667739&use_mirror=jaist' -O $dotfiles/utils/plantuml.jar
+
 # -- install -----------------------------------------------
 $dotfiles/scripts/install.sh
 

@@ -17,6 +17,7 @@ Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'iamcco/mathjax-support-for-mkdp'
 Bundle 'iamcco/markdown-preview.vim'
+Bundle 'aklt/plantuml-syntax'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
@@ -40,6 +41,9 @@ autocmd FileType python setlocal completeopt-=preview
 map <C-e> :NERDTreeToggle<CR>
 
 let g:vim_markdown_folding_disabled = 1
+
+let g:plantuml_executable_script="~/dotfiles/scripts/plantuml.sh"
+au FileType plantuml command! OpenUml :!google-chrome %
 
 " -- YouCompleteMe Plugin Configs --
 let g:ycm_autoclose_preview_window_after_insertion = 1
@@ -305,9 +309,12 @@ set smartindent
 set expandtab
 set smarttab
 
-autocmd BufRead,BufNewFile *.cmake    let &filetype = 'cmake'
-autocmd BufRead,BufNewFile *.launch   let &filetype = 'xml'
-autocmd BufRead,BufNewFile .tmux.conf let &filetype = 'tmux'
+autocmd BufRead,BufNewFile *.cmake        let &filetype = 'cmake'
+autocmd BufRead,BufNewFile CMakeLists.txt let &filetype = 'cmake'
+autocmd BufRead,BufNewFile *.launch       let &filetype = 'xml'
+autocmd BufRead,BufNewFile *.urdf         let &filetype = 'xml'
+autocmd BufRead,BufNewFile *.xacro        let &filetype = 'xml'
+autocmd BufRead,BufNewFile .tmux.conf     let &filetype = 'tmux'
 
 autocmd BufWritePre * :%s/\s\+$//ge
 
