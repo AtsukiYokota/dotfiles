@@ -19,7 +19,7 @@ sudo apt install -y inkscape
 $dotfiles/scripts/nocaps.sh
 
 # -- Terminator -------------------------------------------------------
-sudo apt -y install terminator
+sudo apt install -y terminator
 
 # -- Vim -------------------------------------------------------
 sudo apt-add-repository -y ppa:jonathonf/vim
