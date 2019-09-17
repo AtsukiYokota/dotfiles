@@ -29,34 +29,13 @@ then
   fi
 fi
 
-gitinfo()
-{
-  if git status &> /dev/null
-  then
-    git_branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
-    echo -e "$git_branch[$(git status -s | wc -l)]"
-  else
-    echo "norepo"
-  fi
+function _update_ps1() {
+    PS1="$(~/.local/bin/powerline-shell $?)"
 }
 
-bgjobs()
-{
-  if test $(jobs | wc -l) != 0
-  then
-    echo ", jobs[$(jobs | wc -l)]"
-  fi
-}
-
-
-cyan="\[\e[0;36m\]"
-green="\[\e[0;32m\]"
-yellow="\[\e[0;33m\]"
-
-face="$cyan( ^q^) < \[\e[0m\]\$(gitinfo)\$(bgjobs) $cyan)"
-
-export PS1="\n$face\n${debian_chroot:+($debian_chroot)}$green\u@\H: $yellow\w\[\e[0m\]\$ "
-
+if [ "$TERM" != "linux" ]; then
+    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+fi
 
 export LANG=C
 export LC_MESSAGE=C
