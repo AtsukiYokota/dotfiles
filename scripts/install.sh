@@ -14,6 +14,8 @@ do
   ln -sf $f $HOME
 done
 
+$scripts/setup_powerline.sh
+
 python -m pip install --user flake8
 python -m pip install --user autopep8
 

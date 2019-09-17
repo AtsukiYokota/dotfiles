@@ -1,0 +1,20 @@
+{
+  "segments": [
+    "virtual_env",
+    "username",
+    "ssh",
+    "cwd",
+    "git",
+    "exit_code",
+    "set_term_title",
+    "jobs",
+    "root"
+  ],
+  "cwd": {
+    "mode": "plain"
+  },
+  "vcs": {
+    "show_symbol": "true"
+  },
+  "theme": "solarized_dark"
+}
