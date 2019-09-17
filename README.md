@@ -38,6 +38,7 @@ NASから
 ## インストールされるもの
 - Terminator
 - tmux
+- powerline-shell
 - vim-gnome
 - VSCode
 - tex環境
