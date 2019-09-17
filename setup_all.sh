@@ -5,7 +5,7 @@ dotfiles="$scripts"
 
 libpkgs="clang-4.0"
 devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev npm python-pip python3-pip"
-devenvs="rxvt-unicode-256color tmux xsel"
+devenvs="rxvt-unicode-256color tmux xsel tree ncdu glances vlc openssh-client openssh-server"
 texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
 sudo apt upgrade && sudo apt update && sudo apt dist-upgrade
@@ -19,7 +19,7 @@ sudo apt install -y inkscape
 $dotfiles/scripts/nocaps.sh
 
 # -- Terminator -------------------------------------------------------
-sudo apt -y install terminator
+sudo apt install -y terminator
 
 # -- Vim -------------------------------------------------------
 sudo apt-add-repository -y ppa:jonathonf/vim
