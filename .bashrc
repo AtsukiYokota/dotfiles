@@ -116,6 +116,11 @@ mark()
   echo "$info: $(pwd | tee $marked/$file)";
 }
 
+# 初回シェル時のみ tmux実行
+if [ $SHLVL = 1 ]; then
+  tmux
+fi
+
 source /opt/ros/kinetic/setup.bash
 # export PYTHONPATH=$PYTHONPATH:/home/yokota/.local/lib/python2.7/site-packages
 export PATH=$PATH:/home/yokota/.local/bin:/home/yokota/bin
