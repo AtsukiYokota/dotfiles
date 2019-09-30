@@ -8,7 +8,9 @@ devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-d
 devenvs="rxvt-unicode-256color tmux xsel tree ncdu glances vlc openssh-client openssh-server"
 texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
-sudo apt upgrade && sudo apt update && sudo apt dist-upgrade
+curl -sL install-node.now.sh/lts | bash
+
+sudo apt -y update; sudo apt -y upgrade; sudo apt -y dist-upgrade
 sudo apt install -y $libpkgs
 sudo apt install -y $devpkgs
 sudo apt install -y $devenvs
@@ -23,7 +25,7 @@ sudo apt install -y terminator
 
 # -- Vim -------------------------------------------------------
 sudo apt-add-repository -y ppa:jonathonf/vim
-sudo apt update
+sudo apt -y update
 sudo apt install -y vim-gnome && sudo apt -y remove vim-tiny
 
 # -- git settings -------------------------------------------------------

@@ -144,3 +144,5 @@ export PATH=/usr/local/cuda-9.0/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:${LD_LIBRARY_PATH}
 export PATH=$PATH:/home/yokota/Dropbox/works/mixcell/QTCode
 export PYTHONPATH=$PYTHONPATH:/home/yokota/Dropbox/works/mixcell/source_code
+export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
+export PATH=/usr/lib/llvm-6.0/bin:$PATH

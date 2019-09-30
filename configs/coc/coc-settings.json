@@ -1,0 +1,8 @@
+{
+  "python.jediEnabled": false,
+  "python.linting.pylintEnabled": false,
+  "python.linting.pep8Enabled": true,
+  "python.linting.enabled": true,
+  "python.autoComplete.extraPaths": ["/opt/ros/kinetic/lib/python2.7/dist-packages"],
+  "xml.java.home": "/usr/lib/jvm/java-8-openjdk-amd64"
+}

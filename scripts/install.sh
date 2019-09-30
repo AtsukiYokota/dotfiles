@@ -29,4 +29,5 @@ then
 fi
 
 vi -c PluginInstall -c qa
-$scripts/install_vimycm.sh
+$scripts/install_ycm.sh
+$scripts/install_coc.sh

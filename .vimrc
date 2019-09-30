@@ -8,10 +8,9 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 " My Bundles here:
 "
-" Bundle 'https://github.com/davidhalter/jedi-vim.git'
-" ...
 Bundle 'Valloric/YouCompleteMe'
-Bundle 'davidhalter/jedi-vim'
+Bundle 'neoclide/coc.nvim'
+Bundle 'neoclide/coc-vimtex'
 Bundle 'tyru/caw.vim'
 Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
@@ -23,7 +22,7 @@ Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'richq/vim-cmake-completion'
 Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
+" Bundle 'scrooloose/syntastic'
 Bundle 'lervag/vimtex'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'deris/vim-shot-f'
@@ -45,6 +44,23 @@ let g:vim_markdown_folding_disabled = 1
 let g:plantuml_executable_script="~/dotfiles/scripts/plantuml.sh"
 au FileType plantuml command! OpenUml :!google-chrome %
 
+" coc.nvim settings
+" use <tab> for trigger completion and navigate to the next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
 " -- YouCompleteMe Plugin Configs --
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_complete_in_comments = 1
@@ -53,14 +69,14 @@ let g:ycm_echo_current_diagnostic = 0
 let g:ycm_enable_diagnostic_highlighting = 0
 let g:ycm_enable_diagnostic_signs = 0
 let g:ycm_filetype_blacklist = {'tex':1, 'latex':1}
-let g:ycm_filetype_whitelist = {'c':1, 'cpp':1, 'python':1, 'markdown':'1'}
+let g:ycm_filetype_whitelist = {'c':1, 'cpp':1, 'markdown':'1'}
 let g:ycm_key_invoke_completion = '<c-c>'
 let g:ycm_key_list_previous_completion = [         '<c-k>']
 let g:ycm_key_list_select_completion   = ['<tab>', '<c-j>']
 let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_show_diagnostic_ui = 1
-let g:ycm_global_ycm_extra_conf = '~/dotfiles/ycmconfig/youcompleteme.conf.py'
+let g:ycm_global_ycm_extra_conf = '~/dotfiles/configs/ycm/youcompleteme.conf.py'
 let g:ycm_use_ultisnips_completer = 0
 
 if !exists('g:ycm_semantic_triggers')
@@ -296,6 +312,9 @@ endfunction
 
 :command AutoPep8 call Autopep8()<CR>
 
+" for tmux
+set mouse=a
+set ttymouse=sgr
 
 " Git gutter
 set updatetime=250
