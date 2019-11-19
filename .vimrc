@@ -15,6 +15,7 @@ Bundle 'tyru/caw.vim'
 Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'iamcco/mathjax-support-for-mkdp'
+Bundle 'raingo/vim-matlab'
 Bundle 'iamcco/markdown-preview.vim'
 Bundle 'aklt/plantuml-syntax'
 Bundle 'altercation/vim-colors-solarized'
@@ -69,7 +70,7 @@ let g:ycm_echo_current_diagnostic = 0
 let g:ycm_enable_diagnostic_highlighting = 0
 let g:ycm_enable_diagnostic_signs = 0
 let g:ycm_filetype_blacklist = {'tex':1, 'latex':1}
-let g:ycm_filetype_whitelist = {'c':1, 'cpp':1, 'markdown':'1'}
+let g:ycm_filetype_whitelist = {'c':1, 'cpp':1, 'markdown':'1', 'matlab':'1'}
 let g:ycm_key_invoke_completion = '<c-c>'
 let g:ycm_key_list_previous_completion = [         '<c-k>']
 let g:ycm_key_list_select_completion   = ['<tab>', '<c-j>']
