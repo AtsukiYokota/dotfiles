@@ -7,6 +7,10 @@ cd $scripts
 
 cp $dotfiles/configs/coc/coc-settings.json ~/.vim/
 
+cd $dotfiles/.vim/bundle/coc.nvim/
+./install.sh
+cd $dotfiles
+
 sudo apt install -y openjdk-8-jdk
 
 vi -c CocInstall coc-json -c qa

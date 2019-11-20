@@ -3,17 +3,16 @@
 scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles="$scripts"
 
-devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev npm python-pip python3-pip curl"
+devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev python-pip python3-pip curl"
 devenvs="rxvt-unicode-256color tmux xsel tree ncdu glances vlc openssh-client openssh-server"
 texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
-curl -sL install-node.now.sh/lts | bash
-
-sudo apt -y update; sudo apt -y upgrade; sudo apt -y dist-upgrade
 sudo apt install -y $devpkgs
 sudo apt install -y $devenvs
 sudo apt install -y $texpkgs
 sudo apt install -y inkscape
+
+sudo apt -y update; sudo apt -y upgrade; sudo apt -y dist-upgrade
 
 # -- General settings -------------------------------------------------------
 $dotfiles/scripts/nocaps.sh
@@ -30,6 +29,10 @@ git config --global core.editor 'vim -c "set fenc=utf-8"'
 git config --global color.diff auto
 git config --global color.status auto
 git config --global color.branch auto
+
+# -- nodejs npm ---------------------------------------------------
+sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash
+sudo apt install -y nodejs
 
 # -- VS Code -------------------------------------------------------
 cd ~/Downloads
@@ -50,6 +53,12 @@ cd $dotfiles
 
 # -- kazam -------------------------------------------------
 sudo apt install -y kazam
+
+# -- albert -------------------------------------------------
+curl https://build.opensuse.org/projects/home:manuelschneid3r/public_key | sudo apt-key add -
+sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_18.04/ /' > /etc/apt/sources.list.d/home:manuelschneid3r.list"
+sudo apt update
+sudo apt install -y albert
 
 # -- themes -----------------------------------------------
 $dotfiles/scripts/prepare_themes.sh

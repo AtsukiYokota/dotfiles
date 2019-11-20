@@ -22,10 +22,7 @@ python -m pip install --user autopep8
 
 sudo npm install -g instant-markdown-d
 
-if [ ! -e $dotfiles/.vim/bundle/vundle ];
-then
-  git clone https://github.com/gmarik/vundle.git $dotfiles/.vim/bundle/vundle
-fi
+git clone https://github.com/gmarik/vundle.git $dotfiles/.vim/bundle/vundle
 
 vi -c PluginInstall -c qa
 $scripts/install_ycm.sh
