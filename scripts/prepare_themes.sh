@@ -3,18 +3,9 @@
 scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles=$(cd "$(dirname $0)"; cd ..; pwd)
 
-mkdir ~/.themes
-cd ~/.themes
-
-git clone https://github.com/B00merang-Project/macOS-Sierra/
-
-sudo add-apt-repository -y ppa:numix/ppa
-sudo apt update
-
-sudo apt install -y numix-icon-theme-circle
-curl https://raw.githubusercontent.com/ActusOS/GnomeYosemiteIcons/master/download_from_github.sh | sh
-
-sudo apt install -y plank
-sudo apt install -y gnome-tweak-tool
-
-cd $dotfiles
+sudo add-apt-repository -y ppa:noobslab/macbuntu
+sudo apt -y update
+sudo apt install -y macbuntu-os-icons-v1804 macbuntu-os-ithemes-v1804 slingscold albert plank macbuntu-os-plank-theme-v1804 gnome-tweak-tool libreoffice-style-sifr
+wget -O mac-fonts.zip http://drive.noobslab.com/data/Mac/macfonts.zip
+sudo unzip mac-fonts.zip -d /usr/share/fonts; rm mac-fonts.zip
+sudo fc-cache -f -v

@@ -15,16 +15,15 @@ BASE_FLAGS = [
     '-DUSE_CLANG_COMPLETER',
     '-std=c++14',
     '-xc++',
-    '-isystem', '/opt/ros/kinetic/include',
-    '-isystem', '/usr/include/c++/5',
+    '-isystem', '/opt/ros/melodic/include',
     '-isystem', '/usr/include/boost',
     '-isystem', '/usr/include/vtk-6.2',
     '-isystem', '/usr/include',
-    '-isystem', '/usr/include/c++/7.1.0',
-    '-isystem', '/usr/include/c++/7.1.0/backward',
-    '-isystem', '/usr/include/clang/4.0.0/include',
+    '-isystem', '/usr/include/c++/7.4.0',
+    '-isystem', '/usr/include/c++/7.4.0/backward',
+    '-isystem', '/usr/include/clang/6.0.0/include',
     '-isystem', '/usr/include/x86_64-linux-gnu',
-    '-isystem', '/usr/include/x86_64-linux-gnu/c++/7.1.0',
+    '-isystem', '/usr/include/x86_64-linux-gnu/c++/7.4.0',
     '-isystem', '/usr/local/include'
 ]
 

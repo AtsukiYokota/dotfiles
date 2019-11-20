@@ -43,10 +43,10 @@ export LC_TIME=en_US.UTF-8
 export LESSCHARSET=utf-8
 export locale=en_US.UTF-8
 
-case $TERM in
-    linux) LANG=C ;;
-    *) LANG=ja_JP.UTF-8 ;;
-esac
+# case $TERM in
+#     linux) LANG=C ;;
+#     *) LANG=ja_JP.UTF-8 ;;
+# esac
 
 export marked="$HOME/marked"
 
@@ -121,7 +121,7 @@ if [ $SHLVL = 1 ]; then
   tmux
 fi
 
-source /opt/ros/kinetic/setup.bash
+source /opt/ros/melodic/setup.bash
 # export PYTHONPATH=$PYTHONPATH:/home/yokota/.local/lib/python2.7/site-packages
 export PATH=$PATH:/home/yokota/.local/bin:/home/yokota/bin
 

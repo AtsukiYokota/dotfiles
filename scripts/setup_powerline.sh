@@ -13,6 +13,6 @@ gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono deriv
 python -m pip install --user powerline-shell
 python -m pip install --user powerline-status
 
-mkdir -p ~/.config/powerline-shell && powerline-shell --generate-config > ~/.config/powerline-shell/config.json
+mkdir -p ~/.config/powerline-shell
 
 cp $dotfiles/configs/powerline_shell/config.json ~/.config/powerline-shell/config.json

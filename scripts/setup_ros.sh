@@ -1,93 +1,94 @@
-#!/bin/bash
+#!/bin/bash -eu
 
-pwd_dir=$(pwd)
+# The BSD License
+# Copyright (c) 2018 PickNik Consulting
+# Copyright (c) 2014 OROCA and ROS Korea Users Group
 
-Version="kinetic"
+#set -x
 
-if [ "$2" = "--auto" ]; then
-	auto_flg=1
+function usage {
+    # Print out usage of this script.
+    echo >&2 "usage: $0 [ROS distro (default: melodic)"
+    echo >&2 "          [-h|--help] Print help message."
+    exit 0
+}
+
+# Parse command line. If the number of argument differs from what is expected, call `usage` function.
+OPT=`getopt -o h -l help -- $*`
+if [ $# != 1 ]; then
+    usage
+fi
+eval set -- $OPT
+while [ -n "$1" ] ; do
+    case $1 in
+        -h|--help) usage ;;
+        --) shift; break;;
+        *) echo "Unknown option($1)"; usage;;
+    esac
+done
+
+ROS_DISTRO=$1
+ROS_DISTRO=${ROS_DISTRO:="melodic"}
+
+version=`lsb_release -sc`
+echo ""
+echo "INSTALLING ROS USING quick_ros_install --------------------------------"
+echo ""
+echo "Checking the Ubuntu version"
+case $version in
+  "saucy" | "trusty" | "vivid" | "wily" | "xenial" | "bionic")
+  ;;
+  *)
+    echo "ERROR: This script will only work on Ubuntu Saucy(13.10) / Trusty(14.04) / Vivid / Wily / Xenial / Bionic. Exit."
+    exit 0
+esac
+
+relesenum=`grep DISTRIB_DESCRIPTION /etc/*-release | awk -F 'Ubuntu ' '{print $2}' | awk -F ' LTS' '{print $1}'`
+if [ "$relesenum" = "14.04.2" ]
+then
+  echo "Your ubuntu version is $relesenum"
+  echo "Intstall the libgl1-mesa-dev-lts-utopic package to solve the dependency issues for the ROS installation specifically on $relesenum"
+  sudo apt-get install -y libgl1-mesa-dev-lts-utopic
 else
-	auto_flg=0
+  echo "Your ubuntu version is $relesenum"
 fi
 
-
-
-echo "
-     ██████╗  ██████╗  ██████╗                                        
-    ██╔═══██╗██╔═══██╗██╔═══██╗                                       
-    ██║   ██║██║   ██║██║   ██║                                       
-    ██║   ██║██║   ██║██║   ██║                                       
-    ╚██████╔╝╚██████╔╝╚██████╔╝                                       
-     ╚═════╝  ╚═════╝  ╚═════╝                                        
-                                                                      
-     ██████╗  ██████╗  ██████╗         ██████╗  ██████╗ ███████╗      
-    ██╔═══██╗██╔═══██╗██╔═══██╗        ██╔══██╗██╔═══██╗██╔════╝      
-    ██║   ██║██║██╗██║██║   ██║        ██████╔╝██║   ██║███████╗      
-    ██║   ██║██║██║██║██║   ██║        ██╔══██╗██║   ██║╚════██║      
-    ╚██████╔╝╚█║████╔╝╚██████╔╝        ██║  ██║╚██████╔╝███████║      
-     ╚═════╝  ╚╝╚═══╝  ╚═════╝         ╚═╝  ╚═╝ ╚═════╝ ╚══════╝      
-                                                                      
-     ██████╗  ██████╗  ██████╗                                        
-    ██╔═══██╗██╔═══██╗██╔═══██╗                                       
-    ██║   ██║██║   ██║██║   ██║                                       
-    ██║   ██║██║   ██║██║   ██║                                       
-    ╚██████╔╝╚██████╔╝╚██████╔╝                                       
-     ╚═════╝  ╚═════╝  ╚═════╝                                        
-                                                                                                                                           "
-
-pre_version=$(ls /opt/ros/ > /dev/null)
-
-if [ -n "$pre_version" ]; then
-	echo "Yor already have ROS : "${pre_version}
-	echo ""
-	if [ ${auto_flg} -eq 0 ]; then
-		printf "Continue to install ? (yes/no) : "
-		read -r response
-		if [ ${response} = "y" -o ${response} = "yes" ];then
-			echo "OK. Continue to install."
-		else
-			echo "OK. Stoop to install."
-			cd ${pwd_dir}
-			return 0
-		fi
-	fi
-else
-	echo "There is no ROS environment ... Install it."
+echo "Add the ROS repository"
+if [ ! -e /etc/apt/sources.list.d/ros-latest.list ]; then
+  sudo sh -c "echo \"deb http://packages.ros.org/ros/ubuntu ${version} main\" > /etc/apt/sources.list.d/ros-latest.list"
 fi
 
-# 引数によるバージョン確認
-if [ -e $1 ]; then
-	echo "Install : ROS "${Version}" (Default)"
-else
-	echo "Install : ROS "$1
-	Version=$1
+echo "Download the ROS keys"
+roskey=`apt-key list | grep "ROS Builder"` && true # make sure it returns true
+if [ -z "$roskey" ]; then
+  echo "No ROS key, adding"
+  sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 fi
 
-if [ ${auto_flg} -eq 0 ]; then
-	printf "Ready to Install. Start ? (yes/no) : "
-	read -r start_flg
-	if [ ${start_flg} != "y" -a ${start_flg} != "yes" ]; then
-		echo "OK. Stop to install."
-		cd ${pwd_dir}
-		return 0
-	fi
+echo "Updating & upgrading all packages"
+sudo apt-get update
+sudo apt-get dist-upgrade -y
+
+echo "Installing ROS"
+sudo apt install -y \
+     liburdfdom-tools \
+     python-rosdep \
+     python-rosinstall \
+     python-bloom \
+     python-rosclean \
+     python-wstool \
+     python-pip \
+     python-catkin-lint \
+     python-catkin-tools \
+     python-rosinstall \
+     ros-$ROS_DISTRO-desktop-full
+
+# Only init if it has not already been done before
+if [ ! -e /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+  sudo rosdep init
 fi
-
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-yes | sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-sudo apt update
-
-sudo apt install --force-yes -yV ros-${Version}-desktop-full
-sudo apt install -yV python-catkin-tools
-sudo rosdep init
 rosdep update
 
-if ! less ~/.bashrc | grep "/opt/ros/${Version}/setup.bash" > /dev/null; then
-	echo "source /opt/ros/${Version}/setup.bash" >> ~/.bashrc
-fi
-source ~/.bashrc
+echo "Done installing ROS"
 
-sudo apt install --force-yes -yV python-rosinstall
-
-echo "ROS Installer Finished !!"
+exit 0

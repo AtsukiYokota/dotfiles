@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rosdistro="kinetic"
+rosdistro="melodic"
 
 if test -e /opt/ros/$rosdistro/setup.bash
 then

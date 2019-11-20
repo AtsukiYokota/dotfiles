@@ -3,6 +3,7 @@
 scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles=$(cd "$(dirname $0)"; cd ..; pwd)
 
+mkdir -p $dotfiles/.vim/bundle
 ln -s $dotfiles/.vim ~/
 
 cp -R $dotfiles/commands ~/bin
@@ -20,8 +21,6 @@ python -m pip install --user flake8
 python -m pip install --user autopep8
 
 sudo npm install -g instant-markdown-d
-
-mkdir -p $dotfiles/.vim/bundle
 
 if [ ! -e $dotfiles/.vim/bundle/vundle ];
 then
