@@ -15,7 +15,7 @@ sudo apt install -y inkscape
 sudo apt -y update; sudo apt -y upgrade; sudo apt -y dist-upgrade
 
 # -- General settings -------------------------------------------------------
-$dotfiles/scripts/nocaps.sh
+# $dotfiles/scripts/nocaps.sh
 
 # -- Vim -------------------------------------------------------
 sudo apt-add-repository -y ppa:jonathonf/vim
@@ -70,11 +70,7 @@ mkdir utils
 wget 'https://downloads.sourceforge.net/project/plantuml/plantuml.jar?r=http%3A%2F%2Fplantuml.com%2Fstarting&ts=1538667739&use_mirror=jaist' -O $dotfiles/utils/plantuml.jar
 
 # -- NTP(For Kyutech cntl NTP server) -----------------------------------------------
-$dotfiles/scripts/setup_kyutech_cntl_ntp.sh
-
-# -- upgrade pip ----------------------------------------
-python -m pip install --upgrade pip
-python3 -m pip install --upgrade pip
+# $dotfiles/scripts/setup_kyutech_cntl_ntp.sh
 
 # -- upgrade pip ----------------------------------------
 python -m pip install --upgrade pip

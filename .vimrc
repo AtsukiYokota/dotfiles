@@ -122,11 +122,13 @@ inoremap []  []<left>
 "
 inoremap {<Enter> {}<Left><CR><ESC><S-o>
 
-vnoremap :  :s/
+vnoremap ; :
+vnoremap :  :
 vnoremap >  >gv
 vnoremap <  <gvnoremap {}  {}<left>
 nnoremap + <c-a>
 nnoremap - <c-x>
+nnoremap ; :
 
  " バックスペースでなんでも消せるようにする
 set backspace=indent,eol,start
