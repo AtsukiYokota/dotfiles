@@ -40,7 +40,7 @@ function build()
     fi
     if test -e install/local_setup.bash
     then
-      command colcon build $@ && source install/local_setup.bash
+      command colcon build --symlink-install $@ && source install/local_setup.bash
     fi
     rospack profile | sed -E "s/(.*)(\s\**\s)(.*)/\3/g" | grep -e "\/.*" | sort
     popd
@@ -68,6 +68,10 @@ function clean()
     then
       rm -rf log
     fi
+    if test -e logs
+    then
+      rm -rf logs
+    fi
     popd
   fi
 }
@@ -75,11 +79,13 @@ function clean()
 function sros()
 {
   source /opt/ros/$rosdistro/setup.bash
+  export CHOOSE_ROS_DISTRO=$rosdistro
 }
 
 function sros2()
 {
   source /opt/ros/$ros2distro/setup.bash
+  export CHOOSE_ROS_DISTRO=$ros2distro
 }
 
 function swros()
@@ -118,8 +124,8 @@ function dros()
 function tros()
 {
   pushd $(cat $marked/catkin) > /dev/null
-  catkin run_tests
-  catkin_test_results
+  colcon test
+  colcon test-result
   popd > /dev/null
 }
 

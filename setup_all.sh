@@ -4,7 +4,7 @@ scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles="$scripts"
 
 devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev python-pip python3-pip curl"
-devenvs="rxvt-unicode-256color tmux xsel tree ncdu glances vlc openssh-client openssh-server"
+devenvs="rxvt-unicode-256color tmux xsel tree ncdu glances vlc openssh-client openssh-server ctags"
 texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
 sudo apt install -y $devpkgs
@@ -29,6 +29,9 @@ git config --global core.editor 'vim -c "set fenc=utf-8"'
 git config --global color.diff auto
 git config --global color.status auto
 git config --global color.branch auto
+
+# -- Rust ---------------------------------------------------
+curl https://sh.rustup.rs -sSf | sh
 
 # -- nodejs npm ---------------------------------------------------
 sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash

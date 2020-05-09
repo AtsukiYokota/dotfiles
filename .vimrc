@@ -27,6 +27,11 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'lervag/vimtex'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'deris/vim-shot-f'
+Bundle 'rhysd/vim-clang-format'
+Bundle 'cespare/vim-toml'
+Bundle 'rust-lang/rust.vim'
+Bundle 'mattn/webapi-vim'
+Bundle 'majutsushi/tagbar'
 filetype plugin indent on     " required!
 "
 " Brief help
@@ -111,14 +116,31 @@ set switchbuf=useopen   " 新しく開く代わりにすでに開いてあるバ
 set showmatch           " 対応する括弧などをハイライト表示する
 set matchtime=3         " 対応括弧のハイライト表示を3秒にする
 
+" ウィンドウ分割を楽にする設定
+nnoremap ss :<C-u>sp<CR>
+nnoremap sv :<C-u>vs<CR>
+nnoremap sq :<C-u>q<CR>
+nnoremap sQ :<C-u>bd<CR>
+nnoremap sj <C-w>j
+nnoremap sk <C-w>k
+nnoremap sl <C-w>l
+nnoremap sh <C-w>h
+nnoremap sJ <C-w>J
+nnoremap sK <C-w>K
+nnoremap sL <C-w>L
+nnoremap sH <C-w>H
+nnoremap s> <C-w>>
+nnoremap s< <C-w><
+nnoremap s+ <C-w>+
+nnoremap s- <C-w>-
+
+"タブ操作
+nnoremap st :<C-u>tabnew<CR>
+nnoremap sn gt
+nnoremap sp gT
+
 " 対応括弧に'<'と'>'のペアを追加
 set matchpairs& matchpairs+=<:>
-inoremap ""  ""<left>
-inoremap $$  $$<left>
-inoremap ''  ''<left>
-inoremap ()  ()<left>
-inoremap <>  <><left>
-inoremap []  []<left>
 "
 inoremap {<Enter> {}<Left><CR><ESC><S-o>
 
@@ -314,6 +336,70 @@ function! Autopep8()
 endfunction
 
 :command AutoPep8 call Autopep8()<CR>
+
+" clang formatter
+let g:clang_format#style_options = {
+\ "BasedOnStyle":  "Google",
+\ "AccessModifierOffset": "-2",
+\ "ConstructorInitializerIndentWidth": "2",
+\ "AlignEscapedNewlinesLeft": "false",
+\ "AlignTrailingComments": "true",
+\ "AllowAllParametersOfDeclarationOnNextLine": "false",
+\ "AllowShortIfStatementsOnASingleLine": "false",
+\ "AllowShortFunctionsOnASingleLine": "None",
+\ "AllowShortLoopsOnASingleLine": "false",
+\ "AlwaysBreakTemplateDeclarations": "true",
+\ "AlwaysBreakBeforeMultilineStrings": "false",
+\ "BreakBeforeBinaryOperators": "false",
+\ "BreakBeforeTernaryOperators": "false",
+\ "BreakConstructorInitializersBeforeComma": "true",
+\ "BinPackParameters": "true",
+\ "ColumnLimit":    "120",
+\ "ConstructorInitializerAllOnOneLineOrOnePerLine": "true",
+\ "DerivePointerBinding": "false",
+\ "PointerBindsToType": "true",
+\ "ExperimentalAutoDetectBinPacking": "false",
+\ "IndentCaseLabels": "true",
+\ "MaxEmptyLinesToKeep": "1",
+\ "NamespaceIndentation": "None",
+\ "ObjCSpaceBeforeProtocolList": "true",
+\ "PenaltyBreakBeforeFirstCallParameter": "19",
+\ "PenaltyBreakComment": "60",
+\ "PenaltyBreakString": "1",
+\ "PenaltyBreakFirstLessLess": "1000",
+\ "PenaltyExcessCharacter": "1000",
+\ "PenaltyReturnTypeOnItsOwnLine": "90",
+\ "SpacesBeforeTrailingComments": "2",
+\ "Cpp11BracedListStyle": "false",
+\ "Standard":        "Auto",
+\ "IndentWidth":     "2",
+\ "TabWidth":        "2",
+\ "UseTab":          "Never",
+\ "IndentFunctionDeclarationAfterType": "false",
+\ "SpacesInParentheses": "false",
+\ "SpacesInAngles":  "false",
+\ "SpaceInEmptyParentheses": "false",
+\ "SpacesInCStyleCastParentheses": "false",
+\ "SpaceAfterControlStatementKeyword": "true",
+\ "SpaceBeforeAssignmentOperators": "true",
+\ "ContinuationIndentWidth": "4",
+\ "SortIncludes": "false",
+\ "SpaceAfterCStyleCast": "false",
+\
+\ "BreakBeforeBraces": "Custom",
+\
+\ "BraceWrapping": {
+\     "AfterClass": 'true',
+\     "AfterControlStatement": 'true',
+\     "AfterEnum" : 'true',
+\     "AfterFunction" : 'true',
+\     "AfterNamespace" : 'true',
+\     "AfterStruct" : 'true',
+\     "AfterUnion" : 'true',
+\     "BeforeCatch" : 'true',
+\     "BeforeElse" : 'true',
+\     "IndentBraces" : 'false'
+\ }}
 
 " for tmux
 set mouse=a

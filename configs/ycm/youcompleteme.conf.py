@@ -16,6 +16,7 @@ BASE_FLAGS = [
     '-std=c++14',
     '-xc++',
     '-isystem', '/opt/ros/melodic/include',
+    '-isystem', '/opt/ros/dashing/include',
     '-isystem', '/usr/include/boost',
     '-isystem', '/usr/include/vtk-6.2',
     '-isystem', '/usr/include',
