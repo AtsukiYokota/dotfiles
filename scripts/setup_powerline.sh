@@ -10,8 +10,8 @@ cd ..
 rm -rf fonts/
 
 gsettings set org.gnome.desktop.interface monospace-font-name 'Ubuntu Mono derivative Powerline 14'
-python -m pip install --user powerline-shell
-python -m pip install --user powerline-status
+python3 -m pip install --user powerline-shell
+python3 -m pip install --user powerline-status
 
 mkdir -p ~/.config/powerline-shell
 

@@ -7,16 +7,14 @@ cd $scripts
 
 cp $dotfiles/configs/coc/coc-settings.json ~/.vim/
 
-cd $dotfiles/.vim/bundle/coc.nvim/
-./install.sh
-cd $dotfiles
-
 sudo apt install -y openjdk-8-jdk
+python3 -m pip install --user cmake-language-server
 
 vi -c CocInstall coc-json -c qa
 vi -c CocInstall coc-html -c qa
 vi -c CocInstall coc-css -c qa
 vi -c CocInstall coc-rls -c qa
 vi -c CocInstall coc-yaml -c qa
+vi -c CocInstall coc-cmake -c qa
 vi -c CocInstall coc-python -c qa
 vi -c CocInstall coc-xml -c qa

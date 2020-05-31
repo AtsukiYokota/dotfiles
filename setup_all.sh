@@ -3,9 +3,9 @@
 scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles="$scripts"
 
-devpkgs="build-essential clang cmake git llvm python-dev python-flake8 python3-dev python-pip python3-pip curl"
+devpkgs="build-essential clang cmake git llvm flake8 python3-dev python3-pip curl"
 devenvs="rxvt-unicode-256color tmux xsel tree ncdu glances vlc openssh-client openssh-server ctags"
-texpkgs="dvipsk-ja gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
+texpkgs="gv latexmk pstoedit texlive-full texlive-fonts-extra texlive-fonts-recommended texlive-lang-cjk xdvik-ja"
 
 sudo apt install -y $devpkgs
 sudo apt install -y $devenvs
@@ -38,14 +38,7 @@ sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash
 sudo apt install -y nodejs
 
 # -- VS Code -------------------------------------------------------
-cd ~/Downloads
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
-sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-sudo apt install -y apt-transport-https
-sudo apt update
-sudo apt install -y code
-cd $dotfiles
+sudo snap install --classic code
 
 # -- GoogleChrome -------------------------------------------------
 cd ~/Downloads
@@ -58,10 +51,10 @@ cd $dotfiles
 sudo apt install -y kazam
 
 # -- albert -------------------------------------------------
-curl https://build.opensuse.org/projects/home:manuelschneid3r/public_key | sudo apt-key add -
-sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_18.04/ /' > /etc/apt/sources.list.d/home:manuelschneid3r.list"
+echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list
+sudo wget -nv https://download.opensuse.org/repositories/home:manuelschneid3r/xUbuntu_20.04/Release.key -O "/etc/apt/trusted.gpg.d/home:manuelschneid3r.asc"
 sudo apt update
-sudo apt install -y albert
+sudo apt install albert
 
 # -- themes -----------------------------------------------
 $dotfiles/scripts/prepare_themes.sh
@@ -76,12 +69,11 @@ wget 'https://downloads.sourceforge.net/project/plantuml/plantuml.jar?r=http%3A%
 # $dotfiles/scripts/setup_kyutech_cntl_ntp.sh
 
 # -- upgrade pip ----------------------------------------
-python -m pip install --upgrade pip
 python3 -m pip install --upgrade pip
 
 # -- install -----------------------------------------------
 $dotfiles/scripts/install.sh
 
 # -- ROS ---------------------------------------------------
-$dotfiles/scripts/setup_ros.sh melodic
+# $dotfiles/scripts/setup_ros.sh melodic
 

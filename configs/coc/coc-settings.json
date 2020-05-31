@@ -3,7 +3,7 @@
   "python.linting.pylintEnabled": false,
   "python.linting.pep8Enabled": true,
   "python.linting.enabled": true,
-  "python.autoComplete.extraPaths": ["/opt/ros/melodic/lib/python2.7/dist-packages", "/opt/ros/dashing/lib/python3.6/site-packages"],
+  "python.autoComplete.extraPaths": ["/opt/ros/noetic/lib/python3.8/dist-packages", "/opt/ros/foxy/lib/python3.8/site-packages"],
   "xml.java.home": "/usr/lib/jvm/java-8-openjdk-amd64",
   "languageserver": {
     "rust": {
