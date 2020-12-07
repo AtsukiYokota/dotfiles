@@ -1,0 +1,241 @@
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'lervag/vimtex'
+hook_add = '''
+let g:vimtex_compiler_latexmk = {
+     \ 'background': 1,
+     \ 'build_dir': '',
+     \ 'continuous': 1,
+     \ 'options': [
+     \    '-pdfdvi',
+     \    '-verbose',
+     \    '-file-line-error',
+     \    '-synctex=1',
+     \    '-interaction=nonstopmode',
+     \],
+     \}
+
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
+let g:vimtex_quickfix_open_on_warning = 0
+'''
+
+[[plugins]]
+repo = 'ycm-core/YouCompleteMe'
+build = 'python3 install.py --clang-completer'
+hook_add = '''
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_complete_in_comments = 1
+let g:ycm_complete_in_strings = 1
+let g:ycm_echo_current_diagnostic = 0
+let g:ycm_enable_diagnostic_highlighting = 0
+let g:ycm_enable_diagnostic_signs = 0
+let g:ycm_filetype_blacklist = {'tex':1, 'latex':1}
+let g:ycm_filetype_whitelist = {'c':1, 'cpp':1, 'markdown':'1', 'matlab':'1'}
+let g:ycm_key_invoke_completion = '<c-c>'
+let g:ycm_key_list_previous_completion = [         '<c-k>']
+let g:ycm_key_list_select_completion   = ['<tab>', '<c-j>']
+let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_show_diagnostic_ui = 1
+let g:ycm_global_ycm_extra_conf = '~/dotfiles/configs/ycm/youcompleteme.conf.py'
+let g:ycm_use_ultisnips_completer = 0
+
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+'''
+
+[[plugins]]
+repo = 'neoclide/coc.nvim'
+hook_add = '''
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+'''
+
+[[plugins]]
+repo = 'neoclide/coc-vimtex'
+
+[[plugins]]
+repo = 'tyru/caw.vim'
+
+[[plugins]]
+repo = 'plasticboy/vim-markdown'
+hook_add = '''
+let g:vim_markdown_folding_disabled = 1
+'''
+
+[[plugins]]
+repo = 'iamcco/mathjax-support-for-mkdp'
+
+[[plugins]]
+repo = 'iamcco/markdown-preview.vim'
+
+[[plugins]]
+repo = 'aklt/plantuml-syntax'
+
+[[plugins]]
+repo = 'altercation/vim-colors-solarized'
+hook_add = '''
+let g:solarized_termcolors = 16
+let g:solarized_termtrans  =  1
+let g:solarized_degrade    =  0
+let g:solarized_bold       =  1
+let g:solarized_italic     =  1
+let g:solarized_underline  =  1
+let g:solarized_contrast   = 'normal'
+let g:solarized_visibility = 'normal'
+set background=dark
+au MyAutoCmd VimEnter * nested colorscheme solarized
+highlight MatchParen ctermbg=none
+highlight LineNr     ctermbg=none
+'''
+
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+hook_add = '''
+let g:airline_symbols = {}
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.crypt = '🔒'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.maxlinenr = '☰'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
+let g:airline_linecolumn_prefix = ''
+let g:airline#extensions#hunks#non_zero_only = 1
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#branch#enabled = 0
+let g:airline#extensions#readonly#enabled = 0
+let g:airline_section_b =
+      \ '%{airline#extensions#branch#get_head()}' .
+      \ '%{""!=airline#extensions#branch#get_head()?("  " . g:airline_left_alt_sep . " "):""}' .
+      \ '%t%( %M%)'
+let g:airline_section_c = ''
+let s:sep = " %{get(g:, 'airline_right_alt_sep', '')} "
+let g:airline_section_x =
+      \ '%{strlen(&fileformat)?&fileformat:""}'.s:sep.
+      \ '%{strlen(&fenc)?&fenc:&enc}'.s:sep.
+      \ '%{strlen(&filetype)?&filetype:"no ft"}'
+let g:airline_section_y = '%3p%%'
+let g:airline_section_z = get(g:, 'airline_linecolumn_prefix', '').'%3l:%-2v'
+let g:airline_inactive_collapse = 0
+function! AirLineForce()
+  let w:airline_render_left = 1
+  let w:airline_render_right = 1
+endfunction
+'''
+
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+hook_add = '''
+let g:airline_theme='solarized'
+'''
+
+[[plugins]]
+repo = 'richq/vim-cmake-completion'
+
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+hook_add = '''
+set updatetime=250
+'''
+
+[[plugins]]
+repo = 'deris/vim-shot-f'
+
+[[plugins]]
+repo = 'cespare/vim-toml'
+
+[[plugins]]
+repo = 'rust-lang/rust.vim'
+
+[[plugins]]
+repo = 'rhysd/vim-clang-format'
+hook_add = '''
+let g:clang_format#style_options = {
+\ "BasedOnStyle":  "Google",
+\ "AccessModifierOffset": "-2",
+\ "ConstructorInitializerIndentWidth": "2",
+\ "AlignEscapedNewlinesLeft": "false",
+\ "AlignTrailingComments": "true",
+\ "AllowAllParametersOfDeclarationOnNextLine": "false",
+\ "AllowShortIfStatementsOnASingleLine": "false",
+\ "AllowShortFunctionsOnASingleLine": "None",
+\ "AllowShortLoopsOnASingleLine": "false",
+\ "AlwaysBreakTemplateDeclarations": "true",
+\ "AlwaysBreakBeforeMultilineStrings": "false",
+\ "BreakBeforeBinaryOperators": "false",
+\ "BreakBeforeTernaryOperators": "false",
+\ "BreakConstructorInitializersBeforeComma": "true",
+\ "BinPackParameters": "true",
+\ "ColumnLimit":    "120",
+\ "ConstructorInitializerAllOnOneLineOrOnePerLine": "true",
+\ "DerivePointerBinding": "false",
+\ "PointerBindsToType": "true",
+\ "ExperimentalAutoDetectBinPacking": "false",
+\ "IndentCaseLabels": "true",
+\ "MaxEmptyLinesToKeep": "1",
+\ "NamespaceIndentation": "None",
+\ "ObjCSpaceBeforeProtocolList": "true",
+\ "PenaltyBreakBeforeFirstCallParameter": "19",
+\ "PenaltyBreakComment": "60",
+\ "PenaltyBreakString": "1",
+\ "PenaltyBreakFirstLessLess": "1000",
+\ "PenaltyExcessCharacter": "1000",
+\ "PenaltyReturnTypeOnItsOwnLine": "90",
+\ "SpacesBeforeTrailingComments": "2",
+\ "Cpp11BracedListStyle": "false",
+\ "Standard":        "Auto",
+\ "IndentWidth":     "2",
+\ "TabWidth":        "2",
+\ "UseTab":          "Never",
+\ "IndentFunctionDeclarationAfterType": "false",
+\ "SpacesInParentheses": "false",
+\ "SpacesInAngles":  "false",
+\ "SpaceInEmptyParentheses": "false",
+\ "SpacesInCStyleCastParentheses": "false",
+\ "SpaceAfterControlStatementKeyword": "true",
+\ "SpaceBeforeAssignmentOperators": "true",
+\ "ContinuationIndentWidth": "4",
+\ "SortIncludes": "false",
+\ "SpaceAfterCStyleCast": "false",
+\
+\ "BreakBeforeBraces": "Custom",
+\
+\ "BraceWrapping": {
+\     "AfterClass": 'true',
+\     "AfterControlStatement": 'true',
+\     "AfterEnum" : 'true',
+\     "AfterFunction" : 'true',
+\     "AfterNamespace" : 'true',
+\     "AfterStruct" : 'true',
+\     "AfterUnion" : 'true',
+\     "BeforeCatch" : 'true',
+\     "BeforeElse" : 'true',
+\     "IndentBraces" : 'false'
+\ }}
+'''

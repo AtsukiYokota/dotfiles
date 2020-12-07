@@ -15,7 +15,7 @@ BASE_FLAGS = [
     '-DUSE_CLANG_COMPLETER',
     '-std=c++17',
     '-xc++',
-    '-isystem', '/opt/ros/noetic/include',
+    # '-isystem', '/opt/ros/noetic/include',
     '-isystem', '/opt/ros/foxy/include',
     '-isystem', '/usr/include/boost',
     '-isystem', '/usr/include',

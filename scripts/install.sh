@@ -4,6 +4,7 @@ scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles=$(cd "$(dirname $0)"; cd ..; pwd)
 
 ln -s $dotfiles/.vim ~/
+cp $dotfiles/configs/dein/dein.toml ~/.vim
 
 cp -R $dotfiles/commands ~/bin
 

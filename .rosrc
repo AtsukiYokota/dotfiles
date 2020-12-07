@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rosdistro="melodic"
-ros2distro="dashing"
+rosdistro="noetic"
+ros2distro="foxy"
 
 # if test -e /opt/ros/$rosdistro/setup.bash
 # then
