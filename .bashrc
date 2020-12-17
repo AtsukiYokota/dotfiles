@@ -129,7 +129,7 @@ fi
 
 export marked="$HOME/marked"
 
-# if test -e /opt/ros; then source ~/.rosrc; fi
+if test -e /opt/ros; then source ~/.rosrc; fi
 
 
 cd()
@@ -219,9 +219,22 @@ alias sshm6gui="ssh -Y yokota@150.69.46.178 -p26"
 alias vimrc="vi ~/.vimrc"
 alias bashrc="vi ~/.bashrc"
 alias gpu="watch -n 0.1 nvidia-smi"
+alias jasper="~/Documents/Jasper/Jasper"
 export PATH=/usr/local/cuda-9.0/bin:${PATH}
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:${LD_LIBRARY_PATH}
 export PATH=$PATH:/home/yokota/Dropbox/works/mixcell/QTCode
 export PYTHONPATH=$PYTHONPATH:/home/yokota/Dropbox/works/mixcell/source_code
 export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
 export PATH=/usr/lib/llvm-6.0/bin:$PATH
+
+# HALCON
+export HALCONARCH=x64-linux
+export HALCONROOT=/opt/halcon
+export HALCONEXAMPLES=/opt/halcon/examples
+export HALCONIMAGES=/opt/halcon/images
+export PATH=${PATH}:${HALCONROOT}/bin/${HALCONARCH}
+if [ $LD_LIBRARY_PATH ] ; then
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HALCONROOT}/lib/${HALCONARCH}
+else
+export LD_LIBRARY_PATH=${HALCONROOT}/lib/${HALCONARCH}
+fi

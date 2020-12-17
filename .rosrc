@@ -165,3 +165,6 @@ function recursive_pep8_autoformat()
 {
   find . -name '*.py' | xargs autopep8 --in-place --aggressive --aggressive $1
 }
+
+alias sc="sros; swros; clear"
+alias sc2="sros2; swros; clear"

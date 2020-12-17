@@ -47,6 +47,7 @@ set clipboard=unnamedplus
 
 " Common settings
 syntax enable
+filetype plugin indent on
 set linespace=0
 let &encoding = 'utf-8'
 let &fileencoding = &encoding
