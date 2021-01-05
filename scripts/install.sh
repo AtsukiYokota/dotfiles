@@ -3,6 +3,7 @@
 scripts=$(cd "$(dirname $0)"; pwd)
 dotfiles=$(cd "$(dirname $0)"; cd ..; pwd)
 
+mkdir $dotfiles/.vim
 ln -s $dotfiles/.vim ~/
 cp $dotfiles/configs/dein/dein.toml ~/.vim
 
