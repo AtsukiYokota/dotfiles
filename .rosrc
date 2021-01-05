@@ -3,10 +3,10 @@
 rosdistro="noetic"
 ros2distro="foxy"
 
-# if test -e /opt/ros/$rosdistro/setup.bash
-# then
-#   source /opt/ros/$rosdistro/setup.bash
-# fi
+if test -e /opt/ros/$rosdistro/setup.bash
+then
+  source /opt/ros/$rosdistro/setup.bash
+fi
 
 # if test -e $marked/catkin
 # then
@@ -40,7 +40,7 @@ function build()
     fi
     if test -e install/local_setup.bash
     then
-      command colcon build --symlink-install $@ && source install/local_setup.bash
+      command colcon build $@ && source install/local_setup.bash
     fi
     rospack profile | sed -E "s/(.*)(\s\**\s)(.*)/\3/g" | grep -e "\/.*" | sort
     popd
