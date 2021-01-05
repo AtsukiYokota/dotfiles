@@ -23,7 +23,5 @@ python3 -m pip install --user autopep8
 
 sudo npm install -g instant-markdown-d
 
-vi -c qa
-
-$scripts/install_ycm.sh
-$scripts/install_coc.sh
+# $scripts/install_ycm.sh
+# $scripts/install_coc.sh
