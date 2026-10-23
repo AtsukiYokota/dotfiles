@@ -126,6 +126,9 @@ def main():
                           '    out.write(json.dumps(sys.argv[1:]) + "\\n")\n')
         opener.chmod(0o755)
         environment = dict(os.environ)
+        # Keep the installed browser cache visible after isolating HOME/XDG.
+        environment.setdefault('PLAYWRIGHT_BROWSERS_PATH',
+                               str(Path(os.environ.get('XDG_CACHE_HOME', Path.home() / '.cache')) / 'ms-playwright'))
         environment.update(
             HOME=str(home), XDG_CONFIG_HOME=str(home / '.config'),
             XDG_DATA_HOME=str(home / '.local/share'), XDG_STATE_HOME=str(home / '.local/state'),
