@@ -37,7 +37,7 @@ class CatalogTests(unittest.TestCase):
                 self.assertLess(selected.index(dependency), selected.index(name))
         self.assertIn('ros2', selected)
         self.assertIn('python', selected)
-        self.assertNotIn('node', selected)
+        self.assertIn('node', selected)
 
     def test_native_and_architecture_restrictions_are_enforced(self):
         for name in ('desktop', 'vscode', 'chrome', 'macos-theme'):
@@ -53,7 +53,7 @@ class CatalogTests(unittest.TestCase):
                 catalog.resolve(selection, 'native', 'amd64')
 
     def test_standalone_user_tools_include_their_persistent_shell_environment(self):
-        for name in ('python', 'rust', 'node', 'diagrams'):
+        for name in ('python', 'rust', 'node', 'latex', 'diagrams'):
             with self.subTest(module=name):
                 resolved = catalog.resolve({name}, 'wsl', 'amd64')
                 self.assertIn('shell', resolved)
@@ -255,6 +255,74 @@ class SettingsTests(unittest.TestCase):
 
 
 class ActionTests(unittest.TestCase):
+    def test_selected_lsp_installation_matches_reviewed_plan(self):
+        versions = json.loads((ROOT / 'installer/versions.json').read_text(encoding='utf-8'))
+        for requested, expected in (({'neovim'}, {'starship', 'uv', 'node', 'neovim'}),
+                                    ({'latex'}, {'starship', 'texlab'}),
+                                    ({'shell'}, {'starship'})):
+            with self.subTest(selection=requested), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                modules = catalog.resolve(requested, 'wsl', 'amd64')
+                runner = mock.Mock()
+                runner.capture.return_value = ''
+                ctx = SimpleNamespace(home=home, config=home / '.config', modules=modules,
+                                      versions=versions, runner=runner, no_plugins=True,
+                                      backup=SimpleNamespace(directory=home, write_text=mock.Mock()))
+                args = installer_main.parser().parse_args(['--modules', ','.join(requested)])
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    installer_main.show_plan(modules, requested, 'wsl', 'amd64', args, versions, home)
+                with mock.patch.object(actions, 'prepare_apt'), \
+                     mock.patch.object(actions, 'deploy_configs'), \
+                     mock.patch.object(actions, 'install_archive', return_value=home / 'pinned-node') as archive, \
+                     contextlib.redirect_stdout(io.StringIO()):
+                    actions.install_modules(ctx)
+                self.assertEqual({call.args[1] for call in archive.call_args_list}, expected)
+                npm_calls = [call for call in runner.run.call_args_list if '--global' in call.args[0]]
+                if 'node' in modules:
+                    self.assertEqual(len(npm_calls), 1)
+                    for package, version in versions['npm_language_servers'].items():
+                        self.assertIn(f'{package}@{version}', npm_calls[0].args[0])
+                        self.assertIn(f'{package}@{version}', output.getvalue())
+                else:
+                    self.assertEqual(npm_calls, [])
+                    self.assertNotIn('User npm language tools', output.getvalue())
+                self.assertEqual('User tool: texlab ' in output.getvalue(), 'latex' in modules)
+
+    def test_npm_uses_pinned_node_and_user_prefix_before_shell_setup(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary) / 'home with spaces'
+            home.mkdir()
+            node = home / 'data/tools/node/24'
+            ctx = SimpleNamespace(home=home, runner=mock.Mock(),
+                                  versions={'npm_language_servers': {'test-language-server': '1.2.3'}})
+            with mock.patch.dict(os.environ, {'PATH': '/usr/bin', 'NPM_CONFIG_PREFIX': '/unrelated/prefix'}):
+                actions.install_node_language_servers(ctx, node)
+                actions.install_node_language_servers(ctx, node)
+            self.assertEqual(ctx.runner.run.call_count, 2)
+            self.assertEqual(ctx.runner.run.call_args_list[0], ctx.runner.run.call_args_list[1])
+            argv = ctx.runner.run.call_args.args[0]
+            self.assertEqual(argv[:2], [str(node / 'bin/node'), str(node / 'lib/node_modules/npm/bin/npm-cli.js')])
+            self.assertNotIn('sudo', argv)
+            self.assertNotIn('--force', argv)
+            self.assertEqual(argv[argv.index('--prefix') + 1], str(home / '.local'))
+            environment = ctx.runner.run.call_args.kwargs['env']
+            self.assertEqual(environment['NPM_CONFIG_PREFIX'], str(home / '.local'))
+            self.assertEqual(environment['PATH'], str(node / 'bin') + os.pathsep + '/usr/bin')
+
+    @unittest.skipUnless(sys.platform == 'linux', 'Linux symlink semantics')
+    def test_npm_refuses_prefix_subdirectories_outside_home(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            home, outside = root / 'home', root / 'outside'
+            (home / '.local/lib').mkdir(parents=True)
+            outside.mkdir()
+            (home / '.local/lib/node_modules').symlink_to(outside)
+            ctx = SimpleNamespace(home=home, runner=mock.Mock())
+            with self.assertRaisesRegex(ValueError, 'inside home'):
+                actions.install_node_language_servers(ctx, home / 'node')
+            ctx.runner.run.assert_not_called()
+
     def test_chrome_reuses_active_sources_and_ignores_disabled_entries(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)

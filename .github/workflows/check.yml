@@ -19,7 +19,7 @@ jobs:
       - name: Test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3-pil tmux
+          sudo apt-get install -y --no-install-recommends python3-pil tmux clangd
       - name: Offline checks
         run: |
           python3 -B tests/check-syntax.py
@@ -35,5 +35,7 @@ jobs:
           git diff --check
       - name: Neovim and plugin integration
         run: python3 -B tests/check-neovim.py --plugins
+      - name: Language servers and real keyboard completion
+        run: python3 -B tests/check-lsp.py
       - name: ROS formatter integration
         run: python3 -B tests/check-ros-format.py

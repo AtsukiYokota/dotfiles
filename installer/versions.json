@@ -15,6 +15,18 @@
     "amd64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-x64.tar.xz", "sha256": "6c172a9ab6718f7b801fb5a7bd486af2ee5e32758086a04b84fcce2aa77095e6"},
     "arm64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-arm64.tar.xz", "sha256": "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e"}
   },
+  "npm_language_servers": {
+    "bash-language-server": "5.8.1",
+    "vscode-langservers-extracted": "4.10.0",
+    "yaml-language-server": "2.0.0",
+    "typescript-language-server": "6.0.2",
+    "typescript": "6.0.3"
+  },
+  "texlab": {
+    "version": "5.26.0",
+    "amd64": {"url": "https://github.com/latex-lsp/texlab/releases/download/v5.26.0/texlab-x86_64-linux.tar.gz", "sha256": "8697bd5e479d4584b14b7eed5c320c80ec4e1d91ebefbb6801e6bf38e9971300"},
+    "arm64": {"url": "https://github.com/latex-lsp/texlab/releases/download/v5.26.0/texlab-aarch64-linux.tar.gz", "sha256": "a85cdfcd22454b8d8550f4b0f0620c45ab51760f302fac7a12bc18a890f70f8c"}
+  },
   "rustup": {
     "version": "1.29.2", "toolchain": "1.99.1",
     "amd64": {"url": "https://static.rust-lang.org/rustup/archive/1.29.2/x86_64-unknown-linux-gnu/rustup-init", "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"},

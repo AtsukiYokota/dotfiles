@@ -160,7 +160,8 @@ class CliTests(unittest.TestCase):
 
         self.cli(*arguments)
         self.assertEqual(len(self.backups()), 2)
-        second = self.backups()[-1]
+        # A host/WSL clock correction can make the second timestamp sort first.
+        second, = set(self.backups()) - {first}
         self.assertEqual(snapshot(self.home, exclude=self.state / 'dotfiles/backups'), installed)
         self.assertEqual(json.loads((second / 'manifest.json').read_text(encoding='utf-8'))['entries'], [])
 

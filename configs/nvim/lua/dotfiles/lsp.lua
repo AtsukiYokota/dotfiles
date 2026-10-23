@@ -34,8 +34,65 @@ M.servers = {
   jsonls = { cmd = { "vscode-json-language-server", "--stdio" }, filetypes = { "json", "jsonc" }, root_markers = { "package.json", ".git" } },
   yamlls = { cmd = { "yaml-language-server", "--stdio" }, filetypes = { "yaml" }, root_markers = { ".git" } },
   html = { cmd = { "vscode-html-language-server", "--stdio" }, filetypes = { "html" }, root_markers = { "package.json", ".git" } },
-  cssls = { cmd = { "vscode-css-language-server", "--stdio" }, filetypes = { "css", "scss", "less" }, root_markers = { "package.json", ".git" } },
+  cssls = {
+    cmd = { "vscode-css-language-server", "--stdio" },
+    filetypes = { "css", "scss", "less" },
+    root_markers = { "package.json", ".git" },
+    init_options = { provideFormatter = true },
+    -- The server expects objects when requesting workspace/configuration.
+    settings = {
+      css = { validate = true, lint = vim.empty_dict() },
+      scss = { validate = true, lint = vim.empty_dict() },
+      less = { validate = true, lint = vim.empty_dict() },
+    },
+  },
+  ts_ls = {
+    cmd = { "typescript-language-server", "--stdio" },
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+    root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
+  },
 }
+
+local server_modules = {
+  clangd = "cpp", basedpyright = "python", cmake = "python", rust_analyzer = "rust", texlab = "latex",
+  bashls = "node", jsonls = "node", yamlls = "node", html = "node", cssls = "node", ts_ls = "node",
+}
+
+local function completion_clients(bufnr)
+  return vim.lsp.get_clients({ bufnr = bufnr, method = "textDocument/completion" })
+end
+
+local function sync_word_completion(bufnr)
+  if vim.fn.exists("+autocomplete") == 1 and vim.api.nvim_buf_is_valid(bufnr) then
+    vim.bo[bufnr].autocomplete = vim.bo[bufnr].buftype == "" and #completion_clients(bufnr) == 0
+  end
+end
+
+local function enable_completion(client, bufnr)
+  -- autotrigger alone only reacts to server punctuation (often just ".").
+  -- Let Neovim's native debounce/cancellation also handle ordinary identifiers.
+  local provider = client.server_capabilities.completionProvider
+  if type(provider) ~= "table" then
+    provider = {}
+    client.server_capabilities.completionProvider = provider
+  end
+  local triggers = provider.triggerCharacters or {}
+  local seen = {}
+  for _, character in ipairs(triggers) do
+    seen[character] = true
+  end
+  for character in ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789"):gmatch(".") do
+    if not seen[character] then
+      table.insert(triggers, character)
+    end
+  end
+  provider.triggerCharacters = triggers
+  if vim.fn.exists("+autocomplete") == 1 then
+    -- Do not let buffer-word completion compete with the LSP popup.
+    vim.bo[bufnr].autocomplete = false
+  end
+  vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+end
 
 function M.setup()
   require("dotfiles.ros_format").setup()
@@ -47,13 +104,26 @@ function M.setup()
     end
   end
   vim.opt.completeopt = { "menu", "menuone", "noselect" }
+  vim.opt.complete = { ".", "w", "b" }
+  if vim.fn.exists("+autocomplete") == 1 then
+    -- Neovim 0.12: provide useful completion in text/config files without an LSP.
+    vim.opt.autocomplete = true
+    vim.opt.autocompletedelay = 150
+  end
   local group = vim.api.nvim_create_augroup("DotfilesLsp", { clear = true })
+  vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+    group = group,
+    callback = function(event)
+      -- New buffers can inherit the previous buffer's local option values.
+      sync_word_completion(event.buf)
+    end,
+  })
   vim.api.nvim_create_autocmd("LspAttach", {
     group = group,
     callback = function(event)
       local client = vim.lsp.get_client_by_id(event.data.client_id)
       if client and client:supports_method("textDocument/completion") then
-        vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+        enable_completion(client, event.buf)
       end
       local opts = { buffer = event.buf, silent = true }
       vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
@@ -62,9 +132,28 @@ function M.setup()
       vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
       vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename, opts)
       vim.keymap.set({ "n", "x" }, "<Leader>ca", vim.lsp.buf.code_action, opts)
-      vim.keymap.set("i", "<C-Space>", vim.lsp.completion.get, opts)
     end,
   })
+  vim.api.nvim_create_autocmd("LspDetach", {
+    group = group,
+    callback = function(event)
+      vim.schedule(function()
+        sync_word_completion(event.buf)
+      end)
+    end,
+  })
+  local function request_completion()
+    if #completion_clients(0) > 0 then
+      vim.lsp.completion.get()
+    else
+      vim.api.nvim_feedkeys(vim.keycode("<C-n>"), "n", false)
+    end
+  end
+  vim.keymap.set("i", "<C-Space>", request_completion, { silent = true, desc = "Request completion" })
+  -- Ctrl-Space may be consumed by an IME; tmux captures Ctrl-x and Ctrl-o.
+  vim.keymap.set("i", "<C-g><Space>", request_completion,
+    { silent = true, desc = "Request completion (terminal fallback)" })
+  vim.keymap.set("i", "<C-g><C-f>", "<C-x><C-f>", { silent = true, desc = "Complete a file path" })
   -- One completion mapping per key; normal-mode window mappings stay untouched.
   vim.keymap.set("i", "<Tab>", function()
     return vim.fn.pumvisible() == 1 and "<C-n>" or "<Tab>"
@@ -96,13 +185,24 @@ function M.setup()
     vim.fn.winrestview(view)
   end, { desc = "Run clang-format using project style, falling back to Google" })
   vim.api.nvim_create_user_command("DotfilesLsp", function()
-    local lines = {}
-    for name, config in pairs(M.servers) do
-      table.insert(lines, name .. ": " .. (vim.fn.executable(config.cmd[1]) == 1 and "available" or "missing " .. config.cmd[1]))
+    local attached = {}
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+      attached[client.name] = true
     end
-    table.sort(lines)
+    local servers = {}
+    for name, config in pairs(M.servers) do
+      local executable = vim.fn.exepath(config.cmd[1])
+      local status = attached[name] and "attached" or executable ~= "" and "available (not attached)" or "missing"
+      table.insert(servers, string.format("%s: %s | module: %s | %s", name, status, server_modules[name],
+        executable ~= "" and executable or config.cmd[1]))
+    end
+    table.sort(servers)
+    local lines = { "LSP for current buffer (filetype: " .. (vim.bo.filetype ~= "" and vim.bo.filetype or "none") .. ")" }
+    table.insert(lines, "Completion: " .. (#completion_clients(0) > 0 and "LSP" or "buffer words (no completion-capable LSP attached)"))
+    vim.list_extend(lines, servers)
+    table.insert(lines, "Only servers for this filetype attach. Install missing servers with their listed module.")
     vim.notify(table.concat(lines, "\n"))
-  end, { desc = "Show installed and missing language servers" })
+  end, { desc = "Show language server executables, module names and current-buffer attachment" })
 end
 
 return M

@@ -112,11 +112,14 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             ros = 'ros-jazzy-desktop' if 'ros-desktop' in modules else 'ros-jazzy-ros-base'
             print(f'  ROS official repository: ros2-apt-source {versions["ros_source"]["version"]}; {ros} ros-dev-tools')
             print('  rosdep init if needed; rosdep update --rosdistro jazzy')
-        for module, tool in (('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'), ('rust', 'rustup')):
+        for module, tool in (('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'), ('rust', 'rustup'), ('latex', 'texlab')):
             if module in modules:
                 print(f'  User tool: {tool} {versions[tool]["version"]} (HTTPS + pinned SHA-256)')
         if 'python' in modules:
             print('  Isolated Python CLI tools: basedpyright cmake-language-server autopep8 ruff')
+        if 'node' in modules:
+            print('  User npm language tools (~/.local): ' + ' '.join(
+                f'{package}@{version}' for package, version in versions['npm_language_servers'].items()))
         if 'rust' in modules:
             print(f'  Rust {versions["rustup"]["toolchain"]}: rustfmt, Clippy, rust-analyzer')
         if 'diagrams' in modules:

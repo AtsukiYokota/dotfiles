@@ -43,15 +43,21 @@ Node.jsやnpmによるプレビュー用ビルドは不要。
 VimTeXのプラグイン自体は小さいため共通導入するが、TeXエンジン・latexmkは任意モジュールとする。
 TeX未導入時はコンパイルできない。従来のpLaTeX→dvipdfmx設定とビューアー引数は維持する。
 
-言語サーバーはプラグインとは別にインストールする。
-clangd、basedpyright、cmake-language-serverを標準の開発構成で使い、rust-analyzer、texlab、Bash/JSON/YAML/HTML/CSS用サーバーは、PATH上にある場合だけ有効にする。
+言語サーバーは選択モジュールに合わせてインストーラーが導入する。
+clangd、basedpyright、cmake-language-serverに加え、Neovimの依存モジュール`node`でBash/JSON/YAML/HTML/CSS/JavaScript/TypeScript用サーバーを導入する。
+`rust`ではrust-analyzer、`latex`ではTexlabを導入する。エディタはPATH上にあるサーバーだけを有効にする。
+Node.js製サーバーは一般ユーザーの`~/.local`へ導入する。TypeScriptは[言語サーバー上流の指定](https://github.com/typescript-language-server/typescript-language-server#installing)に従い、tsserverを含む6系を使う。
 Pythonの補完には`basedpyright-langserver`を使用する。ROS用パスは固定せず、Neovimを起動したシェルの環境を引き継ぐ。
 C/C++はプロジェクトの`compile_commands.json`を用意する。colconではパッケージごとのビルドディレクトリや`.clangd`でその場所を指定できる。
 
-補完候補はTab/Shift+Tabで移動し、選択した候補をEnterで確定する。手動の補完要求はCtrl+Space。
+英数字・`_`の入力でも補完候補を自動表示する。候補はTab/Shift+Tabで移動し、選択した候補をEnterで確定する。
+候補が未選択ならEnterは通常の改行になる。
+LSPがないバッファではNeovim 0.12の単語補完を使い、LSPが接続するとそちらへ切り替える。
+手動の補完要求はCtrl+g、Space。ファイルパスの補完はCtrl+g、Ctrl+f。
+Ctrl+Spaceも維持するが、IMEが先に処理する場合がある。Ctrl+gからの操作はtmuxのprefixと競合しない。
 LSP接続時の`gd`は定義、`gD`は宣言、`gr`は参照、`K`は説明を表示する。
 `<Leader>rn`は名前変更、`<Leader>ca`はコードアクション。Leaderは変更せず、既定のバックスラッシュを使う。
-`:Format`はLSPによる手動整形、`:DotfilesLsp`は言語サーバーの導入状況、`:checkhealth vim.lsp`は接続診断に使える。
+`:Format`はLSPによる手動整形、`:DotfilesLsp`は実行ファイル・導入モジュール・現在のバッファへの接続状態、`:checkhealth vim.lsp`は接続診断に使える。
 
 ROS 2 Jazzy用の整形には`:RosFormat`を使う。
 シェルの4つの整形関数と同じ`ros-format`を呼び、現在のC/C++・Pythonバッファだけを変更する。保存は`:write`で行う。

@@ -168,6 +168,21 @@ def install_plantuml(ctx):
     wrapper.chmod(0o755)
 
 
+def install_node_language_servers(ctx, node):
+    """Use this installation's Node even before the user's new shell loads PATH."""
+    prefix = ctx.home / '.local'
+    for directory in (prefix, prefix / 'bin', prefix / 'lib/node_modules'):
+        if not directory.resolve().is_relative_to(ctx.home.resolve()):
+            raise ValueError(f'npm installation must stay inside home: {directory}')
+    # Upstream typescript-language-server requires TypeScript 6's tsserver;
+    # TypeScript 7 is a different implementation and no longer ships that binary.
+    packages = [f'{package}@{version}' for package, version in ctx.versions['npm_language_servers'].items()]
+    ctx.runner.run([str(node / 'bin/node'), str(node / 'lib/node_modules/npm/bin/npm-cli.js'),
+                    'install', '--global', '--prefix', str(prefix), '--no-audit', '--no-fund', *packages],
+                   env={'PATH': str(node / 'bin') + os.pathsep + os.environ.get('PATH', ''),
+                        'NPM_CONFIG_PREFIX': str(prefix)})
+
+
 def prepare_apt(ctx):
     run = ctx.runner.run
     run(['sudo', '-v'])
@@ -224,9 +239,12 @@ def install_modules(ctx):
         elif name == 'neovim':
             install_archive(ctx, 'neovim', {'nvim': 'bin/nvim'})
         elif name == 'node':
-            install_archive(ctx, 'node', {'node': 'bin/node', 'npm': 'bin/npm', 'npx': 'bin/npx'})
+            node = install_archive(ctx, 'node', {'node': 'bin/node', 'npm': 'bin/npm', 'npx': 'bin/npx'})
             # Avoid writes to the versioned Node directory for global npm tools.
             ctx.backup.write_text(ctx.config / 'dotfiles/node.env', 'export NPM_CONFIG_PREFIX="$HOME/.local"\n')
+            install_node_language_servers(ctx, node)
+        elif name == 'latex':
+            install_archive(ctx, 'texlab', {'texlab': 'texlab'}, flat=True)
         elif name == 'rust':
             version = ctx.versions['rustup']
             binary = ctx.temp / 'rustup-init'

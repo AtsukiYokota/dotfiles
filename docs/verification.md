@@ -174,8 +174,48 @@ nvim -R installer/main.py
 :lua vim.print(vim.tbl_map(function(c) return c.name end, vim.lsp.get_clients({bufnr=0})))
 ```
 
-`DotfilesLsp`で`clangd`・`basedpyright`・`cmake`が`available`、クライアント一覧に`basedpyright`があれば接続できています。
-`texlab`・`bashls`・`jsonls`などは標準の自動導入対象ではないため、`missing`でもインストール失敗とは限りません。
+`DotfilesLsp`で`basedpyright`が`attached`、`Completion: LSP`と表示されればPythonの補完に接続できています。
+他の言語のサーバーが`available (not attached)`なのは正常です。その言語のファイルを開くと接続します。
+
+| 選択モジュール | 自動導入されるLSP |
+| --- | --- |
+| `cpp` | `clangd` |
+| `python` | `basedpyright`、`cmake` |
+| `node`（`neovim`の依存にも含まれる） | `bashls`、`jsonls`、`yamlls`、`html`、`cssls`、`ts_ls` |
+| `rust` | `rust_analyzer` |
+| `latex` | `texlab` |
+
+全モジュールを導入した場合は11個とも`attached`または`available`になり、`missing`は残りません。
+`rust`や`latex`を選んでいない場合、そのLSPが`missing`でも異常ではありません。
+表示には実行ファイルの場所と導入モジュールも含まれます。
+
+補完の表示とキー操作は、確認用の新規ファイルで試します。
+
+```bash
+nvim /tmp/dotfiles-completion-check.py
+```
+
+挿入モードで`import os`と入力し、次の行に`os.pa`と入力して少し待ちます。
+`path`などの候補が表示されたら、`Tab`で選択し、`Enter`で確定します。
+候補を選択せずに`Enter`を押すと、通常の改行になります。
+
+| 操作 | 挿入モードでのキー |
+| --- | --- |
+| 補完を手動で要求 | `Ctrl+g`を押して離し、`Space` |
+| 次・前の候補を選択 | `Tab` / `Shift+Tab` |
+| 選択した候補を確定 | `Enter` |
+| ファイルパスを補完 | `Ctrl+g`を押して離し、`Ctrl+f` |
+
+英数字・`_`の入力でもLSPの補完候補を自動表示します。
+LSPがないテキストファイルでは、開いているバッファ内の単語を候補にします。
+`Ctrl+Space`も使えますが、IMEなどが先に処理する環境では`Ctrl+g`、`Space`を使ってください。
+tmuxの直接キーと競合するため、候補の移動には`Ctrl+n/p`ではなく`Tab` / `Shift+Tab`を使います。
+
+Python/C++のファイルで`Completion: buffer words`のままなら、`:set filetype?`と`:checkhealth vim.lsp`を確認します。
+Pythonは`python`、C++は`cpp`がファイル種別です。LSPのログは`:lua vim.cmd.edit(vim.lsp.log.get_filename())`で開けます。
+ROSのPython補完には、`ros_env`で必要なワークスペースを読み込んだシェルからNeovimを起動してください。
+C++のプロジェクト固有のヘッダーや型の補完には`compile_commands.json`が必要です。
+colconでは`ros_build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`で生成し、対象パッケージの`.clangd`で[CompilationDatabase](https://clangd.llvm.org/config#compilationdatabase)にビルドディレクトリを指定します。
 
 続いてプラグインと診断を確認します。
 
@@ -184,7 +224,7 @@ nvim -R installer/main.py
 :checkhealth lazy vim.lsp
 ```
 
-`Lazy`の一覧にプラグインがインストールされていることを確認します。
+`Lazy`の`Total: 7 plugins`が想定の構成です。LSPと補完はNeovim組込み機能なので、この数には入りません。
 一覧は`q`で閉じてから、`checkhealth`を実行してください。
 遅延読み込み対象の`Not Loaded`表示は正常です。
 `checkhealth`ではエラーの対象を確認し、使わない任意ツールの警告と区別します。
@@ -198,6 +238,26 @@ nvim --headless -u NONE -i NONE -l "$HOME/dotfiles/configs/nvim/bootstrap.lua"
 ```
 
 [Neovim LSP](https://neovim.io/doc/user/lsp/)、[checkhealth](https://neovim.io/doc/user/health/)、[lazy.nvimの操作](https://lazy.folke.io/usage)を参照。
+
+### インストール済みの環境へ反映する
+
+Neovimを終了し、リポジトリを更新して必要なモジュールを再実行します。
+全モジュールを導入済みの場合、今回のLSPと補完の更新は次で反映できます。
+
+```bash
+cd ~/dotfiles
+git pull --ff-only origin master
+bash setup_all.sh --modules neovim,rust,latex
+```
+
+導入内容を確認し、`INSTALL`と入力します。C/C++・Python・Node.js・シェルの依存は自動で追加されます。
+RustやLaTeXが不要な環境では、その名前をリストから外してください。
+既存のパッケージを利用しながら不足するツールを導入し、設定の変更前にはバックアップを作ります。
+`--configs-only`は言語サーバーを導入しないため、この更新には使いません。
+
+完了後は新しい端末を開き、Neovimを起動し直してください。
+既存のtmuxペインを使う場合は、Neovimを終了した状態で`exec bash -l`を実行してから起動します。
+新しい設定の`:DotfilesLsp`で、対象ファイルのサーバーが`attached`になることを確認してください。
 
 ## tmuxの操作とクリップボードを確認する
 

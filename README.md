@@ -34,8 +34,8 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `ros2` | ROS 2 Jazzy、colcon、rosdep、ament整形・検査 |
 | `ros-desktop` | RViz、ROSデモ |
 | `rust` | Rust、rustfmt、Clippy、rust-analyzer |
-| `node` | Node.js LTS、npm |
-| `latex` | 日本語TeX、LuaLaTeX、latexmk、biber |
+| `node` | Node.js LTS、npm、Bash・JSON・YAML・HTML・CSS・JS/TS用LSP |
+| `latex` | 日本語TeX、LuaLaTeX、latexmk、biber、Texlab |
 | `diagrams` | PlantUML、Graphviz、画像のEPS変換 |
 | `desktop` | Inkscape、VLC、フォント |
 | `keyboard` | Caps LockをCtrlへ変更 |
@@ -46,6 +46,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 
 `desktop,keyboard,vscode,chrome,macos-theme`はネイティブ用です。`chrome`はamd64用、`keyboard,macos-theme`はGNOMEセッションが必要です。
 WSLのGUIにはWSLgなどの表示環境を使います。`ssh-server`を選ぶとSSH待ち受けサービスを導入します。
+`neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。
 
 選択内容をコマンドで指定することもできます。
 
