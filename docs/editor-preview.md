@@ -12,8 +12,9 @@ bash setup_all.sh --modules neovim,latex,diagrams
 既存環境でも同じコマンドで、ビューワなど追加の依存パッケージを導入できます。
 完了後はNeovimを開き直してください。
 
-プレビューにはUbuntuのデスクトップ、またはWSLgの表示環境を使います。
-WSLのGNOMEテーマ・IME設定は不要です。表示環境のないSSH・サーバーではGUIのプレビューは起動できません。
+PDF・画像のプレビューにはUbuntuのデスクトップ、またはWSLgの表示環境を使います。
+Markdownはブラウザに表示し、WSLではWindows側の既定ブラウザを使えます。
+WSLのGNOMEテーマ・IME設定は不要です。表示環境のないSSH・サーバーではPDF・画像ビューワは起動できません。
 TeX・PlantUMLのコンパイルはローカルで行います。
 
 ## TeX
@@ -26,6 +27,8 @@ TeX・PlantUMLのコンパイルはローカルで行います。
 
 現在のバッファを保存してlatexmkによる継続コンパイルを開始し、生成したPDFをZathuraで表示します。
 以後は`:w`で保存するたびに再コンパイルし、PDFビューワが表示を更新します。
+表示が変わるのはコンパイル完了後です。TeXにエラーがある場合は`:VimtexErrors`で確認し、修正して保存すると継続コンパイルが再開します。
+ZathuraはPDFファイルの変更を監視するため、表示中のPDFを閉じたり手動で再読込したりする必要はありません。
 
 | コマンド | 操作 |
 | --- | --- |
@@ -66,6 +69,22 @@ LuaLaTeXを使う場合は、メインファイルの先頭でエンジンを指
 
 この子ファイルから`:TexPreview`を実行してもメインファイルをコンパイルします。
 未保存の他のバッファは自動保存しないため、変更した子ファイルも`:w`で保存してください。
+
+## Markdown
+
+`neovim`モジュールに含まれます。`.md`ファイルを開いて実行します。
+
+```vim
+:MarkdownPreview
+```
+
+現在のバッファを保存し、ローカルのプレビューページをブラウザで開きます。
+日本語・英語の文章、見出し、数式、Mermaid、相対パスの画像を表示できます。
+編集中の変更と`:w`で保存した内容を反映するため、ブラウザの再読み込みは不要です。
+プレビューを停止するには`:MarkdownPreviewStop`を実行します。
+
+Ubuntuでは既定のブラウザ、WSLではWindows側のブラウザを使います。
+WSLからWindowsのブラウザで開く場合は、WSLのlocalhost転送が有効である必要があります。
 
 ## PlantUML
 
@@ -119,5 +138,6 @@ C/C++のROS整形には`ros2`モジュールが必要です。通常はシェル
 - [VimTeX](https://github.com/lervag/vimtex)
 - [latexmk](https://ctan.org/pkg/latexmk)
 - [Zathura](https://pwmt.org/projects/zathura/)
+- [live-preview.nvim](https://github.com/brianhuster/live-preview.nvim)
 - [PlantUMLのコマンドライン](https://plantuml.com/command-line)
 - [fehのマニュアル](https://man.finalrewind.org/1/feh/)

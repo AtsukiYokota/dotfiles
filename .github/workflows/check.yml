@@ -64,11 +64,29 @@ jobs:
       - name: TeX test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends latexmk texlive-lang-japanese texlive-luatex texlive-latex-extra texlive-fonts-recommended poppler-utils
+          sudo apt-get install -y --no-install-recommends latexmk texlive-lang-japanese texlive-luatex texlive-latex-extra texlive-fonts-recommended poppler-utils zathura zathura-pdf-poppler xvfb xauth x11-apps dbus-daemon
       - name: Neovim TeX preview lifecycle
         run: python3 -B tests/check-tex-preview.py
       - name: Japanese and English PDF compilation on save
         run: python3 -B tests/check-tex-preview.py --real-tex
+      - name: PDF viewer automatically reloads consecutive saves
+        run: python3 -B tests/check-pdf-reload.py
+  markdown-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Markdown browser test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3-venv lsof
+          python3 -m venv "$RUNNER_TEMP/markdown-preview"
+          "$RUNNER_TEMP/markdown-preview/bin/python" -m pip install playwright==1.64.1
+          "$RUNNER_TEMP/markdown-preview/bin/python" -m playwright install --with-deps chromium
+      - name: Markdown updates in a real browser without manual reload
+        run: '"$RUNNER_TEMP/markdown-preview/bin/python" -B tests/check-markdown-preview.py --browser'
   windows-settings:
     runs-on: windows-latest
     timeout-minutes: 5

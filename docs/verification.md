@@ -388,6 +388,11 @@ PNGを開き、矢印と日本語ラベルを確認します。EPSも生成さ�
 Neovimでこの`.puml`を開いて`:PlantumlPreview`を実行し、ラベルを変更して`:w`で保存します。画像も更新されることを確認し、`:PlantumlStop`で停止します。
 プレビューの環境条件・エンジン選択・整形コマンドは[Neovimのプレビューと整形](editor-preview.md)を参照してください。
 
+### Markdownをブラウザでプレビューする
+
+Neovimで`.md`を開いて`:MarkdownPreview`を実行します。日本語を含む見出しや本文を変更し、`:w`で保存してください。
+ブラウザを手動で再読込せずに変更が表示されることを確認します。停止は`:MarkdownPreviewStop`です。
+
 ### GNOMEの外観とCaps Lockを確認する
 
 `macos-theme`と`keyboard`を導入したネイティブGNOMEの端末で実行します。

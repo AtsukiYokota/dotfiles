@@ -26,4 +26,5 @@ if vim.fn.has("nvim-0.11.3") == 0 then
 end
 require("dotfiles.lsp").setup()
 require("dotfiles.plantuml_preview").setup()
+require("dotfiles.markdown_preview").setup()
 require("dotfiles.lazy").setup(config_dir)

@@ -51,7 +51,8 @@ ROSの環境変数はNeovimを起動したシェルから引き継ぎます。
 
 | ファイル | 開始・表示 | 停止 |
 |---|---|---|
-| Markdown / HTML | `:LivePreview start` | `:LivePreview close` |
+| Markdown | `:MarkdownPreview` | `:MarkdownPreviewStop` |
+| HTML | `:LivePreview start` | `:LivePreview close` |
 | TeX | `:TexPreview`、PDFを開くには`:TexView` | `:TexPreviewStop` |
 | PlantUML | `:PlantumlPreview` | `:PlantumlStop` |
 

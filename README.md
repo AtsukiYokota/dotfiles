@@ -74,5 +74,5 @@ bash setup_all.sh --modules shell,neovim,ros-desktop,latex
 - [ターミナル操作](docs/terminal-workflow.md)
 - [外観・フォント設定と既存環境への反映](docs/appearance.md)
 - [日本語入力](docs/japanese-input.md)
-- [NeovimのTeX・PlantUMLプレビューと整形](docs/editor-preview.md)
+- [NeovimのTeX・Markdown・PlantUMLプレビューと整形](docs/editor-preview.md)
 - [ROS 2コード整形](docs/ros-formatting.md)

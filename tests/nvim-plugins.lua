@@ -27,7 +27,7 @@ local function check()
   assert(vim.fn.exists(":AutoPep8") == 2, "AutoPep8 command missing")
   assert(vim.fn.exists(":ClangFormat") == 2, "ClangFormat command missing")
   assert(vim.fn.exists(":Format") == 2, "Format command missing")
-  for _, command in ipairs({ "TexPreview", "TexPreviewStop", "TexView", "PlantumlPreview", "PlantumlStop" }) do
+  for _, command in ipairs({ "TexPreview", "TexPreviewStop", "TexView", "PlantumlPreview", "PlantumlStop", "MarkdownPreview", "MarkdownPreviewStop" }) do
     assert(vim.fn.exists(":" .. command) == 2, command .. " missing")
   end
   assert(vim.g.vimtex_compiler_latexmk_engines._ == "-pdfdvi", "pLaTeX default changed")
