@@ -42,7 +42,7 @@ class CatalogTests(unittest.TestCase):
         self.assertLess(selected.index('fonts'), selected.index('shell'))
 
     def test_native_and_architecture_restrictions_are_enforced(self):
-        for name in ('desktop', 'vscode', 'chrome', 'macos-theme'):
+        for name in ('desktop', 'vscode', 'chrome', 'macos-theme', 'japanese-input'):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 catalog.resolve({name}, 'wsl', 'amd64')
         with self.assertRaises(ValueError):

@@ -98,7 +98,7 @@ ros2 topic pub --rate 1 /dotfiles_check std_msgs/msg/String "{data: 'dotfiles ok
 ```
 
 同じUbuntuの別の作業画面Bで受信します。
-tmuxは新しい端末でも同じ`main`セッションに接続するため、`Ctrl+t`でウィンドウBを作成してください。
+新しい端末・端末のタブを開くか、tmux内で`Ctrl+t`を押してウィンドウBを作成してください。
 
 ```bash
 ros2 topic echo /dotfiles_check std_msgs/msg/String --once
@@ -263,7 +263,14 @@ RustやLaTeXが不要な環境では、その名前をリストから外して�
 
 ## tmuxの操作とクリップボードを確認する
 
-新しい端末ではtmuxの`main`セッションが自動起動し、`echo "$TMUX"`に値が表示されます。
+新しい端末や端末のタブごとに、独立したtmuxセッションが自動起動し、`echo "$TMUX"`に値が表示されます。
+2つの端末で次を実行すると、それぞれ異なるセッションIDと名前が表示されます。
+
+```bash
+tmux display-message -p '#{session_id}:#{session_name}'
+```
+
+片方でペインを分割しても、もう片方の画面は変わりません。
 以下の独立した確認用サーバーを使う場合は、先に`Ctrl+x`を押して離し、`d`で通常のBashに戻ります。
 既存の作業セッションを変更せず、現在の設定ファイルを読み込ませるためのコマンドです。
 
@@ -396,6 +403,10 @@ Dockは普段は隠れ、画面下端にカーソルを動かすと表示され�
 壁紙はWhiteSurのBig Sur風画像です。[外観の確認コマンド](appearance.md#dockと壁紙)も参照してください。
 テーマはアプリを開き直すか、ログアウト・ログインして確認してください。
 libadwaita・Snap・Flatpakのアプリなど、GTKテーマを受け付けないアプリは同じ外観にならない場合があります。
+
+### 日本語入力を確認する
+
+日本語入力モジュールを選んだ場合は、ログアウト・ログインしてから[日本語入力の確認](japanese-input.md#確認)も実施してください。
 
 ## ログと失敗時の確認
 

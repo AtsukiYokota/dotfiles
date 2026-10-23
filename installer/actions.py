@@ -132,6 +132,9 @@ def deploy_configs(ctx):
     if 'keyboard' in ctx.modules:
         from keyboard import configure_keyboard
         configure_keyboard(ctx)
+    if 'japanese-input' in ctx.modules:
+        from japanese_input import configure_japanese_input
+        configure_japanese_input(ctx)
     if 'diagrams' in ctx.modules:
         for source, binary in (('png2eps.sh', 'png2eps'), ('jpg2eps.sh', 'jpg2eps'), ('image2eps.py', 'image2eps.py')):
             target = home / '.local/bin' / binary

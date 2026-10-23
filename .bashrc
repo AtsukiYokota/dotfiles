@@ -97,10 +97,17 @@ if [[ ${DOTFILES_AUTO_ROS:-1} == 1 ]] && declare -F ros_env >/dev/null; then
   fi
 fi
 
-# Start/reattach the main session for terminal shells. Detaching returns to this
-# shell; nested shells, bash -ic commands and dumb terminals do not attach.
+# Start a new, independent session for each terminal shell. Detaching returns to
+# this shell; nested shells, bash -ic commands and dumb terminals do not start one.
 # Set DOTFILES_AUTO_TMUX=0 in ~/.bashrc.local to opt out on this machine.
 if [[ ${DOTFILES_AUTO_TMUX:-1} == 1 && -z ${TMUX:-} && -z ${BASH_EXECUTION_STRING:-} \
       && ${TERM:-dumb} != dumb && -t 0 && -t 1 ]] && command -v tmux >/dev/null 2>&1; then
-  tmux new-session -A -s main
+  # A server can outlive a desktop login/IME change. Override its old input
+  # environment for this session only; empty values prevent stale fallthrough.
+  tmux new-session \
+    -e "GTK_IM_MODULE=${GTK_IM_MODULE-}" \
+    -e "QT_IM_MODULE=${QT_IM_MODULE-}" \
+    -e "XMODIFIERS=${XMODIFIERS-}" \
+    -e "CLUTTER_IM_MODULE=${CLUTTER_IM_MODULE-}" \
+    -e "SDL_IM_MODULE=${SDL_IM_MODULE-}"
 fi

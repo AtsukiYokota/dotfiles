@@ -81,6 +81,9 @@ def preflight(modules, configs_only):
     if 'keyboard' in modules:
         from keyboard import require_session
         require_session()
+    if 'japanese-input' in modules:
+        from japanese_input import require_session
+        require_session()
     if 'macos-theme' in modules and ('GNOME' not in os.environ.get('XDG_CURRENT_DESKTOP', '').upper() or not os.environ.get('DBUS_SESSION_BUS_ADDRESS')):
         raise ValueError('Run macos-theme in a terminal inside your native GNOME desktop session.')
     if configs_only:
@@ -143,9 +146,13 @@ def show_plan(modules, requested, target, arch, args, versions, home):
         else:
             print('  fonts: GNOME monospace font and existing GNOME Terminal profile fonts with backup (when a desktop session is available)')
     if 'shell' in modules:
-        print('  shell: Gruvbox Rainbow prompt, automatic tmux on interactive terminal startup, vi=nvim, readline, ROS/formatting helpers, clipboard')
+        print('  shell: Gruvbox Rainbow prompt, a new tmux session per interactive terminal, vi=nvim, readline, ROS/formatting helpers, clipboard')
     if 'keyboard' in modules:
         print('  keyboard: Caps Lock -> Ctrl in GNOME xkb-options; preserve unrelated options, back up original')
+    if 'japanese-input' in modules:
+        print('  japanese-input: select Fcitx 5 + Mozc for the desktop session; keep display language and keyboard layout')
+        print('  GNOME: retain physical keyboard sources; back up and remove IBus engine entries when switching frameworks')
+        print('  Japanese ON: tap right Alt or Henkan; OFF: tap left Alt or Muhenkan. Back up existing input settings; log out and in after installation.')
     if 'neovim' in modules:
         print('  neovim: XDG config/nvim and fallback ~/.vimrc')
     if 'latex' in modules:
@@ -177,7 +184,14 @@ def main(argv=None):
         if not args.yes and input('Type RESTORE to continue: ').strip() != 'RESTORE':
             print('Cancelled. No changes made.')
             return 0
-        restore(args.restore, home)
+        selection_file = args.restore / 'selection.json'
+        selection = json.loads(selection_file.read_text(encoding='utf-8')) if selection_file.is_file() else {}
+        if 'japanese-input' in selection.get('modules', []):
+            from japanese_input import restore_japanese_input
+            restore_japanese_input(args.restore, home)
+            print('Japanese input restored. Log out of GNOME and log in again to reload the previous input framework.')
+        else:
+            restore(args.restore, home)
         print('Configuration restored.')
         return 0
     if args.list_modules:
@@ -237,6 +251,8 @@ def main(argv=None):
             print('Fix the error and rerun the selection, or use --restore for configuration.', file=sys.stderr)
             raise
     print('\nInstallation complete. Open a new terminal to load the settings.')
+    if 'japanese-input' in modules:
+        print('Japanese input: save your work, log out of GNOME, then log in again to activate Fcitx 5 and application input modules.')
     print(f'Configuration restore: bash setup_all.sh --restore {str(backup.directory)!r}')
     return 0
 
