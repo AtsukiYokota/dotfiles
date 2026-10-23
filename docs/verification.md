@@ -50,7 +50,7 @@ nvim --version | head -n 1
 tmux -V
 starship --version
 uv tool list
-alias ls grep
+alias ls grep vi
 type cd
 ```
 
@@ -58,9 +58,10 @@ type cd
 このリポジトリが導入するNeovim・Starshipなどの版は[versions.json](../installer/versions.json)で確認できます。
 `uv tool list`には`basedpyright`、`cmake-language-server`、`autopep8`、`ruff`が表示されます。
 
-プロンプトにはユーザー名・ホスト名・作業ディレクトリが表示されます。
+プロンプトはGruvbox Rainbow配色で、ユーザー名・ホスト名・作業ディレクトリが表示されます。
 `cd ~`で移動すると、隠しファイルを含む一覧が自動表示されます。
 `alias ls grep`では`ls -avF --color=auto`と`grep --color=always --exclude-dir=.git`を確認します。
+`vi`は`nvim`を指します。Nerd Fontと外観の確認・再設定は[外観と端末の設定](appearance.md)を参照してください。
 
 ## ROS 2の環境と通信を確認する
 
@@ -96,7 +97,8 @@ dpkg-query -W ros-jazzy-ros2cli
 ros2 topic pub --rate 1 /dotfiles_check std_msgs/msg/String "{data: 'dotfiles ok'}"
 ```
 
-同じUbuntuの新しい端末Bで受信します。
+同じUbuntuの別の作業画面Bで受信します。
+tmuxは新しい端末でも同じ`main`セッションに接続するため、`Ctrl+t`でウィンドウBを作成してください。
 
 ```bash
 ros2 topic echo /dotfiles_check std_msgs/msg/String --once
@@ -261,7 +263,8 @@ RustやLaTeXが不要な環境では、その名前をリストから外して�
 
 ## tmuxの操作とクリップボードを確認する
 
-tmuxの外にある通常端末で、新しい確認用サーバーを起動します。
+新しい端末ではtmuxの`main`セッションが自動起動し、`echo "$TMUX"`に値が表示されます。
+以下の独立した確認用サーバーを使う場合は、先に`Ctrl+x`を押して離し、`d`で通常のBashに戻ります。
 既存の作業セッションを変更せず、現在の設定ファイルを読み込ませるためのコマンドです。
 
 ```bash
@@ -389,7 +392,9 @@ gsettings get org.gnome.desktop.input-sources xkb-options
 
 順に`WhiteSur-Dark`、`WhiteSur-dark`、`WhiteSur-cursors`、`prefer-dark`、`ctrl:nocaps`を含む配列が目安です。
 Caps Lockを押しながらLを押し、端末がクリアされればCtrlとして動作しています。
-Dockは下側に表示されます。テーマはアプリを開き直すか、ログアウト・ログインして確認してください。
+Dockは普段は隠れ、画面下端にカーソルを動かすと表示されます。
+壁紙はWhiteSurのBig Sur風画像です。[外観の確認コマンド](appearance.md#dockと壁紙)も参照してください。
+テーマはアプリを開き直すか、ログアウト・ログインして確認してください。
 libadwaita・Snap・Flatpakのアプリなど、GTKテーマを受け付けないアプリは同じ外観にならない場合があります。
 
 ## ログと失敗時の確認
@@ -417,6 +422,8 @@ tail -n 80 "$backup_dir/install.log"
 cd ~/dotfiles
 bash setup_all.sh --restore "$backup_dir"
 ```
+
+WSLで変更したWindows Terminalの設定は別バックアップです。[Windows側の復元手順](appearance.md#設定を戻す)を参照してください。
 
 問題を共有するときは、OSとCPU、選択モジュール、失敗したコマンド、関連するログ部分を添えると切り分けやすくなります。
 `tests/check-neovim.py`などの開発用テストは一時HOMEでリポジトリを検証するため、ここで案内した実ユーザー環境の確認とは目的が異なります。

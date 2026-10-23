@@ -4,6 +4,26 @@
 コピーと貼り付けには端末自身の`Ctrl+Shift+c` / `Ctrl+Shift+v`を使え、tmuxの履歴を扱うときはcopy modeを使う。
 対象はUbuntu 24.04のtmux 3.4で、ネイティブ環境とWSLの両方に同じ設定を配置する。
 
+## 起動と終了
+
+新しい端末ではtmuxの`main`セッションを自動で開く。
+セッションがなければ作成し、すでにあれば再接続するため、複数の端末から同じ作業画面を開ける。
+tmux内では入れ子に起動せず、非対話シェル、`bash -ic`によるコマンド実行、端末に接続していないシェル、`TERM=dumb`も対象外とする。
+
+`Ctrl+x`を押して離し、`d`を押すとデタッチして外側のBashへ戻る。
+tmux内の作業は続き、`tmux attach -t main`または新しい端末から再接続できる。
+外側のBashで`exit`を実行すると、そのシェルを終了する。
+
+自動起動を無効にする場合は`~/.bashrc.local`へ次を記述し、新しい端末を開く。
+[個別設定の記入例](../configs/shell/bashrc.local.example)も参照。
+
+```bash
+DOTFILES_AUTO_TMUX=0
+```
+
+Neovimが導入されていれば、Bashの`vi`は`nvim`のエイリアスになる。
+たとえば`vi robot.py`でPythonファイルを開ける。
+
 ## コピーと貼り付け
 
 通常のシェル画面では、マウスでドラッグして離すだけで選択範囲をコピーする。
@@ -46,6 +66,8 @@ copy mode内の`Ctrl+v`以外は、tmuxで`Ctrl+c` / `Ctrl+v`をコピー用に�
 | 上下に分割 | `Ctrl+o` | `Ctrl+x`、`o` |
 | 新しいウィンドウ | `Ctrl+t` | `Ctrl+x`、`t` |
 | 次のウィンドウ | `Ctrl+n` | `Ctrl+x`、`n` |
+| 番号でウィンドウを選ぶ | なし | `Ctrl+x`、`0`〜`9` |
+| 直前に使ったウィンドウへ戻る | なし | `Ctrl+x`、`l` |
 | 現在のペインを閉じる | `Ctrl+w` | `Ctrl+x`、`w` |
 | 隣のペインへ移動 | `Alt+矢印` | `Ctrl+x`、矢印 |
 | 境界を3セル移動 | `Ctrl+Shift+矢印` | `Ctrl+x`、`H/J/K/L`（左/下/上/右） |
@@ -55,6 +77,7 @@ copy mode内の`Ctrl+v`以外は、tmuxで`Ctrl+c` / `Ctrl+v`をコピー用に�
 | 設定を再読込 | なし | `Ctrl+x`、`r` |
 
 分割と新しいウィンドウは、現在のペインと同じディレクトリで開く。
+tmuxのウィンドウはタブに相当する。`Ctrl+p`とprefixの`p`は貼り付けに使うため、番号が前のウィンドウへ移る場合は`Ctrl+x`、`:`から`previous-window`を実行する。
 直接キーは旧設定と同様にシェルの`Ctrl+e`（行末移動）などより優先される。
 `Ctrl+w`は確認なしに現在のペインを閉じるため、ペイン内の作業が終わってから使う。
 `Ctrl+Shift+t`を端末が新しいタブに使う場合や、`Ctrl+Shift+上下`を端末がスクロールに使う場合は、表の直接キーと同じ動作にはならない。
@@ -84,14 +107,19 @@ Windowsから読み出したCRLFはLFへ統一する。
 ステータスにはセッション名、ウィンドウ一覧、ホスト名、日時を色付きの区画で表示する。
 prefix待機中は`PREFIX`、選択中は`COPY`、ペイン拡大中は`ZOOM`も表示する。
 表示はtmux組込みのformatだけを使い、PowerlineのPythonプロセスやtmuxプラグインを必要としない。
-既定の区切りはASCIIの`|`なので、WSLホスト側のフォントを変更していなくても表示できる。
+配色はGruvboxで、Nerd Fontの三角記号を区切りに使う。
+Starshipのプロンプトには[公式Gruvbox Rainbow](https://starship.rs/presets/gruvbox-rainbow)を基にした設定を使い、ユーザー名、ホスト、パス、Git状態、言語環境、ROSディストリビューション、実行時間などを表示する。
 
-Powerline対応フォントやNerd Fontをすでに端末で使っている場合は、`~/.tmux.conf.local`へ次の2行を追加すると三角の区切りにできる。
-フォントはUbuntu側だけでなく、画面を表示する端末側で選択する。
+`shell`が依存する`fonts`モジュールはJetBrainsMono Nerd Font Monoを導入する。
+GNOME Terminalでは各プロファイルへ設定し、WSLではWindows側にもフォントを導入して、識別できたWindows TerminalのWSLプロファイルへ設定する。
+フォントは画面を表示する端末で使われるため、その他の端末やSSH接続元ではその端末のフォント設定も必要になる。
+再設定と表示確認は[外観・フォント設定](appearance.md)を参照。
+
+tmuxの区切りだけを通常の文字へ戻す場合は、`~/.tmux.conf.local`へ次を追加する。
 
 ```tmux
-set -g @dotfiles-separator-right ''
-set -g @dotfiles-separator-left ''
+set -g @dotfiles-separator-right '|'
+set -g @dotfiles-separator-left '|'
 ```
 
 個別設定の反映は`Ctrl+x`、`r`で行う。
@@ -127,6 +155,7 @@ set -g @dotfiles-separator-left ''
 `python3 tests/test-tmux.py`は一時HOME、専用socket、PTYとモックのクリップボードを使う。
 実tmux 3.4にキー列とマウスイベントを送り、分割、移動、リサイズ、窓操作、選択コピー、ドラッグコピー、複数行の貼り付け、OSC 52出力、Ctrl+cによるSIGINTを検証する。
 Wayland接続の失敗からX11への切替と、一時ファイルの削除も確認する。
+`python3 tests/test-shell-startup.py`では、実tmuxの自動起動、デタッチ後のBash継続、同一セッションへの再接続、自動起動を避ける条件を検証する。
 実際のGNOME/Windows Terminalのショートカット設定、端末フォント、OSクリップボードとの接続は、このPTYテストの対象外である。
 
 ## Caps LockをCtrlとして使う

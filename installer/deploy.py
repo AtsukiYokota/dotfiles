@@ -76,6 +76,16 @@ class Backup:
         entry['installed'] = fingerprint(target)
         self.save()
 
+    def retire(self, target: Path):
+        """Move an existing obsolete path into this backup without replacing it."""
+        target = target.absolute()
+        if fingerprint(target) is None:
+            return False
+        # _protect records the original before moving it; installed=None already
+        # describes the absent target and lets restore detect a recreated path.
+        self._protect(target)
+        return True
+
     def set_setting(self, schema: str, key: str, value: str, runner):
         old = runner.capture(['gsettings', 'get', schema, key]).strip()
         if old == value:

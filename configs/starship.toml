@@ -1,45 +1,81 @@
-# Colored segments with ASCII labels/separators; no Nerd Font is required.
-# WSL uses the font selected in the Windows terminal application.
+# Based on Starship v1.27.0's Gruvbox Rainbow preset:
+# https://starship.rs/presets/gruvbox-rainbow
+# The shell module installs JetBrainsMono Nerd Font Mono; select it in the terminal.
 "$schema" = 'https://starship.rs/config-schema.json'
 add_newline = true
 command_timeout = 500
 scan_timeout = 30
-format = '$username$hostname$directory$git_branch$git_commit$git_status$git_state$python$nodejs$rust$cmd_duration$status$jobs$line_break$character'
+palette = 'gruvbox_dark'
+format = """
+[](color_orange)\
+$os$username$hostname\
+[](fg:color_orange bg:color_yellow)\
+$directory\
+[](fg:color_yellow bg:color_aqua)\
+$git_branch$git_commit$git_status$git_state\
+[](fg:color_aqua bg:color_blue)\
+$python$nodejs$rust\
+[](fg:color_blue bg:color_bg3)\
+${env_var.ROS_DISTRO}$cmd_duration$jobs\
+[](fg:color_bg3 bg:color_bg1)\
+$status$time\
+[ ](fg:color_bg1)\
+$line_break$character"""
+
+[palettes.gruvbox_dark]
+color_fg0 = '#fbf1c7'
+color_bg1 = '#3c3836'
+color_bg3 = '#665c54'
+color_blue = '#458588'
+color_aqua = '#689d6a'
+color_green = '#98971a'
+color_orange = '#d65d0e'
+color_purple = '#b16286'
+color_red = '#cc241d'
+color_yellow = '#d79921'
+
+[os]
+disabled = false
+style = 'fg:color_fg0 bg:color_orange'
+[os.symbols]
+Ubuntu = '󰕈 '
+Linux = '󰌽 '
 
 [username]
 show_always = true
-format = '[ $user ]($style)'
-style_user = 'bold fg:white bg:blue'
-style_root = 'bold fg:white bg:red'
+format = '[$user]($style)'
+style_user = 'bold fg:color_fg0 bg:color_orange'
+style_root = 'bold fg:color_red bg:color_orange'
 
 [hostname]
 ssh_only = false
-format = '[ @$hostname ]($style)'
-style = 'fg:white bg:blue'
+format = '[@$hostname ]($style)'
+style = 'fg:color_fg0 bg:color_orange'
 
 [directory]
-format = '[ | $path($read_only) ]($style)'
-style = 'bold fg:black bg:cyan'
-read_only = ' ro'
-read_only_style = 'bold fg:red bg:cyan'
+format = '[ $path($read_only) ]($style)'
+style = 'bold fg:color_fg0 bg:color_yellow'
+read_only = ' '
+read_only_style = 'bold fg:color_red bg:color_yellow'
 truncation_length = 4
-truncation_symbol = '.../'
+truncation_symbol = '…/'
 home_symbol = '~'
 
 [git_branch]
-format = '[ | git:$branch ]($style)'
-style = 'fg:black bg:green'
+symbol = ''
+format = '[ $symbol $branch ]($style)'
+style = 'fg:color_fg0 bg:color_aqua'
 truncation_length = 32
-truncation_symbol = '...'
+truncation_symbol = '…'
 
 [git_commit]
 only_detached = true
-format = '[ | detached:$hash ]($style)'
-style = 'fg:black bg:green'
+format = '[ detached:$hash ]($style)'
+style = 'fg:color_fg0 bg:color_aqua'
 
 [git_status]
 format = '([ $all_status$ahead_behind]($style))'
-style = 'fg:black bg:green'
+style = 'fg:color_fg0 bg:color_aqua'
 conflicted = 'conflict:${count} '
 stashed = 'stash:${count} '
 deleted = 'del:${count} '
@@ -54,45 +90,58 @@ diverged = 'ahead:${ahead_count}/behind:${behind_count} '
 up_to_date = ''
 
 [git_state]
-format = '[ | $state( $progress_current/$progress_total) ]($style)'
-style = 'bold fg:black bg:yellow'
+format = '[ $state( $progress_current/$progress_total) ]($style)'
+style = 'bold fg:color_fg0 bg:color_aqua'
 
 [python]
-format = '[ | py:${version}( env:$virtualenv) ]($style)'
+symbol = ''
+format = '[ $symbol ${version}( env:$virtualenv) ]($style)'
 version_format = '${raw}'
-style = 'fg:black bg:yellow'
+style = 'fg:color_fg0 bg:color_blue'
 python_binary = ['python', 'python3']
 
 [nodejs]
-format = '[ | node:$version ]($style)'
+symbol = ''
+format = '[ $symbol $version ]($style)'
 version_format = '${raw}'
-style = 'fg:black bg:yellow'
+style = 'fg:color_fg0 bg:color_blue'
 
 [rust]
-format = '[ | rust:$version ]($style)'
+symbol = ''
+format = '[ $symbol $version ]($style)'
 version_format = '${raw}'
-style = 'fg:black bg:yellow'
+style = 'fg:color_fg0 bg:color_blue'
+
+[env_var.ROS_DISTRO]
+format = '[ ROS:$env_value ]($style)'
+style = 'fg:color_fg0 bg:color_bg3'
 
 [cmd_duration]
 min_time = 2000
-format = '[ | took:$duration ]($style)'
-style = 'fg:white bg:purple'
-
-[status]
-disabled = false
-format = '[ | exit:$status ]($style)'
-style = 'bold fg:white bg:red'
+format = '[ took:$duration ]($style)'
+style = 'fg:color_fg0 bg:color_bg3'
 
 [jobs]
 number_threshold = 1
 symbol_threshold = 1
-format = '[ | jobs:$number ]($style)'
-style = 'fg:white bg:purple'
+format = '[ jobs:$number ]($style)'
+style = 'fg:color_fg0 bg:color_bg3'
+
+[status]
+disabled = false
+format = '[ exit:$status ]($style)'
+style = 'bold fg:color_red bg:color_bg1'
+
+[time]
+disabled = false
+time_format = '%R'
+format = '[  $time ]($style)'
+style = 'fg:color_fg0 bg:color_bg1'
 
 [character]
-success_symbol = '[>](bold green)'
-error_symbol = '[>](bold red)'
-vimcmd_symbol = '[V](bold green)'
-vimcmd_visual_symbol = '[V](bold yellow)'
-vimcmd_replace_symbol = '[R](bold purple)'
-vimcmd_replace_one_symbol = '[r](bold purple)'
+success_symbol = '[](bold fg:color_green)'
+error_symbol = '[](bold fg:color_red)'
+vimcmd_symbol = '[](bold fg:color_green)'
+vimcmd_visual_symbol = '[](bold fg:color_yellow)'
+vimcmd_replace_symbol = '[](bold fg:color_purple)'
+vimcmd_replace_one_symbol = '[](bold fg:color_purple)'

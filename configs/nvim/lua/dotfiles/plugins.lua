@@ -1,15 +1,13 @@
 return {
   {
-    "maxmx03/solarized.nvim",
+    "ellisonleao/gruvbox.nvim",
     lazy = false,
     priority = 1000,
     config = function()
       vim.opt.termguicolors = true
       vim.opt.background = "dark"
-      require("solarized").setup({ transparent = { enabled = true }, plugins = { treesitter = false } })
-      vim.cmd.colorscheme("solarized")
-      vim.api.nvim_set_hl(0, "MatchParen", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "LineNr", { bg = "NONE" })
+      require("gruvbox").setup({ transparent_mode = false })
+      vim.cmd.colorscheme("gruvbox")
     end,
   },
   {
@@ -17,10 +15,10 @@ return {
     lazy = false,
     opts = {
       options = {
-        theme = "solarized_dark",
+        theme = "gruvbox",
         icons_enabled = false,
         component_separators = { left = "", right = "" },
-        section_separators = { left = "▶", right = "◀" },
+        section_separators = { left = "", right = "" },
       },
       sections = {
         lualine_a = { "mode" }, lualine_b = { "branch", "filename" }, lualine_c = {},

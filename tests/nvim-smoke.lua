@@ -12,6 +12,10 @@ local function check()
   for option, value in pairs(expected) do
     assert(vim.o[option] == value, option .. " did not preserve its old value")
   end
+  for _, icon in ipairs({ "", "", "󰕈" }) do
+    assert(vim.fn.strdisplaywidth(icon) == 1, "Nerd Font Mono icon must occupy one cell: " .. icon)
+  end
+  assert(vim.fn.strdisplaywidth("·") == 2 and vim.fn.strdisplaywidth("日") == 2, "Legacy CJK widths changed")
   for lhs, rhs in pairs({ [";"] = ":", j = "gj", k = "gk", n = "nzz", N = "Nzz", ["<C-h>"] = "<C-W>h" }) do
     assert(vim.fn.maparg(lhs, "n"):lower() == rhs:lower(), "Missing normal mapping " .. lhs)
   end

@@ -38,6 +38,8 @@ class CatalogTests(unittest.TestCase):
         self.assertIn('ros2', selected)
         self.assertIn('python', selected)
         self.assertIn('node', selected)
+        self.assertIn('fonts', selected)
+        self.assertLess(selected.index('fonts'), selected.index('shell'))
 
     def test_native_and_architecture_restrictions_are_enforced(self):
         for name in ('desktop', 'vscode', 'chrome', 'macos-theme'):
@@ -255,6 +257,32 @@ class SettingsTests(unittest.TestCase):
 
 
 class ActionTests(unittest.TestCase):
+    def test_old_theme_retirement_requires_successful_plugin_bootstrap(self):
+        for outcome in ('success', 'failure', 'skipped'):
+            with self.subTest(outcome=outcome), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                runner = mock.Mock()
+                runner.capture.return_value = ''
+                if outcome == 'failure':
+                    runner.run.side_effect = subprocess.CalledProcessError(1, ['nvim'])
+                ctx = SimpleNamespace(home=home, repo=ROOT, modules=['neovim'], versions={},
+                                      runner=runner, no_plugins=outcome == 'skipped',
+                                      backup=SimpleNamespace(directory=home))
+                with mock.patch.object(actions, 'prepare_apt'), \
+                     mock.patch.object(actions, 'deploy_configs'), \
+                     mock.patch.object(actions, 'install_archive'), \
+                     mock.patch('editor.retire_obsolete_theme') as retire, \
+                     contextlib.redirect_stdout(io.StringIO()):
+                    if outcome == 'failure':
+                        with self.assertRaises(subprocess.CalledProcessError):
+                            actions.install_modules(ctx)
+                    else:
+                        actions.install_modules(ctx)
+                if outcome == 'success':
+                    retire.assert_called_once_with(ctx)
+                else:
+                    retire.assert_not_called()
+
     def test_selected_lsp_installation_matches_reviewed_plan(self):
         versions = json.loads((ROOT / 'installer/versions.json').read_text(encoding='utf-8'))
         for requested, expected in (({'neovim'}, {'starship', 'uv', 'node', 'neovim'}),
@@ -274,10 +302,13 @@ class ActionTests(unittest.TestCase):
                     installer_main.show_plan(modules, requested, 'wsl', 'amd64', args, versions, home)
                 with mock.patch.object(actions, 'prepare_apt'), \
                      mock.patch.object(actions, 'deploy_configs'), \
+                     mock.patch('fonts.install_fonts') as install_fonts, \
                      mock.patch.object(actions, 'install_archive', return_value=home / 'pinned-node') as archive, \
                      contextlib.redirect_stdout(io.StringIO()):
                     actions.install_modules(ctx)
                 self.assertEqual({call.args[1] for call in archive.call_args_list}, expected)
+                install_fonts.assert_called_once_with(ctx)
+                self.assertIn('Nerd Font: JetBrainsMono Nerd Font Mono', output.getvalue())
                 npm_calls = [call for call in runner.run.call_args_list if '--global' in call.args[0]]
                 if 'node' in modules:
                     self.assertEqual(len(npm_calls), 1)
@@ -430,7 +461,8 @@ class InteractiveTests(unittest.TestCase):
             self.assertEqual(ui.choose('wsl', 'amd64'), catalog.DEFAULTS)
 
     def test_empty_plain_selection_can_be_corrected(self):
-        with mock.patch('builtins.input', side_effect=['n', '', '1', '']), \
+        shell_index = list(catalog.MODULES).index('shell') + 1
+        with mock.patch('builtins.input', side_effect=['n', '', str(shell_index), '']), \
              contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(ui.choose('wsl', 'amd64', plain=True), {'shell'})
 
@@ -527,7 +559,8 @@ class ThemeTests(unittest.TestCase):
                 platform='native', home=home, temp=root / 'temporary',
                 data=home / '.local/share/dotfiles', runner=ThemeRunner(), backup=ThemeBackup(),
             )
-            with mock.patch.object(theme, '_require_session'):
+            with mock.patch.object(theme, '_require_session'), \
+                    mock.patch.object(theme, '_install_wallpapers', return_value=ctx.data / 'wallpapers'):
                 theme.install_theme(ctx)
                 theme.install_theme(ctx)
             self.assertEqual(len(ctx.runner.downloads), 3)

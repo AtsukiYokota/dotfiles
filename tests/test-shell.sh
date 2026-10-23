@@ -172,6 +172,17 @@ bash --noprofile --norc -ic '
   if mark ../escape; then exit 1; fi
 ' > "$scratch/interactive-out" 2> "$scratch/interactive-err" || fail 'interactive supplement/bookmarks'
 pass 'interactive supplement loads Rust/Node and local overrides once, and handles spaced bookmarks'
+cat > "$scratch/bin/nvim" <<'MOCK'
+#!/usr/bin/env bash
+printf '%s\n' "$@" > "$HOME/vi-arguments"
+MOCK
+chmod +x "$scratch/bin/nvim"
+bash --noprofile --norc -ic '
+  source "$TEST_REPO/.bashrc"
+  eval '\''vi "file with spaces.py"'\''
+  [[ $(cat "$HOME/vi-arguments") == "file with spaces.py" ]]
+' > "$scratch/vi-out" 2> "$scratch/vi-err" || fail 'vi alias does not invoke Neovim'
+pass 'vi launches Neovim and preserves spaced filename arguments'
 mkdir -p "$scratch/alias target/.git"
 printf 'needle\n' > "$scratch/alias target/.hidden-file"
 printf 'needle\n' > "$scratch/alias target/visible-file"

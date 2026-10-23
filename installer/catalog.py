@@ -15,8 +15,10 @@ class Module:
 
 BASE_PACKAGES = ('ca-certificates', 'curl', 'git', 'unzip', 'xz-utils')
 MODULES = {
+    'fonts': Module('Nerd Font + terminal font', 'JetBrainsMono Nerd Font Mono; configure GNOME Terminal or the active WSL Windows Terminal profile',
+                    ('fontconfig',)),
     'shell': Module('Shell + tmux', 'Bash, Starship prompt, tmux, clipboard and familiar shortcuts',
-                    ('bash-completion', 'tmux', 'ripgrep', 'fzf', 'tree', 'ncdu', 'jq', 'openssh-client', 'wl-clipboard', 'xsel')),
+                    ('bash-completion', 'tmux', 'ripgrep', 'fzf', 'tree', 'ncdu', 'jq', 'openssh-client', 'wl-clipboard', 'xsel'), ('fonts',)),
     'cpp': Module('C / C++', 'Ubuntu-supported compiler, CMake, clangd and formatting',
                   ('build-essential', 'cmake', 'ninja-build', 'gdb', 'clang', 'clangd', 'clang-format', 'pkg-config', 'universal-ctags')),
     'python': Module('Python tools', 'uv + isolated basedpyright, CMake language server, autopep8 and Ruff',
@@ -43,7 +45,7 @@ MODULES = {
                      ('snapd',), native_only=True),
     'chrome': Module('Google Chrome', 'Google signed APT repository; amd64 only',
                      ('gnupg',), native_only=True, amd64_only=True),
-    'macos-theme': Module('macOS appearance', 'WhiteSur GTK theme, icons, cursors and Ubuntu Dock; reversible',
+    'macos-theme': Module('macOS appearance', 'WhiteSur GTK theme, icons, cursors, Big Sur-style wallpaper and auto-hiding Ubuntu Dock; reversible',
                           ('sassc', 'libglib2.0-dev-bin', 'libxml2-utils', 'libgtk-3-bin', 'gtk2-engines-murrine'), native_only=True),
     'ssh-server': Module('SSH server', 'Enable inbound SSH through the Ubuntu service; optional',
                          ('openssh-server',)),

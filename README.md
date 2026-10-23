@@ -27,6 +27,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 
 | ID | 内容 |
 | --- | --- |
+| `fonts` | JetBrainsMono Nerd Font Mono、端末フォント設定 |
 | `shell` | Bash、Starship、tmux、検索・クリップボード・Git補助 |
 | `cpp` | C/C++コンパイラー、CMake、Ninja、clangd、clang-format |
 | `python` | uv、basedpyright、CMake言語サーバー、autopep8、Ruff |
@@ -41,12 +42,13 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `keyboard` | Caps LockをCtrlへ変更 |
 | `vscode` | VS Code |
 | `chrome` | Google Chrome |
-| `macos-theme` | WhiteSurテーマ・アイコン・カーソル、Dock設定 |
+| `macos-theme` | WhiteSurテーマ・アイコン・カーソル・壁紙、Dock自動非表示 |
 | `ssh-server` | OpenSSHサーバー |
 
 `desktop,keyboard,vscode,chrome,macos-theme`はネイティブ用です。`chrome`はamd64用、`keyboard,macos-theme`はGNOMEセッションが必要です。
 WSLのGUIにはWSLgなどの表示環境を使います。`ssh-server`を選ぶとSSH待ち受けサービスを導入します。
 `neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。
+`shell`には`fonts`が含まれ、対応する端末のNerd Fontも設定します。
 
 選択内容をコマンドで指定することもできます。
 
@@ -59,9 +61,12 @@ bash setup_all.sh --modules shell,neovim,ros-desktop,latex
 
 新しい端末を開き、[セットアップ確認ガイド](docs/verification.md)に沿って動作を確認してください。
 クリーン環境での全モジュール導入、ROS通信・ビルド、Neovim、tmux、各追加ツールの確認手順を掲載しています。
+tmuxは`main`セッションを自動で開きます。Neovimは`vi`でも起動できます。
+プロンプトはGruvbox Rainbow、NeovimとtmuxもGruvboxの配色です。
 
 個別設定は`~/.bashrc.local`に記述します。[記入例](configs/shell/bashrc.local.example)を参照してください。
 ログと変更前の設定は`~/.local/state/dotfiles/backups/`に保存します。設定の復元コマンドは導入完了時に表示されます。
 
 - [ターミナル操作](docs/terminal-workflow.md)
+- [外観・フォント設定と既存環境への反映](docs/appearance.md)
 - [ROS 2コード整形](docs/ros-formatting.md)

@@ -19,15 +19,19 @@ jobs:
       - name: Test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3-pil tmux clangd
+          sudo apt-get install -y --no-install-recommends python3-pil tmux clangd fontconfig
       - name: Offline checks
         run: |
           python3 -B tests/check-syntax.py
           python3 -B tests/test-installer.py
           python3 -B tests/test-cli.py
           python3 -B tests/test-terminal-setup.py
+          python3 -B tests/test-fonts.py
+          python3 -B tests/test-editor-cache.py
+          python3 -B tests/test-theme-settings.py
           python3 -B tests/test-ros-format.py
           bash tests/test-shell.sh
+          python3 -B tests/test-shell-startup.py
           python3 -B tests/test-tmux.py
           bash tests/test-commands.sh
           python3 -B tests/test-fetchall-pty.py
@@ -35,7 +39,21 @@ jobs:
           git diff --check
       - name: Neovim and plugin integration
         run: python3 -B tests/check-neovim.py --plugins
+      - name: Starship Gruvbox Rainbow integration
+        run: python3 -B tests/check-starship.py
+      - name: Nerd Font integration
+        run: python3 -B tests/check-fonts.py
       - name: Language servers and real keyboard completion
         run: python3 -B tests/check-lsp.py
       - name: ROS formatter integration
         run: python3 -B tests/check-ros-format.py
+  windows-settings:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Windows Terminal settings backup and restoration
+        shell: powershell
+        run: .\tests\test-windows-fonts.ps1

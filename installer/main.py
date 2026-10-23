@@ -81,13 +81,13 @@ def preflight(modules, configs_only):
     if 'keyboard' in modules:
         from keyboard import require_session
         require_session()
+    if 'macos-theme' in modules and ('GNOME' not in os.environ.get('XDG_CURRENT_DESKTOP', '').upper() or not os.environ.get('DBUS_SESSION_BUS_ADDRESS')):
+        raise ValueError('Run macos-theme in a terminal inside your native GNOME desktop session.')
     if configs_only:
         return
     for tool in ('sudo', 'apt-get', 'bash'):
         if not shutil.which(tool):
             raise ValueError(f'Required command is missing: {tool}')
-    if 'macos-theme' in modules and ('GNOME' not in os.environ.get('XDG_CURRENT_DESKTOP', '').upper() or not os.environ.get('DBUS_SESSION_BUS_ADDRESS')):
-        raise ValueError('Run macos-theme in a terminal inside your native GNOME desktop session.')
     if set(modules).intersection({'ssh-server', 'vscode'}):
         if Path('/proc/1/comm').read_text(encoding='utf-8').strip() != 'systemd':
             raise ValueError('SSH server / Snap require systemd. Enable it first, or deselect these modules.')
@@ -117,6 +117,8 @@ def show_plan(modules, requested, target, arch, args, versions, home):
                 print(f'  User tool: {tool} {versions[tool]["version"]} (HTTPS + pinned SHA-256)')
         if 'python' in modules:
             print('  Isolated Python CLI tools: basedpyright cmake-language-server autopep8 ruff')
+        if 'fonts' in modules:
+            print(f'  Nerd Font: JetBrainsMono Nerd Font Mono {versions["nerd_font"]["version"]} (HTTPS + pinned SHA-256)')
         if 'node' in modules:
             print('  User npm language tools (~/.local): ' + ' '.join(
                 f'{package}@{version}' for package, version in versions['npm_language_servers'].items()))
@@ -129,20 +131,27 @@ def show_plan(modules, requested, target, arch, args, versions, home):
         if 'vscode' in modules:
             print('  Snap: code --classic')
         if 'macos-theme' in modules:
-            print('  WhiteSur theme/icons/cursors; GNOME appearance and Ubuntu Dock with backup')
+            print('  WhiteSur theme/icons/cursors + Big Sur-style light/dark wallpapers; Dock hidden until pointer reaches the bottom edge')
         if 'ssh-server' in modules:
             print('  openssh-server may start a listening SSH service.')
         if 'neovim' in modules and not args.no_plugins:
             print('  Neovim: explicit plugin bootstrap using the committed lazy lockfile')
     print('\nConfiguration: selected modules only; existing targets are backed up.')
+    if 'fonts' in modules:
+        if target == 'wsl':
+            print('  fonts: install/register the font for the Windows user; set the active WSL Windows Terminal profile font with a separate Windows backup')
+        else:
+            print('  fonts: GNOME monospace font and existing GNOME Terminal profile fonts with backup (when a desktop session is available)')
     if 'shell' in modules:
-        print('  shell: managed .bashrc/.profile blocks, Starship, tmux, readline, ROS/formatting helpers, clipboard')
+        print('  shell: Gruvbox Rainbow prompt, automatic tmux on interactive terminal startup, vi=nvim, readline, ROS/formatting helpers, clipboard')
     if 'keyboard' in modules:
         print('  keyboard: Caps Lock -> Ctrl in GNOME xkb-options; preserve unrelated options, back up original')
     if 'neovim' in modules:
         print('  neovim: XDG config/nvim and fallback ~/.vimrc')
     if 'latex' in modules:
         print('  latex: ~/.latexmkrc')
+    if 'macos-theme' in modules:
+        print('  macos-theme: WhiteSur appearance, bottom-edge Dock autohide, Big Sur-style wallpaper; previous settings backed up')
     print('No OS release upgrade or full-upgrade. No Git identity, NTP server, or fixed host addresses.')
     if target == 'wsl':
         print('WSL: use Windows VS Code + WSL extension. ROS GUI tools require WSLg or another display.')
@@ -218,6 +227,9 @@ def main(argv=None):
         try:
             if args.configs_only:
                 deploy_configs(ctx)
+                if 'macos-theme' in modules:
+                    from theme import configure_theme
+                    configure_theme(ctx)
             else:
                 install_modules(ctx)
         except BaseException:

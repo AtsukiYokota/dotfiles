@@ -76,6 +76,9 @@ def install_archive(ctx, name, binaries, *, flat=False):
 
 def deploy_configs(ctx):
     home, repo = ctx.home, ctx.repo
+    if 'fonts' in ctx.modules:
+        from fonts import configure_fonts
+        configure_fonts(ctx)
     if 'shell' in ctx.modules:
         bashrc = home / '.bashrc'
         # Replace old dotfiles links, but never edit the repository through a symlink.
@@ -227,7 +230,10 @@ def install_modules(ctx):
     prepare_apt(ctx)
     for index, name in enumerate(ctx.modules, 1):
         print(f'\n[{index}/{len(ctx.modules)}] {name}', flush=True)
-        if name == 'shell':
+        if name == 'fonts':
+            from fonts import install_fonts
+            install_fonts(ctx)
+        elif name == 'shell':
             install_archive(ctx, 'starship', {'starship': 'starship'}, flat=True)
         elif name == 'python':
             install_archive(ctx, 'uv', {'uv': 'uv', 'uvx': 'uvx'})
@@ -270,6 +276,8 @@ def install_modules(ctx):
     deploy_configs(ctx)
     if 'neovim' in ctx.modules and not ctx.no_plugins:
         ctx.runner.run([str(ctx.home / '.local/bin/nvim'), '--headless', '-u', 'NONE', '-i', 'NONE', '-l', str(ctx.repo / 'configs/nvim/bootstrap.lua')])
+        from editor import retire_obsolete_theme
+        retire_obsolete_theme(ctx)
     installed = ctx.runner.capture(['dpkg-query', '-W', '-f=${binary:Package}\t${Version}\n'])
     (ctx.backup.directory / 'apt-packages.txt').write_text(installed + '\n', encoding='utf-8')
     (ctx.backup.directory / 'versions.json').write_text(json.dumps(ctx.versions, indent=2) + '\n', encoding='utf-8')

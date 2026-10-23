@@ -15,6 +15,9 @@ if vim.fn.executable("dotfiles-clipboard") == 1 then
   }
 end
 vim.cmd("source " .. vim.fn.fnameescape(config_dir .. "/legacy.vim"))
+-- Keep legacy CJK ambiguous-width behavior, but Nerd Font Mono icons occupy one
+-- cell. Without these PUA overrides, ambiwidth=double misaligns Lazy/status lines.
+vim.fn.setcellwidths({ { 0xe000, 0xf8ff, 1 }, { 0xf0000, 0xffffd, 1 }, { 0x100000, 0x10fffd, 1 } })
 if vim.fn.has("nvim-0.11.3") == 0 then
   vim.schedule(function()
     vim.notify("dotfiles: Neovim 0.11.3 or newer is required for plugins and LSP; base settings loaded.", vim.log.levels.WARN)
