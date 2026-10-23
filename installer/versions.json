@@ -1,5 +1,13 @@
 {
   "reviewed": "2026-10-23",
+  "ibis_office": {
+    "version": "0.8.4",
+    "amd64": {
+      "url": "https://github.com/ibisjp/ibis-office/releases/download/v0.8.4/ibisOffice-0.8.4-Linux.AppImage",
+      "sha256": "6642e7cab2ec138bea906f00a0a31d30c4ced121ca65f71a774e09b7a577b541"
+    },
+    "icon_sha256": "cb1182fc08710adb64af477a0a841816d0c30cfd562ef954b0f75482e30cb96f"
+  },
   "nerd_font": {
     "version": "3.5.1",
     "url": "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.5.1/JetBrainsMono.tar.xz",

@@ -131,6 +131,8 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             print('  Google APT repository + scoped signing key; google-chrome-stable')
         if 'vscode' in modules:
             print('  Snap: code --classic')
+        if 'ibis-office' in modules:
+            print(f'  ibisOffice {versions["ibis_office"]["version"]} official Linux x86_64 AppImage (HTTPS + pinned SHA-256)')
         if 'macos-theme' in modules:
             print('  WhiteSur theme/icons/cursors + Big Sur-style light/dark wallpapers; Dock hidden until pointer reaches the bottom edge')
         if 'ssh-server' in modules:
@@ -157,6 +159,10 @@ def show_plan(modules, requested, target, arch, args, versions, home):
         print('  latex: ~/.latexmkrc; :TexPreview starts latexmk + Zathura; save to rebuild (native desktop or WSLg)')
     if 'diagrams' in modules:
         print('  diagrams: :PlantumlPreview renders locally and refreshes feh on save (native desktop or WSLg)')
+    if 'ibis-office' in modules:
+        print('  ibis-office: ~/.local/bin/ibis-office and application launcher; existing default file associations are unchanged')
+        if args.configs_only:
+            print('  ibis-office: register the launcher only for an existing verified installation; no application download')
     if 'macos-theme' in modules:
         print('  macos-theme: WhiteSur appearance, bottom-edge Dock autohide, Big Sur-style wallpaper; previous settings backed up')
     print('No OS release upgrade or full-upgrade. No Git identity, NTP server, or fixed host addresses.')

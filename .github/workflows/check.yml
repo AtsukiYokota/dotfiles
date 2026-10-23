@@ -19,11 +19,12 @@ jobs:
       - name: Test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3-pil tmux clangd fontconfig fcitx5 fcitx5-mozc python3-dbus dbus-daemon libglib2.0-bin openjdk-21-jre-headless graphviz fonts-noto-cjk
+          sudo apt-get install -y --no-install-recommends python3-pil tmux clangd fontconfig fcitx5 fcitx5-mozc python3-dbus dbus-daemon libglib2.0-bin openjdk-21-jre-headless graphviz fonts-noto-cjk desktop-file-utils libxcb1 libxkbcommon0 libxkbcommon-x11-0 libegl1 libvulkan1 mesa-vulkan-drivers libwayland-client0 libwayland-egl1 xdg-utils
       - name: Offline checks
         run: |
           python3 -B tests/check-syntax.py
           python3 -B tests/test-installer.py
+          python3 -B tests/test-office.py
           python3 -B tests/test-cli.py
           python3 -B tests/test-wsl.py
           python3 -B tests/test-terminal-setup.py
@@ -54,6 +55,8 @@ jobs:
         run: python3 -B tests/check-ros-format.py
       - name: PlantUML live preview rendering
         run: python3 -B tests/check-plantuml-preview.py
+      - name: Official ibisOffice AppImage and launcher
+        run: python3 -B tests/check-office.py
   tex-preview:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

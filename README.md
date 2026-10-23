@@ -45,10 +45,11 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `japanese-input` | Fcitx 5＋Mozc、日本語入力の有効・無効キー |
 | `vscode` | VS Code |
 | `chrome` | Google Chrome |
+| `ibis-office` | [ibisOffice](https://github.com/ibisjp/ibis-office)、アプリメニューへの登録 |
 | `macos-theme` | WhiteSurテーマ・アイコン・カーソル・壁紙、Dock自動非表示 |
 | `ssh-server` | OpenSSHサーバー |
 
-`desktop,keyboard,japanese-input,vscode,chrome,macos-theme`はネイティブ用です。`chrome`はamd64用、`keyboard,japanese-input,macos-theme`はGNOMEセッションが必要です。
+`desktop,keyboard,japanese-input,vscode,chrome,ibis-office,macos-theme`はネイティブ用です。`chrome,ibis-office`はamd64用、`keyboard,japanese-input,macos-theme`はGNOMEセッションが必要です。
 WSLのGUIにはWSLgなどの表示環境を使います。`ssh-server`を選ぶとSSH待ち受けサービスを導入します。
 WSLは自動検出し、ネイティブ専用モジュールを選択対象から外します。GNOMEのデスクトップ設定も適用しません。
 `neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。

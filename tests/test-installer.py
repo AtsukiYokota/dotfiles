@@ -42,12 +42,17 @@ class CatalogTests(unittest.TestCase):
         self.assertLess(selected.index('fonts'), selected.index('shell'))
 
     def test_native_and_architecture_restrictions_are_enforced(self):
-        for name in ('desktop', 'vscode', 'chrome', 'macos-theme', 'japanese-input'):
+        for name in ('desktop', 'vscode', 'chrome', 'ibis-office', 'macos-theme', 'japanese-input'):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 catalog.resolve({name}, 'wsl', 'amd64')
-        with self.assertRaises(ValueError):
-            catalog.resolve({'chrome'}, 'native', 'arm64')
+        for name in ('chrome', 'ibis-office'):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                catalog.resolve({name}, 'native', 'arm64')
         self.assertEqual(catalog.resolve({'macos-theme'}, 'native', 'arm64'), ['macos-theme'])
+
+    def test_office_is_optional_and_does_not_require_a_development_environment(self):
+        self.assertNotIn('ibis-office', catalog.defaults_for('native', 'amd64'))
+        self.assertEqual(catalog.resolve({'ibis-office'}, 'native', 'amd64'), ['ibis-office'])
 
     def test_empty_and_unknown_selections_are_rejected(self):
         for selection in (set(), {'unknown-module'}):
@@ -432,6 +437,14 @@ class ActionTests(unittest.TestCase):
 
 
 class InteractiveTests(unittest.TestCase):
+    def test_native_arm64_select_all_excludes_amd64_only_modules(self):
+        with mock.patch('builtins.input', side_effect=['a', '']), \
+             contextlib.redirect_stdout(io.StringIO()):
+            selected = ui.choose('native', 'arm64', plain=True)
+        self.assertFalse(selected.intersection({'chrome', 'ibis-office'}))
+        self.assertIn('desktop', selected)
+        catalog.resolve(selected, 'native', 'arm64')
+
     def test_confirmation_cancel_creates_no_backup(self):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
@@ -596,6 +609,27 @@ class ThemeTests(unittest.TestCase):
 
 @unittest.skipUnless((ROOT / 'installer/main.py').is_file(), 'Installer entry point is not present yet')
 class InstallerPreviewTests(unittest.TestCase):
+    def test_office_plan_describes_verified_download_and_configuration_only_mode(self):
+        versions = {'ibis_office': {'version': 'test-version'}}
+        for configs_only in (False, True):
+            arguments = ['--modules', 'ibis-office']
+            if configs_only:
+                arguments.append('--configs-only')
+            args = installer_main.parser().parse_args(arguments)
+            output = io.StringIO()
+            with self.subTest(configs_only=configs_only), contextlib.redirect_stdout(output):
+                installer_main.show_plan(['ibis-office'], {'ibis-office'}, 'native', 'amd64',
+                                         args, versions, Path('/test/home'))
+            plan = output.getvalue()
+            self.assertIn('~/.local/bin/ibis-office and application launcher', plan)
+            self.assertIn('existing default file associations are unchanged', plan)
+            if configs_only:
+                self.assertIn('existing verified installation; no application download', plan)
+                self.assertNotIn('APT packages', plan)
+            else:
+                self.assertIn('ibisOffice test-version', plan)
+                self.assertIn('HTTPS + pinned SHA-256', plan)
+
     def test_preview_has_no_network_process_or_home_side_effects(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

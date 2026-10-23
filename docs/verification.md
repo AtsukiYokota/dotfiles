@@ -7,7 +7,7 @@ Ubuntu 24.04に導入した環境を、実際に使うユーザーの端末で�
 ## クリーン環境から全モジュールを導入する
 
 全モジュールを選べるのは、ネイティブのUbuntu Desktop 24.04・amd64・GNOMEセッションです。
-arm64ではChrome、WSLではネイティブ用モジュールが選択対象から外れます。
+arm64ではChromeとibisOffice、WSLではネイティブ用モジュールが選択対象から外れます。
 以下はGNOMEの端末から一般ユーザーで実行します。
 
 ```bash
@@ -392,6 +392,39 @@ Neovimでこの`.puml`を開いて`:PlantumlPreview`を実行し、ラベルを�
 
 Neovimで`.md`を開いて`:MarkdownPreview`を実行します。日本語を含む見出しや本文を変更し、`:w`で保存してください。
 ブラウザを手動で再読込せずに変更が表示されることを確認します。停止は`:MarkdownPreviewStop`です。
+
+### ibisOfficeを追加して起動する
+
+ネイティブUbuntu 24.04のamd64環境で、必要に応じて追加できます。
+
+```bash
+cd ~/dotfiles
+git pull --ff-only origin master
+bash setup_all.sh --modules ibis-office
+```
+
+計画を確認して`INSTALL`と入力します。完了後、アプリメニューの「ibisOffice」、または次のコマンドで起動します。
+
+```bash
+~/.local/bin/ibis-office
+```
+
+文書を作成・保存して開き直し、日本語の表示を確認してください。ファイルを開く既定のアプリは変更しません。
+初回起動時にアプリ自身がメニューへの登録を提案した場合は、登録済みなので省略できます。
+導入する版は[versions.json](../installer/versions.json)の`ibis_office`で確認できます。
+対応機能や使い方は[ibisOfficeの公式案内](https://github.com/ibisjp/ibis-office)を参照してください。
+
+更新するときも、アプリを終了してから上記の`git pull`とモジュール導入を再実行してください。
+アプリ内更新で実行ファイルが変わり、再導入時に`Unrecognized existing ibisOffice file`と表示される場合は、現在の版をバックアップとして移動してから、リポジトリで指定する版を導入できます。
+ibisOfficeを終了し、次を実行します。
+
+```bash
+cd ~/dotfiles &&
+app_version=$(python3 -c 'import json; print(json.load(open("installer/versions.json"))["ibis_office"]["version"])') &&
+app_dir="${XDG_DATA_HOME:-$HOME/.local/share}/dotfiles/tools/ibis-office/$app_version" &&
+mv -T -- "$app_dir" "$app_dir.manual-$(date +%Y%m%d-%H%M%S)" &&
+  bash setup_all.sh --modules ibis-office
+```
 
 ### GNOMEの外観とCaps Lockを確認する
 
