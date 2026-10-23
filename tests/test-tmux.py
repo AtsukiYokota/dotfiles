@@ -149,7 +149,7 @@ class TmuxTests(unittest.TestCase):
         paths = self.run_tmux('list-panes', '-F', '#{pane_current_path}').decode().splitlines()
         self.assertEqual(paths, [str(self.project)] * 3)
         current = self.pane('#{pane_id}')
-        self.key(b'\x1b[1;3D')  # Alt+Left.
+        self.key(b'\x1b[1;5D')  # Ctrl+Left.
         self.wait_for(lambda: self.pane('#{pane_id}') != current)
         layout = self.pane('#{window_layout}')
         self.key(b'\x1b[1;6C')  # Ctrl+Shift+Right, standard xterm function-key sequence.
