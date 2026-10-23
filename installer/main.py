@@ -68,7 +68,7 @@ def check_platform(info, arch):
     if sys.version_info < (3, 12):
         raise ValueError('Python 3.12+ is required. Run bash setup_all.sh to use /usr/bin/python3.')
     if sys.platform != 'linux' or info.get('ID') != 'ubuntu' or info.get('VERSION_ID') != '26.04':
-        raise ValueError('Installation supports Ubuntu 26.04 only. For Ubuntu 24.04 use the master branch; use --dry-run for a preview on another OS.')
+        raise ValueError('Installation supports Ubuntu 26.04 only. For Ubuntu 24.04 use the ubuntu24 branch; use --dry-run for a preview on another OS.')
     if arch not in ('amd64', 'arm64'):
         raise ValueError(f'Unsupported CPU architecture: {arch}')
     if os.geteuid() == 0:

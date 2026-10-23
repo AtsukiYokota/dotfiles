@@ -13,7 +13,7 @@ arm64ではChromeとibisOffice、WSLではネイティブ用モジュールが�
 ```bash
 sudo apt update
 sudo apt install -y git
-git clone --branch codex/ubuntu26.04 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
+git clone --branch ubuntu26 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
 cat /etc/os-release
@@ -249,7 +249,7 @@ Neovimを終了し、リポジトリを更新して必要なモジュールを�
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin codex/ubuntu26.04
+git pull --ff-only origin ubuntu26
 bash setup_all.sh --modules neovim,rust,latex
 ```
 
@@ -400,7 +400,7 @@ Neovimで`.md`を開いて`:MarkdownPreview`を実行します。日本語を含
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin codex/ubuntu26.04
+git pull --ff-only origin ubuntu26
 bash setup_all.sh --modules ibis-office
 ```
 

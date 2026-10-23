@@ -4,7 +4,7 @@
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin codex/ubuntu26.04
+git pull --ff-only origin ubuntu26
 bash setup_all.sh --modules neovim,latex,diagrams
 ```
 

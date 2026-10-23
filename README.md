@@ -1,10 +1,10 @@
 # dotfiles
 
-[![Ubuntu dotfiles checks](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml/badge.svg?branch=codex%2Fubuntu26.04)](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml?query=branch%3Acodex%2Fubuntu26.04)
+[![Ubuntu dotfiles checks](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml/badge.svg?branch=ubuntu26)](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml?query=branch%3Aubuntu26)
 
 Ubuntu 26.04 LTS（Resolute Raccoon）向けの開発環境セットアップです。ネイティブUbuntuとWSLに対応し、必要なモジュールを選んで導入できます。
 
-Ubuntu 24.04用は[`master`ブランチ](https://github.com/AtsukiYokota/dotfiles/tree/master)を使ってください。
+Ubuntu 24.04用は[`ubuntu24`ブランチ](https://github.com/AtsukiYokota/dotfiles/tree/ubuntu24)を使ってください。
 
 ## インストール
 
@@ -13,7 +13,7 @@ Ubuntu 26.04のamd64・arm64に対応しています。UbuntuのBashから、一
 ```bash
 sudo apt update
 sudo apt install -y git
-git clone --branch codex/ubuntu26.04 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
+git clone --branch ubuntu26 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 bash setup_all.sh
 ```
