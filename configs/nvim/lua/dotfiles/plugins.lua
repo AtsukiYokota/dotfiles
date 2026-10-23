@@ -1,0 +1,58 @@
+return {
+  {
+    "maxmx03/solarized.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.opt.termguicolors = true
+      vim.opt.background = "dark"
+      require("solarized").setup({ transparent = { enabled = true }, plugins = { treesitter = false } })
+      vim.cmd.colorscheme("solarized")
+      vim.api.nvim_set_hl(0, "MatchParen", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "LineNr", { bg = "NONE" })
+    end,
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    lazy = false,
+    opts = {
+      options = {
+        theme = "solarized_dark",
+        icons_enabled = false,
+        component_separators = { left = "", right = "" },
+        section_separators = { left = "▶", right = "◀" },
+      },
+      sections = {
+        lualine_a = { "mode" }, lualine_b = { "branch", "filename" }, lualine_c = {},
+        lualine_x = { "fileformat", "encoding", "filetype" }, lualine_y = { "progress" }, lualine_z = { "location" },
+      },
+    },
+  },
+  {
+    "lewis6991/gitsigns.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {},
+    init = function() vim.opt.updatetime = 250 end,
+  },
+  {
+    "brianhuster/live-preview.nvim",
+    cmd = { "LivePreview" },
+    config = function()
+      require("livepreview.config").set({ address = "127.0.0.1", dynamic_root = true, picker = "vim.ui.select" })
+    end,
+  },
+  { "aklt/plantuml-syntax", ft = { "plantuml" } },
+  {
+    "lervag/vimtex",
+    -- VimTeX handles its own filetype loading; no compiler until requested.
+    lazy = false,
+    init = function()
+      vim.g.vimtex_compiler_latexmk = {
+        background = 1, build_dir = "", continuous = 1,
+        options = { "-pdfdvi", "-verbose", "-file-line-error", "-synctex=1", "-interaction=nonstopmode" },
+      }
+      vim.g.vimtex_quickfix_open_on_warning = 0
+      vim.g.vimtex_view_general_options = "-r @line @pdf @tex"
+    end,
+  },
+}

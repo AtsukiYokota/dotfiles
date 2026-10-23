@@ -1,5 +1,8 @@
-.fonts
-.vim
+__pycache__/
+*.py[cod]
+.venv/
+.vim/
 .viminfo
-
-etc/marked
+.fonts/
+*.local
+.DS_Store

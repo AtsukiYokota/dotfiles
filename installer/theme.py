@@ -1,0 +1,206 @@
+"""Build pinned WhiteSur assets as a user, then deploy backed-up links/settings.
+
+Upstream scripts run with a disposable HOME and a sudo blocker. They never
+receive the real user's HOME. Libadwaita overrides, GDM and extension downloads
+are intentionally outside this module's installation scope.
+"""
+from __future__ import annotations
+
+import json
+import os
+from pathlib import Path
+import shlex
+import shutil
+import sys
+import tarfile
+import uuid
+
+
+SOURCES = {
+    'gtk': {
+        'repo': 'WhiteSur-gtk-theme',
+        'commit': 'd5782652d412137e26fb8ff55b55a5572e4c6995',
+        'sha256': '9d8be3dca76f7be36dfb6513aa2c301be1ff265a9c1c4c1006b5ed0f89df29f1',
+    },
+    'icons': {
+        'repo': 'WhiteSur-icon-theme',
+        'commit': '73d8040da51a9ed74e47c7366e7e9ff437601a5c',
+        'sha256': '96661649071d8a9664b40d42abea75286175234473106156e9a4b25f54e6cb0c',
+    },
+    'cursors': {
+        'repo': 'WhiteSur-cursors',
+        'commit': 'e190baf618ed95ee217d2fd45589bd309b37672b',
+        'sha256': '35c817c2c26bc4d2c06801cfe6c924a068ad771d3846c5203b04d1c893dd5664',
+    },
+}
+
+BUILD_ID = 'whitesur-' + '-'.join(item['commit'][:12] for item in SOURCES.values())
+THEME_NAME = 'WhiteSur-Dark'
+ICON_NAMES = ('WhiteSur', 'WhiteSur-light', 'WhiteSur-dark', 'WhiteSur-cursors')
+
+
+def _require_session(ctx):
+    if ctx.platform != 'native' or not sys.platform.startswith('linux'):
+        raise RuntimeError('macos-theme requires native Ubuntu; WSL is unsupported.')
+    if os.geteuid() == 0:
+        raise RuntimeError('Run macos-theme as your desktop user, without sudo.')
+    if 'gnome' not in os.environ.get('XDG_CURRENT_DESKTOP', '').lower():
+        raise RuntimeError('macos-theme requires a logged-in GNOME desktop session.')
+    if not os.environ.get('DBUS_SESSION_BUS_ADDRESS'):
+        raise RuntimeError('macos-theme requires the GNOME user session D-Bus address.')
+    for command in ('bash', 'gnome-shell', 'gsettings', 'sassc',
+                    'glib-compile-resources', 'xmllint', 'gtk-update-icon-cache'):
+        if not shutil.which(command):
+            raise RuntimeError(f'macos-theme prerequisite is missing: {command}')
+
+
+def _extract(archive: Path, destination: Path, source: dict) -> Path:
+    destination.mkdir(parents=True, exist_ok=False)
+    # Ubuntu 24.04 supplies Python 3.12. The data filter rejects absolute paths,
+    # traversal, special files, and symlinks that would escape this destination.
+    with tarfile.open(archive, 'r:gz') as stream:
+        stream.extractall(destination, filter='data')
+    expected = destination / f"{source['repo']}-{source['commit']}"
+    if not expected.is_dir() or set(destination.iterdir()) != {expected}:
+        raise RuntimeError(f'Unexpected archive layout: {archive.name}')
+    return expected
+
+
+def _isolate_gtk_source(source: Path, work: Path):
+    core = source / 'libs/lib-core.sh'
+    content = core.read_text(encoding='utf-8')
+    substitutions = {
+        'export WHITESUR_TMP_DIR="/tmp/WhiteSur.lock"':
+            'export WHITESUR_TMP_DIR=' + shlex.quote(str(work)),
+        'MY_HOME=$(getent passwd "${MY_USERNAME}" | cut -d: -f6)':
+            'MY_HOME="${HOME}"',
+    }
+    # Only patch build isolation variables in the verified, disposable source.
+    # Refuse a changed upstream layout instead of silently weakening isolation.
+    for old, new in substitutions.items():
+        if content.count(old) != 1:
+            raise RuntimeError('Pinned WhiteSur source does not match the build adapter.')
+        content = content.replace(old, new, 1)
+    core.write_text(content, encoding='utf-8', newline='\n')
+
+
+def _validate_artifacts(directory: Path):
+    required = [directory / 'themes' / THEME_NAME / 'gtk-3.0/gtk.css']
+    required += [directory / 'icons' / name / 'index.theme' for name in ICON_NAMES]
+    for path in required:
+        if not path.is_file() or not path.resolve().is_relative_to(directory.resolve()):
+            raise RuntimeError(f'Theme installation is incomplete: {path}')
+    for path in directory.rglob('*'):
+        if path.is_symlink() and not path.resolve().is_relative_to(directory.resolve()):
+            raise RuntimeError(f'Theme contains a link outside its artifact directory: {path}')
+
+
+def _build(ctx, destination: Path):
+    stage = ctx.temp / ('whitesur-' + uuid.uuid4().hex)
+    stage.mkdir(parents=True, exist_ok=False)
+    # The upstream icon installer has several unquoted internal paths. Keep its
+    # build directories whitespace-free; deployment itself accepts spaced HOME.
+    if any(character.isspace() for character in str(stage)):
+        raise RuntimeError('WhiteSur build needs a temporary directory without spaces.')
+    stage_home = stage / 'home'
+    stage_home.mkdir()
+    themes = stage_home / '.themes'
+    icons = stage_home / '.local/share/icons'
+    themes.mkdir()
+    icons.mkdir(parents=True)
+    deny = stage / 'deny-privilege'
+    deny.mkdir()
+    sudo = deny / 'sudo'
+    sudo.write_text('#!/bin/sh\nprintf "%s\\n" "Theme scripts cannot run sudo." >&2\nexit 125\n',
+                    encoding='utf-8', newline='\n')
+    sudo.chmod(0o755)
+    environment = {
+        'HOME': str(stage_home),
+        'XDG_CONFIG_HOME': str(stage_home / '.config'),
+        'XDG_DATA_HOME': str(stage_home / '.local/share'),
+        'XDG_CACHE_HOME': str(stage_home / '.cache'),
+        'DBUS_SESSION_BUS_ADDRESS': '',
+        'GSETTINGS_BACKEND': 'memory',
+        'PATH': str(deny) + os.pathsep + os.environ.get('PATH', ''),
+        'TERM': os.environ.get('TERM') or 'xterm',
+    }
+    sources = {}
+    for name, source in SOURCES.items():
+        archive = stage / f'{name}.tar.gz'
+        url = f"https://codeload.github.com/vinceliuice/{source['repo']}/tar.gz/{source['commit']}"
+        ctx.runner.download(url, archive, source['sha256'])
+        sources[name] = _extract(archive, stage / name, source)
+    _isolate_gtk_source(sources['gtk'], stage / 'gtk-work')
+    # --silent-mode requires root upstream; do not pass it. Without --libadwaita
+    # or tweaks.sh, only staging themes and the staging helper app are written.
+    ctx.runner.run(['bash', str(sources['gtk'] / 'install.sh'),
+                    '-d', str(themes), '-c', 'dark', '-o', 'normal'], env=environment)
+    ctx.runner.run(['bash', str(sources['icons'] / 'install.sh'),
+                    '-d', str(icons), '-t', 'default'], env=environment)
+    # Upstream cursor install.sh is only a copy with unquoted paths. Copy its
+    # already-built dist directly and preserve the internal cursor aliases.
+    shutil.copytree(sources['cursors'] / 'dist', icons / 'WhiteSur-cursors', symlinks=True)
+
+    assembled = stage / 'assembled'
+    (assembled / 'themes').mkdir(parents=True)
+    (assembled / 'icons').mkdir()
+    shutil.copytree(themes / THEME_NAME, assembled / 'themes' / THEME_NAME, symlinks=True)
+    for name in ICON_NAMES:
+        shutil.copytree(icons / name, assembled / 'icons' / name, symlinks=True)
+    _validate_artifacts(assembled)
+    (assembled / 'sources.json').write_text(json.dumps(SOURCES, indent=2) + '\n', encoding='utf-8')
+
+    if not destination.parent.resolve().is_relative_to(ctx.home.resolve()):
+        raise RuntimeError('Theme artifact directory must resolve inside the user home.')
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    publishing = destination.with_name('.staging-' + uuid.uuid4().hex)
+    shutil.copytree(assembled, publishing, symlinks=True)
+    # Publish only complete builds, on the same filesystem. Existing builds are
+    # never recursively removed by this module.
+    publishing.rename(destination)
+
+
+def _apply_settings(ctx):
+    schemas = set(ctx.runner.capture(['gsettings', 'list-schemas']).splitlines())
+    settings = {
+        'org.gnome.desktop.interface': {
+            'gtk-theme': "'WhiteSur-Dark'",
+            'icon-theme': "'WhiteSur-dark'",
+            'cursor-theme': "'WhiteSur-cursors'",
+            'color-scheme': "'prefer-dark'",
+        },
+        'org.gnome.desktop.wm.preferences': {
+            'button-layout': "'close,minimize,maximize:'",
+        },
+        'org.gnome.shell.extensions.dash-to-dock': {
+            'dock-position': "'BOTTOM'",
+            'extend-height': 'false',
+            'dash-max-icon-size': '48',
+        },
+    }
+    for schema, values in settings.items():
+        if schema not in schemas:
+            continue
+        keys = set(ctx.runner.capture(['gsettings', 'list-keys', schema]).splitlines())
+        for key, value in values.items():
+            if key in keys:
+                ctx.backup.set_setting(schema, key, value, ctx.runner)
+
+
+def install_theme(ctx):
+    """Install WhiteSur's GTK theme, icons/cursors and Ubuntu Dock preferences."""
+    _require_session(ctx)
+    destination = ctx.data / 'themes' / BUILD_ID
+    if destination.is_symlink() or not destination.resolve().is_relative_to(ctx.home.resolve()):
+        raise RuntimeError('Theme artifact directory must be a directory inside the user home.')
+    if destination.exists():
+        marker = destination / 'sources.json'
+        if not marker.is_file() or json.loads(marker.read_text(encoding='utf-8')) != SOURCES:
+            raise RuntimeError(f'Unrecognized existing theme directory: {destination}')
+        _validate_artifacts(destination)
+    else:
+        _build(ctx, destination)
+    ctx.backup.link(destination / 'themes' / THEME_NAME, ctx.home / '.themes' / THEME_NAME)
+    for name in ICON_NAMES:
+        ctx.backup.link(destination / 'icons' / name, ctx.home / '.local/share/icons' / name)
+    _apply_settings(ctx)

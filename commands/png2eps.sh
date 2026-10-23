@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
-convert $1.png  \( +clone -alpha opaque -fill white -colorize 100% \) +swap -geometry +0+0 -compose Over -composite -alpha off eps2:eps/$1.eps
+# Legacy basename input remains supported: png2eps.sh figure -> eps/figure.eps.
+set -euo pipefail
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+exec /usr/bin/python3 "$script_dir/image2eps.py" --format png "$@"

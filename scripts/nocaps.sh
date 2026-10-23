@@ -1,7 +1,5 @@
- #!/bin/bash
-
-scripts=$(cd "$(dirname $0)"; pwd)
-dotfiles=$(cd "$(dirname $0)"; cd ..; pwd)
-
-dconf reset /org/gnome/settings-daemon/plugins/keyboard/active
-dconf write /org/gnome/desktop/input-sources/xkb-options "['ctrl:nocaps']"
+#!/usr/bin/env bash
+# Compatibility entry point: preview, confirm and back up the GNOME Caps -> Ctrl setting.
+set -euo pipefail
+repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+exec bash "$repo/setup_all.sh" --modules keyboard --configs-only "$@"

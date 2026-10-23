@@ -1,0 +1,38 @@
+{
+  "reviewed": "2026-10-23",
+  "neovim": {
+    "version": "0.12.6",
+    "amd64": {"url": "https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-x86_64.tar.gz", "sha256": "474430d53e6264f6d6dd18db42d6dc9df3a1b56ca9e88a325bbf860e1a811d87"},
+    "arm64": {"url": "https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-arm64.tar.gz", "sha256": "8f1f64a0bdb97247034038c3823c6cbad5bdf9ecd5751b85494b71c3ee04c815"}
+  },
+  "uv": {
+    "version": "0.13.5",
+    "amd64": {"url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-gnu.tar.gz", "sha256": "f68d291c75783122dad58ab77def0e13f3233f358731db5d6d7e8715603b928f"},
+    "arm64": {"url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-aarch64-unknown-linux-gnu.tar.gz", "sha256": "4bb69cf95ed13f23713bb7bc09f241896ea0c75b7c557e615a20604b82f9c403"}
+  },
+  "node": {
+    "version": "24.22.1",
+    "amd64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-x64.tar.xz", "sha256": "6c172a9ab6718f7b801fb5a7bd486af2ee5e32758086a04b84fcce2aa77095e6"},
+    "arm64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-arm64.tar.xz", "sha256": "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e"}
+  },
+  "rustup": {
+    "version": "1.29.2", "toolchain": "1.99.1",
+    "amd64": {"url": "https://static.rust-lang.org/rustup/archive/1.29.2/x86_64-unknown-linux-gnu/rustup-init", "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"},
+    "arm64": {"url": "https://static.rust-lang.org/rustup/archive/1.29.2/aarch64-unknown-linux-gnu/rustup-init", "sha256": "a9c168dbea81a84671c6b7a5c1795cb0eb699020110d107ddfca427bd797e697"}
+  },
+  "ros_source": {
+    "version": "1.3.0",
+    "url": "https://github.com/ros-infrastructure/ros-apt-source/releases/download/1.3.0/ros2-apt-source_1.3.0.noble_all.deb",
+    "sha256": "f31d84adf5054c7d60ded0e82c0f776a77ea33af53d08f40b9ad7c94cca55296"
+  },
+  "plantuml": {
+    "version": "1.2026.9",
+    "url": "https://github.com/plantuml/plantuml/releases/download/v1.2026.9/plantuml-1.2026.9.jar",
+    "sha256": "aa4a1d06f8911c4b842beff4828dd955be431692b631a312d04c0e9fab9581de"
+  },
+  "starship": {
+    "version": "1.27.0",
+    "amd64": {"url": "https://github.com/starship/starship/releases/download/v1.27.0/starship-x86_64-unknown-linux-musl.tar.gz", "sha256": "10c8eb4cb3b761d9bf59ea828444c2dab36c900b7d69a69e08814b286969df89"},
+    "arm64": {"url": "https://github.com/starship/starship/releases/download/v1.27.0/starship-aarch64-unknown-linux-musl.tar.gz", "sha256": "341f5cbf24699fa0b27ec88965ad25f862ea09e15d35a543fd6ffdff1d2aa00d"}
+  }
+}

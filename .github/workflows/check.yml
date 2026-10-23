@@ -1,0 +1,39 @@
+name: Ubuntu dotfiles checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3-pil tmux
+      - name: Offline checks
+        run: |
+          python3 -B tests/check-syntax.py
+          python3 -B tests/test-installer.py
+          python3 -B tests/test-cli.py
+          python3 -B tests/test-terminal-setup.py
+          python3 -B tests/test-ros-format.py
+          bash tests/test-shell.sh
+          python3 -B tests/test-tmux.py
+          bash tests/test-commands.sh
+          python3 -B tests/test-fetchall-pty.py
+          python3 -B tests/test-image2eps.py
+          git diff --check
+      - name: Neovim and plugin integration
+        run: python3 -B tests/check-neovim.py --plugins
+      - name: ROS formatter integration
+        run: python3 -B tests/check-ros-format.py

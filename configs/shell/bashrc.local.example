@@ -1,0 +1,6 @@
+# Copy selected settings into ~/.bashrc.local. This file is not sourced automatically.
+# export ROS_WORKSPACE="$HOME/workspaces/robot project"
+# DOTFILES_ROS_DISTRO=jazzy
+# DOTFILES_AUTO_ROS=0
+# DOTFILES_AUTO_TMUX=1
+# Add machine-specific aliases and paths here, without committing credentials.

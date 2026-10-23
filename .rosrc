@@ -1,93 +1,108 @@
-#!/bin/bash
+# ROS 2 helpers. Override ROS_WORKSPACE / DOTFILES_ROS_DISTRO in ~/.bashrc.local.
+# Installed as ~/.rosrc; loading this file alone does not activate an environment.
 
-rosdistro="kinetic"
+_ros_validate_workspace() {
+  local workspace
+  workspace=$(builtin cd -- "$1" 2>/dev/null && pwd -P) || {
+    printf 'ROS workspace does not exist: %s\n' "$1" >&2
+    return 1
+  }
+  if [[ $workspace == / || $workspace == "$(builtin cd -- "$HOME" && pwd -P)" || ! -d $workspace/src ]]; then
+    printf 'Expected a dedicated ROS workspace with a src directory: %s\n' "$workspace" >&2
+    return 1
+  fi
+  printf '%s\n' "$workspace"
+}
 
-if test -e /opt/ros/$rosdistro/setup.bash
-then
-  source /opt/ros/$rosdistro/setup.bash
-fi
+_ros_workspace() {
+  local candidate
+  if [[ -n ${ROS_WORKSPACE:-} ]]; then
+    _ros_validate_workspace "$ROS_WORKSPACE"
+    return
+  fi
+  candidate=$(pwd -P) || return
+  while [[ $candidate != / && ! -d $candidate/src ]]; do
+    candidate=${candidate%/*}
+    [[ -n $candidate ]] || candidate=/
+  done
+  _ros_validate_workspace "$candidate"
+}
 
-if test -e $marked/catkin
-then
-  source $(cat $marked/catkin)/devel/setup.bash
-fi
-
-alias cdc='cd $(cat $marked/catkin)'
-alias cds='cd $(cat $marked/catkin)/src'
-
-function make()
-{
-  if test -e $(pwd)/Makefile
-  then
-    command make $@
-  else
-    pushd $(cat $marked/catkin) && command catkin_make $@ && source devel/setup.bash
-    rospack profile | sed -E "s/(.*)(\s\**\s)(.*)/\3/g" | grep -e "\/.*" | sort
-    popd
+ros_env() {
+  local selected=${DOTFILES_ROS_DISTRO:-jazzy} root=${DOTFILES_ROS_ROOT:-/opt/ros} workspace
+  if (( $# > 1 )) || [[ ! $selected =~ ^[a-z][a-z0-9]*$ ]]; then
+    printf 'Usage: ros_env [workspace]; DOTFILES_ROS_DISTRO must name one ROS 2 distribution.\n' >&2
+    return 2
+  fi
+  if [[ ${ROS_VERSION:-2} != 2 || ( -n ${ROS_DISTRO:-} && $ROS_DISTRO != "$selected" ) ]]; then
+    printf 'Refusing to mix ROS environments (%s -> %s). Open a fresh shell.\n' "${ROS_DISTRO:-ROS 1}" "$selected" >&2
+    return 1
+  fi
+  if [[ ! -r $root/$selected/setup.bash ]]; then
+    printf 'ROS 2 setup not found: %s/%s/setup.bash\n' "$root" "$selected" >&2
+    return 1
+  fi
+  if (( $# == 1 )); then
+    workspace=$(_ros_validate_workspace "$1") || return
+    if [[ ! -r $workspace/install/local_setup.bash ]]; then
+      printf 'Build the workspace before sourcing its overlay: %s\n' "$workspace" >&2
+      return 1
+    fi
+  fi
+  source "$root/$selected/setup.bash" || return
+  if [[ -n ${workspace:-} ]]; then
+    source "$workspace/install/local_setup.bash"
   fi
 }
 
-function build()
-{
-  pushd $(cat $marked/catkin) && command catkin build $@ && source devel/setup.bash
-  rospack profile | sed -E "s/(.*)(\s\**\s)(.*)/\3/g" | grep -e "\/.*" | sort
-  popd
-}
+# Subshells keep the caller's directory and overlay environment unchanged.
+ros_build() (
+  local workspace
+  workspace=$(_ros_workspace) || return
+  builtin cd -- "$workspace" || return
+  ros_env || return
+  command colcon build --symlink-install "$@"
+)
 
-function sros()
-{
-  pushd $(cat $marked/catkin) && source devel/setup.bash
-  rospack profile | sed -E "s/(.*)(\s\**\s)(.*)/\3/g" | grep -e "\/.*" | sort
-  popd
-}
+ros_test() (
+  local workspace result=0
+  workspace=$(_ros_workspace) || return
+  builtin cd -- "$workspace" || return
+  ros_env || return
+  command colcon test "$@" || result=$?
+  command colcon test-result --verbose || return
+  return "$result"
+)
 
-function dros()
-{
-  pushd $(cat $marked/catkin) && rosdep install -iry --from-paths src
-  popd
-}
+ros_deps() (
+  local workspace
+  workspace=$(_ros_workspace) || return
+  builtin cd -- "$workspace" || return
+  ros_env || return
+  command rosdep install --from-paths src --ignore-src -r -y --rosdistro "${DOTFILES_ROS_DISTRO:-jazzy}" "$@"
+)
 
-function tros()
-{
-  pushd $(cat $marked/catkin) > /dev/null
-  catkin run_tests
-  catkin_test_results
-  popd > /dev/null
-}
-
-function recursive_wstool_update()
-{
-  pushd $(cat $marked/catkin)
-  wstool init src
-
-  echo "hoge" > /tmp/wstool_outputs
-
-  while test "$(cat /tmp/wstool_outputs)" != "Merge caused no change, no new elements found"
-  do
-    find -regextype posix-basic -regex "\./src/.*/.*\.rosinstall" | xargs -n1 wstool merge --target-workspace=src | uniq | tee /tmp/wstool_outputs
-    wstool update --target-workspace=src
+ros_clean() (
+  local workspace name target
+  local -a targets=()
+  if [[ $# != 1 || $1 != --yes ]]; then
+    printf 'Usage: ros_clean --yes\nRemoves only marked colcon build/install/log directories in the selected workspace.\n' >&2
+    return 2
+  fi
+  workspace=$(_ros_workspace) || return
+  # Validate the entire operation before deleting anything. Never follow output symlinks.
+  for name in build install log; do
+    target=$workspace/$name
+    [[ -e $target || -L $target ]] || continue
+    if [[ -L $target || ! -d $target || ! -f $target/COLCON_IGNORE || -L $target/COLCON_IGNORE ]]; then
+      printf 'Refusing to remove an unmarked or linked directory: %s\n' "$target" >&2
+      return 1
+    fi
+    [[ $(builtin cd -- "$target" && pwd -P) == "$workspace/$name" ]] || return 1
+    targets+=("$target")
   done
-
-  rm /tmp/wstool_outputs
-  popd
-}
-
-function clang_autoformat()
-{
-  clang-format-3.8 -i -style=file $@
-}
-
-function recursive_clang_autoformat()
-{
-  find . -name '*.h' -or -name '*.hpp' -or -name '*.cpp' | xargs clang-format-3.8 -i -style=file $1
-}
-
-function pep8_autoformat()
-{
-  autopep8 --in-place --aggressive --aggressive $@
-}
-
-function recursive_pep8_autoformat()
-{
-  find . -name '*.py' | xargs autopep8 --in-place --aggressive --aggressive $1
-}
+  if (( ${#targets[@]} )); then
+    printf 'Removing colcon outputs from %s\n' "$workspace"
+    command rm -rf -- "${targets[@]}"
+  fi
+)

@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
-convert $1.jpg  \( +clone -alpha opaque -fill white -colorize 100% \) +swap -geometry +0+0 -compose Over -composite -alpha off eps2:$2.eps
+# Legacy basename input/output remain supported: jpg2eps.sh photo result.
+set -euo pipefail
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+exec /usr/bin/python3 "$script_dir/image2eps.py" --format jpg "$@"

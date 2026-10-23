@@ -1,7 +1,9 @@
 #!/usr/bin/env perl
-$latex            = 'platex -synctex=1 -halt-on-error';
-$bibtex           = 'pbibtex';
-$biber            = 'biber  -u -U --output_safechars';
+$latex            = 'platex %O -synctex=1 -halt-on-error %S';
+$pdflatex         = 'pdflatex %O -synctex=1 -halt-on-error %S';
+$lualatex         = 'lualatex %O -synctex=1 -halt-on-error %S';
+$bibtex           = 'pbibtex %O %B';
+$biber            = 'biber %O %B';
 $dvipdf           = 'dvipdfmx %O -o %D %S';
 $makeindex        = 'mendex %O -o %D %S';
 $max_repeat       = 5;

@@ -1,0 +1,98 @@
+# Colored segments with ASCII labels/separators; no Nerd Font is required.
+# WSL uses the font selected in the Windows terminal application.
+"$schema" = 'https://starship.rs/config-schema.json'
+add_newline = true
+command_timeout = 500
+scan_timeout = 30
+format = '$username$hostname$directory$git_branch$git_commit$git_status$git_state$python$nodejs$rust$cmd_duration$status$jobs$line_break$character'
+
+[username]
+show_always = true
+format = '[ $user ]($style)'
+style_user = 'bold fg:white bg:blue'
+style_root = 'bold fg:white bg:red'
+
+[hostname]
+ssh_only = false
+format = '[ @$hostname ]($style)'
+style = 'fg:white bg:blue'
+
+[directory]
+format = '[ | $path($read_only) ]($style)'
+style = 'bold fg:black bg:cyan'
+read_only = ' ro'
+read_only_style = 'bold fg:red bg:cyan'
+truncation_length = 4
+truncation_symbol = '.../'
+home_symbol = '~'
+
+[git_branch]
+format = '[ | git:$branch ]($style)'
+style = 'fg:black bg:green'
+truncation_length = 32
+truncation_symbol = '...'
+
+[git_commit]
+only_detached = true
+format = '[ | detached:$hash ]($style)'
+style = 'fg:black bg:green'
+
+[git_status]
+format = '([ $all_status$ahead_behind]($style))'
+style = 'fg:black bg:green'
+conflicted = 'conflict:${count} '
+stashed = 'stash:${count} '
+deleted = 'del:${count} '
+renamed = 'ren:${count} '
+modified = 'mod:${count} '
+typechanged = 'type:${count} '
+staged = 'staged:${count} '
+untracked = 'new:${count} '
+ahead = 'ahead:${count} '
+behind = 'behind:${count} '
+diverged = 'ahead:${ahead_count}/behind:${behind_count} '
+up_to_date = ''
+
+[git_state]
+format = '[ | $state( $progress_current/$progress_total) ]($style)'
+style = 'bold fg:black bg:yellow'
+
+[python]
+format = '[ | py:${version}( env:$virtualenv) ]($style)'
+version_format = '${raw}'
+style = 'fg:black bg:yellow'
+python_binary = ['python', 'python3']
+
+[nodejs]
+format = '[ | node:$version ]($style)'
+version_format = '${raw}'
+style = 'fg:black bg:yellow'
+
+[rust]
+format = '[ | rust:$version ]($style)'
+version_format = '${raw}'
+style = 'fg:black bg:yellow'
+
+[cmd_duration]
+min_time = 2000
+format = '[ | took:$duration ]($style)'
+style = 'fg:white bg:purple'
+
+[status]
+disabled = false
+format = '[ | exit:$status ]($style)'
+style = 'bold fg:white bg:red'
+
+[jobs]
+number_threshold = 1
+symbol_threshold = 1
+format = '[ | jobs:$number ]($style)'
+style = 'fg:white bg:purple'
+
+[character]
+success_symbol = '[>](bold green)'
+error_symbol = '[>](bold red)'
+vimcmd_symbol = '[V](bold green)'
+vimcmd_visual_symbol = '[V](bold yellow)'
+vimcmd_replace_symbol = '[R](bold purple)'
+vimcmd_replace_one_symbol = '[r](bold purple)'

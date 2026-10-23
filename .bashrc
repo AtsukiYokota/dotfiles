@@ -1,148 +1,101 @@
-[[ $- != *i* ]] && return
-
-eval `dircolors ~/.dircolors`
+# Interactive supplement, sourced by a managed block in the distribution's ~/.bashrc.
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
+[[ ${_DOTFILES_BASH_LOADED:-0} == 1 ]] && return
+_DOTFILES_BASH_LOADED=1
 
 HISTCONTROL=ignoreboth
+HISTSIZE=10000
+HISTFILESIZE=20000
+shopt -s histappend checkwinsize
 
-shopt -s histappend
-
-    HISTSIZE=4096
-HISTFILESIZE=4096
-
-shopt -s checkwinsize
-
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-if test -z "${debian_chroot:-}" && test -r /etc/debian_chroot
-then
-  debian_chroot=$(cat /etc/debian_chroot)
+case ":${PATH}:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+[[ -r $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
+if [[ -r ${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/node.env ]]; then
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/node.env"
 fi
 
-if ! shopt -oq posix
-then
-  if test -f /usr/share/bash-completion/bash_completion
-  then
-    . /usr/share/bash-completion/bash_completion
-  elif test -f /etc/bash_completion
-  then
-    . /etc/bash_completion
+if command -v dircolors >/dev/null 2>&1; then
+  if [[ -r $HOME/.dircolors ]]; then
+    eval "$(dircolors -b "$HOME/.dircolors")"
+  else
+    eval "$(dircolors -b)"
   fi
 fi
-
-function _update_ps1() {
-    PS1="$(~/.local/bin/powerline-shell $?)"
-}
-
-if [ "$TERM" != "linux" ]; then
-    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+if ! shopt -oq posix && ! declare -p BASH_COMPLETION_VERSINFO >/dev/null 2>&1; then
+  if [[ -r /usr/share/bash-completion/bash_completion ]]; then
+    source /usr/share/bash-completion/bash_completion
+  fi
 fi
-
-export LANG=C
-export LC_MESSAGE=C
-export LC_TIME=en_US.UTF-8
-export LESSCHARSET=utf-8
-export locale=en_US.UTF-8
-
-case $TERM in
-    linux) LANG=C ;;
-    *) LANG=ja_JP.UTF-8 ;;
-esac
-
-export marked="$HOME/marked"
-
-if test -e /opt/ros; then source ~/.rosrc; fi
-
-
-cd()
-{
-  builtin cd "$@" && ls -avF --color=auto
-}
 
 alias ls='ls -avF --color=auto'
-# alias sl='ls'
-alias ks='ls'
-
-alias cdm='echo "move marked path: $(cat $marked/unnamed)"; cd $(cat $marked/unnamed)'
-
-alias alpha='for each in $(echo {a..z}); do echo $each; done'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 alias grep='grep --color=always --exclude-dir=.git'
-alias ps='ps aux --sort=start_time'
 alias rank='sort | uniq -c | sort -nr'
-alias tmux='tmux -2u'
 
-compare()
-{
-  if which colordiff &> /dev/null
-  then
-    alias diff='colordiff'
-  fi
-
-  diff -Bbyw $@ | less -R
+# Retain the original interactive cd-and-list workflow, including hidden files.
+cd() {
+  builtin cd "$@" || return
+  command ls -avF --color=auto
 }
 
-update()
-{
-  sudo apt update && sudo apt upgrade
-}
-
-cxx()
-{
-  compiler="g++-7"
-  version="-std=c++17"
-  options="-Wall -Wextra"
-  boost_links="-lboost_system -lboost_thread -lboost_date_time"
-  other_links="-ldl -lstdc++fs"
-
-  $compiler $@ $version $options $boost_links $other_links
-}
-
-mark()
-{
-  file="unnamed"
-  info="[mark] following path marked"
-
-  mkdir -p $marked || exit 1
-
-  for opt in "$@"
-  do
-    case "$@" in
-      "-c" | "--catkin" )
-        file="catkin"
-        info="$info as catkin workspace"
-        break;;
-    esac
-  done
-
-  echo "$info: $(pwd | tee $marked/$file)";
-}
-
-# 初回シェル時のみ tmux実行
-if [ $SHLVL = 1 ]; then
-  tmux
+# Fallback for configuration-only installs or terminals without Starship.
+case ${TERM:-dumb} in
+  *color*|xterm*|screen*|tmux*)
+    PS1='\[\e[32m\]\u@\h\[\e[0m\]:\[\e[34m\]\w\[\e[0m\]\$ ' ;;
+  *) PS1='\u@\h:\w\$ ' ;;
+esac
+if [[ ${TERM:-dumb} != dumb ]] && command -v starship >/dev/null 2>&1; then
+  export STARSHIP_CONFIG=${STARSHIP_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml}
+  eval "$(starship init bash)"
 fi
 
-source /opt/ros/kinetic/setup.bash
-# export PYTHONPATH=$PYTHONPATH:/home/yokota/.local/lib/python2.7/site-packages
-export PATH=$PATH:/home/yokota/.local/bin:/home/yokota/bin
+# Generic directory bookmarks; names cannot escape the private state directory.
+mark() {
+  local name=${1:-default} state=${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/marks
+  if (( $# > 1 )) || [[ ! $name =~ ^[[:alnum:]_-]+$ ]]; then
+    printf 'Usage: mark [name: letters, digits, underscore, hyphen]\n' >&2
+    return 2
+  fi
+  mkdir -p -- "$state" || return
+  pwd -P > "$state/$name"
+}
 
-alias cdr="cd ~/Dropbox"
-alias cdt="cd ~/Dropbox/works/toybox"
-alias cdw="cd ~/Dropbox/works"
-alias cdp="cd ~/Dropbox/works/papers"
-alias l="ls"
-alias png2eps="~/bin/png2eps.sh"
-alias jpg2eps="~/bin/jpg2eps.sh"
-alias fetchall="~/bin/fetchall.sh"
-alias sshm="ssh yokota@150.69.46.178"
-alias sshm6="ssh yokota@150.69.46.178 -p26"
-# alias sshm6gui="ssh -Y -C yokota@150.69.46.178 -p26"
-alias sshm6gui="ssh -Y yokota@150.69.46.178 -p26"
-alias vimrc="vi ~/.vimrc"
-alias bashrc="vi ~/.bashrc"
-alias gpu="watch -n 0.1 nvidia-smi"
-export PATH=/usr/local/cuda-9.0/bin:${PATH}
-export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:${LD_LIBRARY_PATH}
-export PATH=$PATH:/home/yokota/Dropbox/works/mixcell/QTCode
-export PYTHONPATH=$PYTHONPATH:/home/yokota/Dropbox/works/mixcell/source_code
-export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
-export PATH=/usr/lib/llvm-6.0/bin:$PATH
+cmark() {
+  local name=${1:-default} state=${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/marks destination
+  if (( $# > 1 )) || [[ ! $name =~ ^[[:alnum:]_-]+$ ]]; then
+    printf 'Usage: cmark [name: letters, digits, underscore, hyphen]\n' >&2
+    return 2
+  fi
+  if [[ ! -r $state/$name ]] || ! IFS= read -r destination < "$state/$name"; then
+    printf 'No bookmark named %s. Run mark first.\n' "$name" >&2
+    return 1
+  fi
+  builtin cd -- "$destination"
+}
+
+[[ -r $HOME/.rosrc ]] && source "$HOME/.rosrc"
+if [[ -r ${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/formatting.bash ]]; then
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/formatting.bash"
+fi
+# Keep machine-specific paths, workspace selection and preferences out of Git.
+[[ -r $HOME/.bashrc.local ]] && source "$HOME/.bashrc.local"
+
+# Only the installed ROS base is auto-loaded; overlays require ros_env WORKSPACE.
+if [[ ${DOTFILES_AUTO_ROS:-1} == 1 ]] && declare -F ros_env >/dev/null; then
+  if [[ -r ${DOTFILES_ROS_ROOT:-/opt/ros}/${DOTFILES_ROS_DISTRO:-jazzy}/setup.bash ]]; then
+    ros_env
+  fi
+fi
+
+# Opt in locally; an ordinary terminal should still work without tmux installed.
+if [[ ${DOTFILES_AUTO_TMUX:-0} == 1 && -z ${TMUX:-} && -t 0 && -t 1 ]] && command -v tmux >/dev/null 2>&1; then
+  tmux new-session -A -s main
+fi
