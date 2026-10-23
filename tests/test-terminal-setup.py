@@ -70,6 +70,12 @@ class TerminalSetupTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             keyboard.configure_keyboard(SimpleNamespace(platform='wsl'))
 
+    def test_resolute_caps_options_do_not_override_control_mapping(self):
+        original = "['caps:return', 'caps:ctrl_shifted_capslock', 'lv3:caps_switch_capslock_with_ctrl', 'caps:internal_nocancel', 'compose:ralt']"
+        expected = "['caps:internal_nocancel', 'compose:ralt', 'ctrl:nocaps']"
+        self.assertEqual(keyboard.caps_as_ctrl(original), expected)
+        self.assertEqual(keyboard.caps_as_ctrl(expected), expected)
+
     def test_flat_starship_archive_is_cached_and_existing_binary_is_restorable(self):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)

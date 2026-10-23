@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Format ROS 2 Jazzy C/C++ or Python without exposing originals to formatters.
+"""Format ROS 2 Lyrical C/C++ or Python without exposing originals to formatters.
 
 File mode writes by default. --check and --dry-run never write source files.
 --stdin formats one editor buffer to stdout without touching its named file.
@@ -107,12 +107,12 @@ def _walk_error(error):
 
 def find_formatter(language):
     name = 'ament_uncrustify' if language == 'cpp' else 'autopep8'
-    if language == 'cpp' and os.environ.get('ROS_DISTRO', 'jazzy') != 'jazzy':
-        raise FormatError('This formatter targets ROS 2 Jazzy. Open a fresh shell and run ros_env.')
+    if language == 'cpp' and os.environ.get('ROS_DISTRO', 'lyrical') != 'lyrical':
+        raise FormatError('This formatter targets ROS 2 Lyrical. Open a fresh shell and run ros_env.')
     executable = shutil.which(name)
     if executable is None:
-        hint = ('Install ros-jazzy-ament-uncrustify, then run ros_env '
-                '(or source /opt/ros/jazzy/setup.bash).'
+        hint = ('Install ros-lyrical-ament-uncrustify, then run ros_env '
+                '(or source /opt/ros/lyrical/setup.bash).'
                 if language == 'cpp' else 'Install autopep8 with the dotfiles python module.')
         raise FormatError(f'{name} is unavailable. {hint}')
     return executable
@@ -140,7 +140,7 @@ def format_content(content, filename, language, executable, work):
     staged = work / ('input' + Path(filename).suffix)
     staged.write_bytes(content)
     if language == 'cpp':
-        # Use Jazzy's own config and convergence loop, including its version-specific cfg.
+        # Use Lyrical's own config and convergence loop, including its version-specific cfg.
         # .h is treated as C, as in ament; C++ headers should use .hpp.
         dialect = 'C' if staged.suffix in {'.c', '.h'} else 'CPP'
         command = [executable, '--language', dialect]

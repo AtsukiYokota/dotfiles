@@ -1,6 +1,6 @@
-# ROS 2 Jazzy用コード整形
+# ROS 2 Lyrical用コード整形
 
-4つの関数はROS 2 Jazzy向けの共通コマンド`ros-format`を使う。
+4つの関数はROS 2 Lyrical向けの共通コマンド`ros-format`を使う。
 関数を実行すると対象ファイルを書き換える。保存時やシェル起動時の自動実行は行わない。
 
 | 関数 | 対象 | 例 |
@@ -16,22 +16,24 @@
 
 ## 整形規則と依存
 
-C/C++では`ament_uncrustify`のJazzy用設定を使う。
+C/C++では`ament_uncrustify`のLyrical用設定を使う。
+Lyricalの言語標準はC17・C++20。整形では言語標準やプロジェクトのコンパイラ設定は変更しない。
 `clang_autoformat`という名前は操作の互換性のために残しているが、実際の処理はuncrustifyで行う。
-Jazzyのパッケージに含まれる設定の選択と、整形結果が安定するまでの反復処理もamentに任せる。
+Lyricalのパッケージに含まれる設定の選択と、整形結果が安定するまでの反復処理もamentに任せる。
+必要なuncrustifyは`ros-lyrical-ament-uncrustify`の依存パッケージとして導入する。
 対象拡張子は`.c`、`.cc`、`.cpp`、`.cxx`、`.h`、`.hh`、`.hpp`、`.hxx`。
 `.c`と`.h`はC、その他はC++として処理する。C++ヘッダーは公式規約に合わせて`.hpp`を使う。
-[Jazzyのコード規約](https://docs.ros.org/en/jazzy/The-ROS2-Project/Contributing/Code-Style-Language-Versions.html)、[ament_uncrustifyの実装](https://github.com/ament/ament_lint/blob/jazzy/ament_uncrustify/ament_uncrustify/main.py)を参照。
+[Lyricalのコード規約](https://docs.ros.org/en/lyrical/The-ROS2-Project/Contributing/Contributing-to-code/Code-Style-Language-Versions.html)、[ament_uncrustifyの実装](https://github.com/ament/ament_lint/blob/lyrical/ament_uncrustify/ament_uncrustify/main.py)を参照。
 
 Pythonではautopep8を使い、インデントを含むPEP 8の整形を行う。
-最大行長は、Jazzyの`ament_flake8`が実際に検査する99文字に合わせた。
+最大行長は、Lyricalの`ament_flake8`が実際に検査する99文字に合わせた。
 公式文章は100文字までとしているが、配布される検査設定を優先している。
 ユーザー・プロジェクトのautopep8設定は読み込まず、`--aggressive`も使わない。
 整形前後のPython構文木を比較し、空白修正や順序を保った`import a, b`の分割以外で構文木が変わる結果は適用しない。
-[JazzyのPython規約](https://docs.ros.org/en/jazzy/The-ROS2-Project/Contributing/Code-Style-Language-Versions.html#python)、[ament_flake8設定](https://github.com/ament/ament_lint/blob/jazzy/ament_flake8/ament_flake8/configuration/ament_flake8.ini)、[autopep8の仕様](https://github.com/hhatto/autopep8#more-advanced-usage)を参照。
+[LyricalのPython規約](https://docs.ros.org/en/lyrical/The-ROS2-Project/Contributing/Contributing-to-code/Code-Style-Language-Versions.html#python)、[ament_flake8設定](https://github.com/ament/ament_lint/blob/lyrical/ament_flake8/ament_flake8/configuration/ament_flake8.ini)、[autopep8の仕様](https://github.com/hhatto/autopep8#more-advanced-usage)を参照。
 
-インストーラーのROS 2構成には、`ros-jazzy-ament-uncrustify`、`ros-jazzy-ament-cpplint`、`ros-jazzy-ament-flake8`、`ros-jazzy-ament-pep257`とPython構成のautopep8を含める。
-C/C++の整形前には`ros_env`を実行する。別のROSディストリビューションが有効な場合は、新しいシェルでJazzyを読み込む。
+インストーラーのROS 2構成には、`ros-lyrical-ament-uncrustify`、`ros-lyrical-ament-cpplint`、`ros-lyrical-ament-flake8`、`ros-lyrical-ament-pep257`とPython構成のautopep8を含める。
+C/C++の整形前には`ros_env`を実行する。別のROSディストリビューションが有効な場合は、新しいシェルでLyricalを読み込む。
 必要な実行ファイルがなければ、導入・環境読込の案内を出して終了する。整形コマンド自身はパッケージをインストールしない。
 
 ## プレビューと対象の選択
@@ -93,6 +95,6 @@ C/C++では`ros_env`を実行したシェルからNeovimを起動する。
 ## 検証方法
 
 `python3 tests/test-ros-format.py`は、依存ツールを模した実行ファイルで対象選択、失敗時の内容保持、書き込み失敗からの復元、シェル引数を検査する。
-`python3 tests/check-ros-format.py`は、ハッシュを検証したJazzyのament_lintソースとautopep8のwheel、展開したUbuntuのuncrustifyパッケージを一時領域で実行する。
+`python3 tests/check-ros-format.py`は、ハッシュを検証したLyricalのament_lintソースとautopep8のwheel、展開したUbuntuのuncrustifyパッケージを一時領域で実行する。
 後者はネットワーク接続を使うが、OS・ROS・Pythonパッケージのインストールは行わない。
 Neovim側の入力・出力と失敗時のバッファ保持は`tests/nvim-smoke.lua`から専用テストを読み込んで検査する。

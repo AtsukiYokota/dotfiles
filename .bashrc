@@ -92,7 +92,7 @@ fi
 
 # Only the installed ROS base is auto-loaded; overlays require ros_env WORKSPACE.
 if [[ ${DOTFILES_AUTO_ROS:-1} == 1 ]] && declare -F ros_env >/dev/null; then
-  if [[ -r ${DOTFILES_ROS_ROOT:-/opt/ros}/${DOTFILES_ROS_DISTRO:-jazzy}/setup.bash ]]; then
+  if [[ -r ${DOTFILES_ROS_ROOT:-/opt/ros}/${DOTFILES_ROS_DISTRO:-lyrical}/setup.bash ]]; then
     ros_env
   fi
 fi

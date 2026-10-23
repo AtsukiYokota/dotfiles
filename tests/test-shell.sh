@@ -21,9 +21,9 @@ export PATH="$scratch/bin:/usr/bin:/bin"
 export CALL_LOG="$scratch/calls" ROS_SOURCE_LOG="$scratch/ros-source"
 export CLIP_FILE="$scratch/clipboard" TMUX_FILE="$scratch/tmux-buffer" PASTE_FILE="$scratch/pasted"
 export BACKEND_LOG="$scratch/backend"
-mkdir -p "$HOME" "$TMPDIR" "$scratch/bin" "$scratch/ros/jazzy" "$scratch/robot workspace/src/pkg"
+mkdir -p "$HOME" "$TMPDIR" "$scratch/bin" "$scratch/ros/lyrical" "$scratch/robot workspace/src/pkg"
 export DOTFILES_ROS_ROOT="$scratch/ros"
-export DOTFILES_ROS_DISTRO=jazzy
+export DOTFILES_ROS_DISTRO=lyrical
 unset ROS_DISTRO ROS_VERSION ROS_WORKSPACE AMENT_PREFIX_PATH COLCON_PREFIX_PATH TMUX WSL_DISTRO_NAME WSL_INTEROP DISPLAY WAYLAND_DISPLAY || true
 checks=0
 pass() { checks=$((checks + 1)); printf 'ok %s - %s\n' "$checks" "$1"; }
@@ -34,9 +34,9 @@ expect_failure() {
   fi
 }
 
-cat > "$DOTFILES_ROS_ROOT/jazzy/setup.bash" <<'MOCK'
+cat > "$DOTFILES_ROS_ROOT/lyrical/setup.bash" <<'MOCK'
 printf 'base\n' >> "$ROS_SOURCE_LOG"
-export ROS_DISTRO=jazzy ROS_VERSION=2
+export ROS_DISTRO=lyrical ROS_VERSION=2
 MOCK
 cat > "$scratch/bin/colcon" <<'MOCK'
 #!/usr/bin/env bash
@@ -104,7 +104,7 @@ pass 'ROS 1 and a different ROS 2 distribution are rejected before sourcing'
 mkdir -p "$ROS_WORKSPACE/install"
 printf 'export MOCK_OVERLAY=loaded\n' > "$ROS_WORKSPACE/install/local_setup.bash"
 ros_env "$ROS_WORKSPACE"
-[[ $ROS_DISTRO == jazzy && $MOCK_OVERLAY == loaded ]] || fail 'explicit overlay'
+[[ $ROS_DISTRO == lyrical && $MOCK_OVERLAY == loaded ]] || fail 'explicit overlay'
 unset ROS_DISTRO ROS_VERSION MOCK_OVERLAY
 pass 'explicit overlay activation works'
 
@@ -114,7 +114,7 @@ grep -Fx 'test-result' "$CALL_LOG" >/dev/null || fail 'failed test did not repor
 pass 'failed tests return failure and still report colcon test results'
 : > "$CALL_LOG"
 ros_deps
-grep -Fx -- '--rosdistro' "$CALL_LOG" >/dev/null && grep -Fx jazzy "$CALL_LOG" >/dev/null || fail 'rosdep distro'
+grep -Fx -- '--rosdistro' "$CALL_LOG" >/dev/null && grep -Fx lyrical "$CALL_LOG" >/dev/null || fail 'rosdep distro'
 pass 'rosdep uses the selected ROS 2 distribution'
 
 mkdir -p "$scratch/build"

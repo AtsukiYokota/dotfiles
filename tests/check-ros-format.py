@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise actual Jazzy ament_uncrustify/autopep8 in a disposable Ubuntu directory.
+"""Exercise actual Lyrical ament_uncrustify/autopep8 in a disposable Ubuntu directory.
 
 Downloads pinned sources/wheels and extracts an Ubuntu uncrustify .deb. No ROS,
 Python or OS package installation, sudo, apt update or home changes are used.
@@ -21,8 +21,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'installer'))
 from runtime import Runner
 
-AMENT_COMMIT = '9121ac787058642730206a52daba614f9c86b0fb'
-AMENT_SHA = '9bab682efd21baedfda5e521047f3eb10d9bdd38e50b06674c32181e169b6f22'
+AMENT_COMMIT = 'efe741dce0cd8a36c1f6a08e35324571555961c3'
+AMENT_SHA = 'eff5b19400936635b064c0221136fbc1893f8774754f6198974ab4ecec9e95d0'
 WHEELS = (
     ('autopep8', 'https://files.pythonhosted.org/packages/9e/43/53afb8ba17218f19b77c7834128566c5bbb100a0ad9ba2e8e89d089d7079/autopep8-2.3.2-py2.py3-none-any.whl',
      'ce8ad498672c845a0c3de2629c15b635ec2b05ef8177a6e7c91c74f3e9b51128'),
@@ -42,10 +42,10 @@ def run(command, environment, cwd, expected=0):
 
 def main():
     if sys.platform != 'linux' or os.geteuid() == 0:
-        raise SystemExit('Run as a regular Ubuntu 24.04/WSL user without sudo.')
+        raise SystemExit('Run as a regular Ubuntu 26.04/WSL user without sudo.')
     release = platform.freedesktop_os_release()
-    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') != '24.04':
-        raise SystemExit('The portable dependency adapter targets Ubuntu 24.04.')
+    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') != '26.04':
+        raise SystemExit('The portable dependency adapter targets Ubuntu 26.04.')
     status = Path('/var/lib/dpkg/status')
     original_status = hashlib.sha256(status.read_bytes()).hexdigest()
     try:
@@ -69,9 +69,9 @@ def main():
             dependencies.mkdir()
             rows = subprocess.check_output(['apt-cache', 'madison', 'uncrustify'], text=True).splitlines()
             versions = [row.split('|')[1].strip() for row in rows
-                        if len(row.split('|')) == 3 and ' noble/' in row.split('|')[2]]
+                        if len(row.split('|')) == 3 and ' resolute/' in row.split('|')[2]]
             if not versions:
-                raise RuntimeError('The local APT index has no base noble uncrustify entry.')
+                raise RuntimeError('The local APT index has no base resolute uncrustify entry.')
             # apt-get download verifies against local signed APT metadata; no system write.
             subprocess.run(['apt-get', 'download', 'uncrustify=' + versions[0]], cwd=work,
                            check=True, timeout=120)
@@ -87,7 +87,7 @@ def main():
             home.mkdir()
             environment = {**os.environ, 'HOME': str(home), 'XDG_CONFIG_HOME': str(home / '.config'),
                            'XDG_CACHE_HOME': str(home / '.cache'), 'XDG_DATA_HOME': str(home / '.local/share'),
-                           'ROS_DISTRO': 'jazzy', 'PYTHONDONTWRITEBYTECODE': '1',
+                           'ROS_DISTRO': 'lyrical', 'PYTHONDONTWRITEBYTECODE': '1',
                            'PYTHONPATH': os.pathsep.join((str(packages), str(ament / 'ament_uncrustify'))),
                            'PATH': os.pathsep.join((str(tools), str(dependencies / 'usr/bin'), '/usr/bin', '/bin'))}
             samples = work / 'source tree'
@@ -115,7 +115,7 @@ def main():
             assert 'import math\nimport sys\n' in python.read_text()
             # The actual official checker must accept each formatted C/C++ fixture.
             run(['ament_uncrustify', cpp, c_file], environment, work)
-            print('Actual formatter checks passed: Jazzy ament_uncrustify, Ubuntu uncrustify '
+            print('Actual formatter checks passed: Lyrical ament_uncrustify, Ubuntu uncrustify '
                   + versions[0] + ', autopep8 2.3.2; check/write/idempotence/exclusions verified.')
     finally:
         assert hashlib.sha256(status.read_bytes()).hexdigest() == original_status, 'OS package state changed'

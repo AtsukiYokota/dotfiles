@@ -92,6 +92,12 @@ def configure_fonts(ctx):
     if 'org.gnome.desktop.interface' in schemas:
         ctx.backup.set_setting('org.gnome.desktop.interface', 'monospace-font-name',
                                repr(FAMILY + ' 11'), ctx.runner)
+    # Ubuntu 26.04's default terminal is Ptyxis. Its font is a global setting,
+    # independent of the relocatable GNOME Terminal profiles below. Configure
+    # both when installed, including a user's pre-existing custom Ptyxis font.
+    if 'org.gnome.Ptyxis' in schemas:
+        ctx.backup.set_setting('org.gnome.Ptyxis', 'use-system-font', 'false', ctx.runner)
+        ctx.backup.set_setting('org.gnome.Ptyxis', 'font-name', repr(FAMILY + ' 11'), ctx.runner)
     if 'org.gnome.Terminal.ProfilesList' not in schemas:
         return
     raw = ctx.runner.capture(['gsettings', 'get', 'org.gnome.Terminal.ProfilesList', 'list'])

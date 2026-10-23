@@ -1,6 +1,6 @@
 # Copy selected settings into ~/.bashrc.local. This file is not sourced automatically.
 # export ROS_WORKSPACE="$HOME/workspaces/robot project"
-# DOTFILES_ROS_DISTRO=jazzy
+# DOTFILES_ROS_DISTRO=lyrical
 # DOTFILES_AUTO_ROS=0
 # DOTFILES_AUTO_TMUX=0  # Disable automatic tmux startup for this machine.
 # Add machine-specific aliases and paths here, without committing credentials.

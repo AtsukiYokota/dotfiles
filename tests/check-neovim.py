@@ -25,7 +25,7 @@ def main():
     parser.add_argument('--plugins', action='store_true')
     args = parser.parse_args()
     if sys.platform != 'linux':
-        parser.error('Run in Linux (Ubuntu 24.04 or WSL).')
+        parser.error('Run in Linux (Ubuntu 26.04 or WSL).')
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}[platform.machine()]
     version = json.loads((REPO / 'installer/versions.json').read_text())['neovim'][arch]
     lock = REPO / 'configs/nvim/lazy-lock.json'

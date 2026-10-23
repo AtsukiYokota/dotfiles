@@ -1,17 +1,19 @@
 # dotfiles
 
-[![Ubuntu dotfiles checks](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml/badge.svg)](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml)
+[![Ubuntu dotfiles checks](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml/badge.svg?branch=codex%2Fubuntu26.04)](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml?query=branch%3Acodex%2Fubuntu26.04)
 
-Ubuntu 24.04向けの開発環境セットアップです。ネイティブUbuntuとWSLに対応し、必要なモジュールを選んで導入できます。
+Ubuntu 26.04 LTS（Resolute Raccoon）向けの開発環境セットアップです。ネイティブUbuntuとWSLに対応し、必要なモジュールを選んで導入できます。
+
+Ubuntu 24.04用は[`master`ブランチ](https://github.com/AtsukiYokota/dotfiles/tree/master)を使ってください。
 
 ## インストール
 
-Ubuntu 24.04のamd64・arm64に対応しています。UbuntuのBashから、一般ユーザーで実行してください。
+Ubuntu 26.04のamd64・arm64に対応しています。UbuntuのBashから、一般ユーザーで実行してください。
 
 ```bash
 sudo apt update
 sudo apt install -y git
-git clone --branch master https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
+git clone --branch codex/ubuntu26.04 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 bash setup_all.sh
 ```
@@ -34,7 +36,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `cpp` | C/C++コンパイラー、CMake、Ninja、clangd、clang-format |
 | `python` | uv、basedpyright、CMake言語サーバー、autopep8、Ruff |
 | `neovim` | Neovim、lazy.nvim、LSP・補完 |
-| `ros2` | ROS 2 Jazzy、colcon、rosdep、ament整形・検査 |
+| `ros2` | ROS 2 Lyrical、colcon、rosdep、ament整形・検査 |
 | `ros-desktop` | RViz、ROSデモ |
 | `rust` | Rust、rustfmt、Clippy、rust-analyzer |
 | `node` | Node.js LTS、npm、Bash・JSON・YAML・HTML・CSS・JS/TS用LSP |

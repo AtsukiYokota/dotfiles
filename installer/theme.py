@@ -20,8 +20,9 @@ import uuid
 SOURCES = {
     'gtk': {
         'repo': 'WhiteSur-gtk-theme',
-        'commit': 'd5782652d412137e26fb8ff55b55a5572e4c6995',
-        'sha256': '9d8be3dca76f7be36dfb6513aa2c301be1ff265a9c1c4c1006b5ed0f89df29f1',
+        # 2026-09-10 includes the upstream GNOME 50 compatibility fixes.
+        'commit': '99247ecd219bdc1c7409baff062b4aafcf1102a7',
+        'sha256': '5c450592ff55bcae98b19d6408d1462288d81e8787b5ef3a96b445a1a35429d2',
     },
     'icons': {
         'repo': 'WhiteSur-icon-theme',
@@ -78,7 +79,7 @@ def _require_session(ctx, *, build=True):
 
 def _extract(archive: Path, destination: Path, source: dict) -> Path:
     destination.mkdir(parents=True, exist_ok=False)
-    # Ubuntu 24.04 supplies Python 3.12. The data filter rejects absolute paths,
+    # Python's data filter rejects absolute paths,
     # traversal, special files, and symlinks that would escape this destination.
     with tarfile.open(archive, 'r:gz') as stream:
         stream.extractall(destination, filter='data')

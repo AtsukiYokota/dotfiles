@@ -1,8 +1,8 @@
-# Ubuntu 24.04のtmux操作
+# Ubuntu 26.04のtmux操作
 
-従来のTerminator風ショートカットと`Ctrl+x`のprefixを維持した。
+Terminator風ショートカットと`Ctrl+x`のprefixを使う。
 コピーと貼り付けには端末自身の`Ctrl+Shift+c` / `Ctrl+Shift+v`を使え、tmuxの履歴を扱うときはcopy modeを使う。
-対象はUbuntu 24.04のtmux 3.4で、ネイティブ環境とWSLの両方に同じ設定を配置する。
+対象はUbuntu 26.04のtmux 3.6aで、ネイティブ環境とWSLの両方に同じ設定を配置する。
 
 ## 起動と終了
 
@@ -32,10 +32,10 @@ tmuxの内部バッファに保存するとともに、利用できるOSのク�
 コピー後は端末の`Ctrl+Shift+v`で貼り付ける。
 Neovimなどがマウス入力を受け取っている場合は、そのアプリの選択操作になるため、tmuxの履歴を選択したいときは先に`Ctrl+x`、`c`を押す。
 
-端末自身の選択機能を使う場合は、GNOME Terminalでは`Shift`を押しながらドラッグし、`Ctrl+Shift+c`でコピーする。
-GNOME TerminalとWindows Terminalの`Ctrl+Shift+c` / `Ctrl+Shift+v`は端末が処理するため、tmuxへの同じキーの割当は不要である。
+端末自身の選択機能を使う場合は、PtyxisやGNOME Terminalでは`Shift`を押しながらドラッグし、`Ctrl+Shift+c`でコピーする。
+Ptyxis、GNOME Terminal、Windows Terminalの`Ctrl+Shift+c` / `Ctrl+Shift+v`は端末が処理するため、tmuxへの同じキーの割当は不要である。
 端末側のショートカットを変更している場合は、端末の設定画面でCopyとPasteの割当を確認する。
-根拠は[GNOME Terminalの選択操作](https://help.gnome.org/gnome-terminal/txt-select-text.html)、[コピーと貼り付け](https://help.gnome.org/gnome-terminal/txt-copy-paste.html)、[Windows TerminalのCopy/Paste actions](https://learn.microsoft.com/en-us/windows/terminal/customize-settings/actions#copy)を参照。
+根拠は[Ptyxisのショートカット定義](https://gitlab.gnome.org/GNOME/ptyxis/-/blob/50.1/src/org.gnome.Ptyxis.gschema.xml.in)、[GNOME Terminalの選択操作](https://help.gnome.org/gnome-terminal/txt-select-text.html)、[Windows TerminalのCopy/Paste actions](https://learn.microsoft.com/en-us/windows/terminal/customize-settings/actions#copy)を参照。
 
 | 操作 | キー |
 | --- | --- |
@@ -54,7 +54,7 @@ GNOME TerminalとWindows Terminalの`Ctrl+Shift+c` / `Ctrl+Shift+v`は端末が�
 copy mode内の`Ctrl+v`以外は、tmuxで`Ctrl+c` / `Ctrl+v`をコピー用に上書きしない。
 従来の端末入力では`Ctrl+Shift+英字`と`Ctrl+英字`を区別できない場合があるため、単に`C-S-c`をbindすると意図どおりにならない。
 拡張キーは`extended-keys on`でtmux自身の能力検出に任せ、`xterm*:extkeys`のような一括の強制指定はしない。
-この制約は[tmuxの修飾キー解説](https://github.com/tmux/tmux/wiki/Modifier-Keys)と[3.4のマニュアル](https://github.com/tmux/tmux/blob/3.4/tmux.1)に基づく。
+この制約は[tmuxの修飾キー解説](https://github.com/tmux/tmux/wiki/Modifier-Keys)と[3.6aのマニュアル](https://github.com/tmux/tmux/blob/3.6a/tmux.1)に基づく。
 
 ## 分割とウィンドウ操作
 
@@ -112,7 +112,7 @@ prefix待機中は`PREFIX`、選択中は`COPY`、ペイン拡大中は`ZOOM`も
 Starshipのプロンプトには[公式Gruvbox Rainbow](https://starship.rs/presets/gruvbox-rainbow)を基にした設定を使い、ユーザー名、ホスト、パス、Git状態、言語環境、ROSディストリビューション、実行時間などを表示する。
 
 `shell`が依存する`fonts`モジュールはJetBrainsMono Nerd Font Monoを導入する。
-GNOME Terminalでは各プロファイルへ設定し、WSLではWindows側にもフォントを導入して、識別できたWindows TerminalのWSLプロファイルへ設定する。
+Ubuntu標準のPtyxisと既存のGNOME Terminalプロファイルへ設定し、WSLではWindows側にもフォントを導入して、識別できたWindows TerminalのWSLプロファイルへ設定する。
 フォントは画面を表示する端末で使われるため、その他の端末やSSH接続元ではその端末のフォント設定も必要になる。
 再設定と表示確認は[外観・フォント設定](appearance.md)を参照。
 
@@ -128,42 +128,19 @@ set -g @dotfiles-separator-left '|'
 キーがシェルの操作と競合する場合も、`~/.tmux.conf.local`で必要な直接キーだけ解除できる。
 たとえば`unbind -n C-e`とすると、左右分割は`Ctrl+x`、`e`で使い、`Ctrl+e`はシェルに戻せる。
 
-## 旧設定から更新した記述
-
-以下は旧masterの`.tmux.conf`とUbuntu 24.04上のtmux 3.4を照合した結果である。
-廃止optionを握りつぶす設定は追加せず、現在の記法へ置き換えた。
-
-| 旧記述 | tmux 3.4での扱いと今回の変更 |
-| --- | --- |
-| `status-utf8 on` | 無効なoption。削除しUTF-8 localeによる判定を使用 |
-| `status-attr` | 無効なoption。`status-style`の属性へ統合 |
-| `window-status-fg/bg`、`window-status-current-fg/bg/attr` | 無効なoption。`window-status-style` / `window-status-current-style`へ統合 |
-| `pane-border-fg`、`pane-active-border-fg` | 無効なoption。対応する`*-style`へ変更 |
-| `message-fg/bg` | 無効なoption。`message-style`へ統合 |
-| `status-fg/bg` | 3.4では有効。今回の設定では色と属性を`status-style`へまとめた |
-| `bind-key -t vi-copy ...` | 旧copy mode記法。`bind -T copy-mode-vi ... send -X ...`へ変更 |
-| コピー先の`xsel -ib`固定 | `copy-command`と補助コマンドでWayland/X11/WSL/OSC 52へ対応 |
-| `xsel -ob \| head -1 ...` | 先頭行しか貼り付けない処理を削除。複数行のまま貼り付け |
-| `powerline-daemon`とPython 2.7の固定パス | tmux組込みの色付き区画表示へ置換 |
-| `screen-256color` | 廃止ではない。tmux向けの機能を記述する`tmux-256color`へ変更 |
-| `escape-time 1` | 廃止ではない。キー列の受信待ちを10msに調整。遅いSSH接続では個別に増やせる |
-
-旧色optionの移行経緯は[tmux公式FAQ](https://github.com/tmux/tmux/wiki/FAQ#how-do-i-translate--fg--bg-and--attr-options-into--style-options)と[3.4までの変更履歴](https://github.com/tmux/tmux/blob/3.4/CHANGES)を参照。
-`status-fg/bg`のような残る例外については、3.4実機の結果を表に反映している。
-
 ## 検証範囲
 
 `python3 tests/test-tmux.py`は一時HOME、専用socket、PTYとモックのクリップボードを使う。
-実tmux 3.4にキー列とマウスイベントを送り、分割、移動、リサイズ、窓操作、選択コピー、ドラッグコピー、複数行の貼り付け、OSC 52出力、Ctrl+cによるSIGINTを検証する。
+実tmuxにキー列とマウスイベントを送り、分割、移動、リサイズ、窓操作、選択コピー、ドラッグコピー、複数行の貼り付け、OSC 52出力、Ctrl+cによるSIGINTを検証する。
 Wayland接続の失敗からX11への切替と、一時ファイルの削除も確認する。
 `python3 tests/test-shell-startup.py`では、複数端末の独立した実tmuxセッション、ペイン操作の分離、デタッチ後のBash継続、既存セッションの保持、自動起動を避ける条件を検証する。
-実際のGNOME/Windows Terminalのショートカット設定、端末フォント、OSクリップボードとの接続は、このPTYテストの対象外である。
+実際のPtyxis・GNOME Terminal・Windows Terminalのショートカット設定、端末フォント、OSクリップボードとの接続は、このPTYテストの対象外である。
 
 ## Caps LockをCtrlとして使う
 
 ネイティブUbuntuのGNOMEセッションでは、インストーラーの`keyboard`モジュールが初期選択される。
 適用を確定すると、現在のユーザーの`org.gnome.desktop.input-sources`にある`xkb-options`へ`ctrl:nocaps`を追加する。
-Caps Lockを別の用途に割り当てている既知の32種類の競合optionだけを除き、それ以外のXKB設定を保持する。
+Caps Lockを別の用途に割り当てている既知の35種類の競合optionだけを除き、それ以外のXKB設定を保持する。
 たとえばCaps Lock以外を使うComposeキーや配列切替の設定は、競合しなければそのまま残る。
 変更前の値はバックアップに保存し、旧スクリプトのような`dconf reset`は行わない。
 XKB optionを文字列配列として保持する仕様は[GNOMEのschema定義](https://raw.githubusercontent.com/GNOME/gsettings-desktop-schemas/master/schemas/org.gnome.desktop.input-sources.gschema.xml.in)に従う。

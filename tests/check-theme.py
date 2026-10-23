@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Build the pinned WhiteSur assets in temporary directories, without installing.
 
-Run on Ubuntu 24.04, including WSL. Missing build tools can be downloaded as
+Run on Ubuntu 26.04 (or 24.04 for a build-only compatibility check), including WSL.
+The isolated build uses GNOME Shell 50 assets. Missing tools can be downloaded as
 .deb files and unpacked into the test directory with --portable-deps. No apt
 install, sudo, real desktop session or persistent gsettings writes are used.
 This validates compilation/artifacts, not native GNOME visual appearance.
@@ -14,6 +15,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import stat
 import subprocess
@@ -64,7 +66,9 @@ def prepare_tools(root: Path, portable: bool):
         if 'glib-compile-resources' in missing:
             packages.update(('libglib2.0-dev-bin', 'libglib2.0-0t64'))
         if 'xmllint' in missing:
-            packages.update(('libxml2-utils', 'libxml2'))
+            packages.add('libxml2-utils')
+            dependencies = subprocess.check_output(['apt-cache', 'depends', 'libxml2-utils'], text=True)
+            packages.update(re.findall(r'Depends:\s+(libxml2(?:-\d+)?)\b', dependencies))
         if 'gtk-update-icon-cache' in missing:
             packages.add('gtk-update-icon-cache')
         downloads = root / 'debs'
@@ -74,12 +78,14 @@ def prepare_tools(root: Path, portable: bool):
         # Use the immutable release pocket for test tools: an old local index
         # may refer to updates that mirrors have already replaced (HTTP 404).
         # This does not change the production installer's package selection.
+        codename = platform.freedesktop_os_release()['VERSION_CODENAME']
         specifications = []
         for name in sorted(packages):
             rows = subprocess.check_output(['apt-cache', 'madison', name], text=True).splitlines()
-            release = [row.split('|')[1].strip() for row in rows if len(row.split('|')) == 3 and ' noble/' in row.split('|')[2]]
+            release = [row.split('|')[1].strip() for row in rows
+                       if len(row.split('|')) == 3 and f' {codename}/' in row.split('|')[2]]
             if not release:
-                raise RuntimeError(f'The local APT index has no noble release entry for {name}.')
+                raise RuntimeError(f'The local APT index has no {codename} release entry for {name}.')
             specifications.append(name + '=' + release[0])
         command = ['apt-get', 'download', *specifications]
         print('Downloading temporary build dependencies:', ', '.join(sorted(packages)), flush=True)
@@ -98,8 +104,8 @@ def main():
     if sys.platform != 'linux' or os.geteuid() == 0:
         parser.error('Run as a regular Linux user, without sudo.')
     release = platform.freedesktop_os_release()
-    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') != '24.04':
-        parser.error('This dependency adapter targets Ubuntu 24.04.')
+    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') not in ('24.04', '26.04'):
+        parser.error('This build check requires Ubuntu 26.04 or 24.04.')
 
     actual_home = Path.home()
     protected = [actual_home / name for name in ('.themes', '.local/share/icons', '.config/gtk-4.0', '.config/dconf')]
@@ -126,7 +132,7 @@ with open(os.environ['THEME_TEST_CALLS'], 'a', encoding='utf-8') as stream:
 if len(sys.argv) > 1 and sys.argv[1] == 'get':
     print("'Adwaita'")
 ''')
-            executable(fakebin / 'gnome-shell', '#!/bin/sh\nprintf "GNOME Shell 46.0\\n"\n')
+            executable(fakebin / 'gnome-shell', '#!/bin/sh\nprintf "GNOME Shell 50.0\\n"\n')
             for name in ('sudo', 'pkexec', 'dconf', 'apt', 'apt-get'):
                 executable(fakebin / name, '#!/bin/sh\nprintf "Forbidden desktop/system command: %s\\n" "$0" >&2\nexit 125\n')
             libraries = prefix / 'usr/lib' / sysconfig.get_config_var('MULTIARCH')

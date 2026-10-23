@@ -258,7 +258,7 @@ def check_other_servers(editor, project):
 
 def main():
     if sys.platform != 'linux':
-        raise SystemExit('Run with Linux Python (Ubuntu 24.04 or WSL).')
+        raise SystemExit('Run with Linux Python (Ubuntu 26.04 or WSL).')
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}[platform.machine()]
     versions = json.loads((REPO / 'installer/versions.json').read_text())
     with tempfile.TemporaryDirectory(prefix='dotfiles-lsp-test-') as temp:

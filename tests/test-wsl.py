@@ -22,7 +22,7 @@ NATIVE_MODULES = {'desktop', 'keyboard', 'japanese-input', 'vscode', 'chrome', '
 
 class DetectionTests(unittest.TestCase):
     def test_environment_detects_wsl_with_custom_kernel(self):
-        for key, value in [('WSL_DISTRO_NAME', 'Ubuntu-24.04'), ('WSL_INTEROP', '/run/WSL/123_interop')]:
+        for key, value in [('WSL_DISTRO_NAME', 'Ubuntu-26.04'), ('WSL_INTEROP', '/run/WSL/123_interop')]:
             with self.subTest(variable=key), patch.dict(os.environ, {key: value}, clear=True), \
                     patch.object(runtime.Path, 'read_text', return_value='6.6-custom-linux'):
                 self.assertTrue(runtime.is_wsl())
@@ -56,7 +56,7 @@ class SelectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             for module in NATIVE_MODULES:
-                with self.subTest(module=module), patch.dict(os.environ, {'WSL_DISTRO_NAME': 'Ubuntu-24.04'}), \
+                with self.subTest(module=module), patch.dict(os.environ, {'WSL_DISTRO_NAME': 'Ubuntu-26.04'}), \
                         patch.object(installer_main.Path, 'home', return_value=home), \
                         patch.object(installer_main, 'check_platform') as check, \
                         self.assertRaisesRegex(ValueError, 'not available on wsl/'):
@@ -65,13 +65,13 @@ class SelectionTests(unittest.TestCase):
             self.assertEqual(list(home.iterdir()), [])
 
     def test_native_override_cannot_enable_installation(self):
-        with patch.dict(os.environ, {'WSL_DISTRO_NAME': 'Ubuntu-24.04'}), \
+        with patch.dict(os.environ, {'WSL_DISTRO_NAME': 'Ubuntu-26.04'}), \
                 self.assertRaisesRegex(ValueError, 'overrides are allowed only for previews'):
             installer_main.main(['--modules', 'macos-theme', '--platform', 'native', '--yes'])
 
     def test_module_listing_marks_native_modules_unavailable(self):
         output = io.StringIO()
-        with patch.dict(os.environ, {'WSL_DISTRO_NAME': 'Ubuntu-24.04'}), contextlib.redirect_stdout(output):
+        with patch.dict(os.environ, {'WSL_DISTRO_NAME': 'Ubuntu-26.04'}), contextlib.redirect_stdout(output):
             self.assertEqual(installer_main.main(['--list-modules']), 0)
         lines = {line.split()[0]: line for line in output.getvalue().splitlines()}
         for module in NATIVE_MODULES:

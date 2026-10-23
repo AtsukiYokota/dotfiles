@@ -1,6 +1,6 @@
 # 日本語入力
 
-`japanese-input`はUbuntu Desktop 24.04のGNOME向けの選択式モジュールです。
+`japanese-input`はUbuntu Desktop 26.04のGNOME 50（Wayland）向けの選択式モジュールです。
 Fcitx 5、Mozc、GTK・Qt用の入力モジュール、日本語フォントを導入します。
 英語でインストールしたUbuntuでも使え、システムの表示言語やロケールは変更しません。
 入力の管理はFcitx 5へ切り替えます。GNOMEの物理キーボード配列を保持し、IBus用の入力ソースはバックアップして選択一覧から外します。
@@ -11,7 +11,7 @@ GNOMEデスクトップ内の端末で実行します。
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin codex/ubuntu26.04
 bash setup_all.sh --modules japanese-input
 ```
 
@@ -79,6 +79,6 @@ Windows側のIMEやキー割り当ては変更しません。
 
 ## 参照
 
-- [Ubuntu 24.04のFcitx 5用Mozc](https://packages.ubuntu.com/noble/fcitx5-mozc)
+- [Ubuntu 26.04のFcitx 5用Mozc](https://packages.ubuntu.com/resolute/fcitx5-mozc)
 - [Fcitx 5のGNOME・Wayland対応](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland/en#GNOME)
-- [Ubuntu収録版の有効・無効キー設定](https://github.com/fcitx/fcitx5/blob/5.1.7/src/lib/fcitx/globalconfig.cpp)
+- [Ubuntu収録版の有効・無効キー設定](https://github.com/fcitx/fcitx5/blob/5.1.19/src/lib/fcitx/globalconfig.cpp)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Drive real Noble Fcitx5/Mozc hotkeys using a private D-Bus and temporary HOME.
+"""Drive real Ubuntu Fcitx5/Mozc hotkeys using a private D-Bus and temporary HOME.
 
 No desktop/display is used. --portable-deps downloads/extracts packages without
 installing them; that mode checks the real engine and hotkeys but skips Mozc
@@ -12,6 +12,7 @@ import hashlib
 import os
 from pathlib import Path
 import platform
+import re
 import shlex
 import shutil
 import signal
@@ -29,20 +30,24 @@ from japanese_input import GROUP, _start_fcitx, configure_global, configure_prof
 from runtime import Runner
 
 PACKAGES = ('fcitx5', 'fcitx5-data', 'fcitx5-modules', 'libfcitx5config6',
-            'libfcitx5core7', 'libfcitx5utils2', 'fcitx5-mozc', 'fcitx-mozc-data',
-            'libabsl20220623t64', 'libprotobuf32t64')
+            'libfcitx5core7', 'libfcitx5utils2', 'fcitx5-mozc', 'fcitx-mozc-data')
 
 
 def dependencies(work):
     download = work / 'debs'
     download.mkdir()
+    # These ABI package names change across Ubuntu releases. Resolve them from
+    # the host's authenticated APT metadata instead of pinning Noble libraries.
+    metadata = subprocess.check_output(['apt-cache', 'depends', 'fcitx5-mozc'], text=True)
+    libraries = re.findall(r'Depends:\s+(lib(?:absl|protobuf)[A-Za-z0-9.+-]*)', metadata)
+    codename = platform.freedesktop_os_release()['VERSION_CODENAME']
     specs = []
-    for name in PACKAGES:
+    for name in (*PACKAGES, *sorted(set(libraries))):
         rows = subprocess.check_output(['apt-cache', 'madison', name], text=True).splitlines()
         versions = [row.split('|')[1].strip() for row in rows
-                    if len(row.split('|')) == 3 and ' noble/' in row.split('|')[2]]
+                    if len(row.split('|')) == 3 and f' {codename}/' in row.split('|')[2]]
         if not versions:
-            raise RuntimeError(f'No Noble release metadata for {name}.')
+            raise RuntimeError(f'No {codename} release metadata for {name}.')
         specs.append(name + '=' + versions[0])
     subprocess.run(['apt-get', 'download', *specs], cwd=download, check=True, timeout=180)
     prefix = work / 'dependencies'
@@ -225,10 +230,10 @@ def main():
         inner(args.inner, args.executable, args.portable_deps)
         return
     if sys.platform != 'linux' or os.geteuid() == 0:
-        raise RuntimeError('Run as a regular Ubuntu 24.04 user, without sudo.')
+        raise RuntimeError('Run as a regular Ubuntu user, without sudo.')
     release = platform.freedesktop_os_release()
-    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') != '24.04':
-        raise RuntimeError('This real-package check targets Ubuntu 24.04.')
+    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') not in ('24.04', '26.04'):
+        raise RuntimeError('This real-package check targets Ubuntu 26.04 or 24.04.')
     if not shutil.which('dbus-run-session'):
         raise RuntimeError('Install dbus-daemon for this test.')
     import dbus  # Fail before downloads when python3-dbus is unavailable.

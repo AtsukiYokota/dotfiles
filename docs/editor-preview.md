@@ -4,7 +4,7 @@
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin codex/ubuntu26.04
 bash setup_all.sh --modules neovim,latex,diagrams
 ```
 
@@ -119,12 +119,12 @@ Bob --> Alice: 応答
 
 | ファイル | 整形方法 |
 | --- | --- |
-| C/C++ | `clang_autoformat`と同じROS 2 Jazzy用`ament_uncrustify` |
+| C/C++ | `clang_autoformat`と同じROS 2 Lyrical用`ament_uncrustify` |
 | Python | `pep8_autoformat`と同じautopep8設定 |
 | その他 | 接続中のLSPが提供する整形機能 |
 
 未保存の編集内容も整形します。結果を確認し、`:w`で保存してください。`u`で整形を取り消せます。
-C/C++のROS整形には`ros2`モジュールが必要です。通常はシェル起動時にJazzyを読み込みます。
+C/C++のROS整形には`ros2`モジュールが必要です。通常はシェル起動時にLyricalを読み込みます。
 見つからない場合は`ros_env`を実行した端末からNeovimを起動してください。
 
 `:RosFormat`はC/C++・Python用の同じ処理です。

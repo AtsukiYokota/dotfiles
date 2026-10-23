@@ -1,6 +1,6 @@
-"""Japanese input on native GNOME, using Ubuntu 24.04's Fcitx 5 + Mozc.
+"""Japanese input on native GNOME, using Ubuntu 26.04's Fcitx 5 + Mozc.
 
-Fcitx 5.1.7 handles modifier-only bindings on release and cancels them when
+Fcitx 5 handles modifier-only bindings on release and cancels them when
 another key is pressed. This preserves Alt shortcuts without an X11-only mapper.
 Ubuntu im-config handles environment variables and startup on X11 and Wayland.
 """

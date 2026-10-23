@@ -28,6 +28,25 @@ import runtime  # noqa: E402
 import ui  # noqa: E402
 
 
+class PlatformTests(unittest.TestCase):
+    def test_ubuntu_2604_is_accepted_on_supported_architectures(self):
+        with mock.patch.object(installer_main.sys, 'platform', 'linux'), \
+                mock.patch.object(installer_main.sys, 'version_info', (3, 14, 0)), \
+                mock.patch.object(installer_main.os, 'geteuid', return_value=1000, create=True):
+            for arch in ('amd64', 'arm64'):
+                with self.subTest(arch=arch):
+                    installer_main.check_platform({'ID': 'ubuntu', 'VERSION_ID': '26.04'}, arch)
+
+    def test_ubuntu_2404_and_other_releases_are_rejected_before_installation(self):
+        with mock.patch.object(installer_main.sys, 'platform', 'linux'), \
+                mock.patch.object(installer_main.sys, 'version_info', (3, 14, 0)), \
+                mock.patch.object(installer_main.os, 'geteuid', return_value=1000, create=True):
+            for distro, release in (('ubuntu', '24.04'), ('ubuntu', '25.10'), ('debian', '13')):
+                with self.subTest(distro=distro, release=release), \
+                        self.assertRaisesRegex(ValueError, 'Ubuntu 26.04 only'):
+                    installer_main.check_platform({'ID': distro, 'VERSION_ID': release}, 'amd64')
+
+
 class CatalogTests(unittest.TestCase):
     def test_dependencies_precede_dependents_and_are_unique(self):
         selected = catalog.resolve({'neovim', 'ros-desktop', 'rust'}, 'wsl', 'arm64')
@@ -412,7 +431,7 @@ class ActionTests(unittest.TestCase):
             commands = []
             runner = SimpleNamespace(
                 run=lambda argv: commands.append(argv),
-                capture=lambda argv: 'noble-updates noble-backports',
+                capture=lambda argv: 'resolute-updates resolute-backports',
                 download=lambda url, destination, checksum: destination.write_bytes(b'test-package'),
             )
             ctx = SimpleNamespace(temp=root, modules=catalog.resolve({'ros-desktop'}, 'wsl', 'arm64'),
@@ -421,8 +440,8 @@ class ActionTests(unittest.TestCase):
             update = next(index for index, command in enumerate(commands) if command[:3] == ['sudo', 'apt-get', 'update'])
             install = next(index for index, command in enumerate(commands) if command[:3] == ['sudo', 'apt-get', 'install'])
             self.assertLess(update, install)
-            self.assertTrue(any('ros-jazzy-desktop' in command for command in commands))
-            self.assertFalse(any('ros-jazzy-ros-base' in command for command in commands))
+            self.assertTrue(any('ros-lyrical-desktop' in command for command in commands))
+            self.assertFalse(any('ros-lyrical-ros-base' in command for command in commands))
             self.assertFalse(any(token in ('upgrade', 'dist-upgrade', 'full-upgrade') for command in commands for token in command))
             self.assertTrue(all('--no-remove' in command for command in commands if command[:3] == ['sudo', 'apt-get', 'install']))
 
@@ -449,7 +468,7 @@ class InteractiveTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             with mock.patch.object(installer_main.Path, 'home', return_value=home), \
-                 mock.patch.object(installer_main, 'detect_platform', return_value=({'ID': 'ubuntu', 'VERSION_ID': '24.04'}, 'wsl', 'amd64')), \
+                 mock.patch.object(installer_main, 'detect_platform', return_value=({'ID': 'ubuntu', 'VERSION_ID': '26.04'}, 'wsl', 'amd64')), \
                  mock.patch.object(installer_main, 'check_platform'), \
                  mock.patch('builtins.input', return_value=''), \
                  contextlib.redirect_stdout(io.StringIO()):

@@ -201,8 +201,8 @@ def prepare_apt(ctx):
     run(['sudo', 'add-apt-repository', '--yes', '--no-update', 'universe'])
     if 'ros2' in ctx.modules:
         policy = ctx.runner.capture(['apt-cache', 'policy'])
-        if 'noble-updates' not in policy or 'noble-backports' not in policy:
-            raise RuntimeError('ROS requires noble-updates and noble-backports. Enable them in Ubuntu Software & Updates or /etc/apt/sources.list.d/ubuntu.sources, then rerun. No distribution upgrade was performed.')
+        if 'resolute-updates' not in policy or 'resolute-backports' not in policy:
+            raise RuntimeError('ROS requires resolute-updates and resolute-backports. Enable them in Ubuntu Software & Updates or /etc/apt/sources.list.d/ubuntu.sources, then rerun. No distribution upgrade was performed.')
         version = ctx.versions['ros_source']
         archive = ctx.temp / 'ros2-apt-source.deb'
         ctx.runner.download(version['url'], archive, version['sha256'])
@@ -227,7 +227,7 @@ def prepare_apt(ctx):
     run(['sudo', 'apt-get', 'update'])
     packages = packages_for(ctx.modules)
     if 'ros2' in ctx.modules:
-        packages += ['ros-jazzy-desktop' if 'ros-desktop' in ctx.modules else 'ros-jazzy-ros-base', 'ros-dev-tools']
+        packages += ['ros-lyrical-desktop' if 'ros-desktop' in ctx.modules else 'ros-lyrical-ros-base', 'ros-dev-tools']
     if 'chrome' in ctx.modules:
         packages.append('google-chrome-stable')
     run(['sudo', 'apt-get', 'install', '-y', '--no-remove', '--no-install-recommends', *packages])
@@ -267,7 +267,7 @@ def install_modules(ctx):
         elif name == 'ros2':
             if not Path('/etc/ros/rosdep/sources.list.d/20-default.list').exists():
                 ctx.runner.run(['sudo', 'rosdep', 'init'])
-            ctx.runner.run(['rosdep', 'update', '--rosdistro', 'jazzy'])
+            ctx.runner.run(['rosdep', 'update', '--rosdistro', 'lyrical'])
         elif name == 'diagrams':
             install_plantuml(ctx)
         elif name == 'ibis-office':

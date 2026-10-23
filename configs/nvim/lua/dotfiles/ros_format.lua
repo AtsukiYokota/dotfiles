@@ -37,7 +37,7 @@ end
 
 function M.setup()
   vim.api.nvim_create_user_command("RosFormat", M.format, {
-    desc = "Format this buffer with ROS 2 Jazzy rules (manual; use :write to save)",
+    desc = "Format this buffer with ROS 2 Lyrical rules (manual; use :write to save)",
   })
 end
 

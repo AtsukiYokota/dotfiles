@@ -11,21 +11,28 @@ def prepare_clangd(root, env):
     if shutil.which('clangd', path=env['PATH']):
         return
     release = platform.freedesktop_os_release()
-    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') != '24.04':
-        raise RuntimeError('Install clangd to run this test outside Ubuntu 24.04.')
+    variants = {
+        # Retain Noble only for running this isolated test on a development host.
+        # The installer itself accepts Ubuntu 26.04 only.
+        '24.04': ('noble', '18', 'libabsl20220623t64', 'libre2-10', 'libxml2'),
+        '26.04': ('resolute', '21', 'libabsl20260107', 'libre2-11', 'libxml2-16'),
+    }
+    if release.get('ID') != 'ubuntu' or release.get('VERSION_ID') not in variants:
+        raise RuntimeError('Install clangd to run this test outside Ubuntu 24.04/26.04.')
+    suite, llvm, abseil, re2, xml = variants[release['VERSION_ID']]
     work = root / 'clangd-packages'
     work.mkdir()
     extracted = work / 'root'
-    packages = ('clangd-18', 'libclang-common-18-dev', 'libclang-cpp18', 'libllvm18',
-                'libabsl20220623t64', 'libgrpc++1.51t64', 'libgrpc29t64',
-                'libprotobuf32t64', 'libprotoc32t64', 'libcares2', 'libre2-10')
+    packages = (f'clangd-{llvm}', f'libclang-common-{llvm}-dev', f'libclang-cpp{llvm}', f'libllvm{llvm}',
+                abseil, 'libgrpc++1.51t64', 'libgrpc29t64',
+                'libprotobuf32t64', 'libprotoc32t64', 'libcares2', re2, xml)
     specs = []
     for package in packages:
         rows = subprocess.check_output(['apt-cache', 'madison', package], text=True).splitlines()
         versions = [row.split('|')[1].strip() for row in rows
-                    if len(row.split('|')) == 3 and ' noble/' in row.split('|')[2]]
+                    if len(row.split('|')) == 3 and f' {suite}/' in row.split('|')[2]]
         if not versions:
-            raise RuntimeError('The local APT index has no base Noble entry for ' + package)
+            raise RuntimeError(f'The local APT index has no base {suite} entry for ' + package)
         specs.append(package + '=' + versions[0])
     # Downloads are verified against local signed APT metadata; no apt update,
     # installation, sudo or changes to the host's package database are made.
@@ -33,9 +40,9 @@ def prepare_clangd(root, env):
     for package in work.glob('*.deb'):
         subprocess.run(['dpkg-deb', '--extract', str(package), str(extracted)], check=True)
     triplet = {'x86_64': 'x86_64-linux-gnu', 'aarch64': 'aarch64-linux-gnu'}[platform.machine()]
-    binary = extracted / 'usr/lib/llvm-18/bin/clangd'
+    binary = extracted / f'usr/lib/llvm-{llvm}/bin/clangd'
     lib = extracted / 'usr/lib' / triplet
-    resources = extracted / 'usr/lib/llvm-18/lib/clang/18'
+    resources = extracted / f'usr/lib/llvm-{llvm}/lib/clang/{llvm}'
     tools = work / 'bin'
     tools.mkdir()
     wrapper = tools / 'clangd'

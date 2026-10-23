@@ -58,7 +58,7 @@ class FormatterTests(unittest.TestCase):
             tool.write_text(FAKE, encoding='utf-8')
             tool.chmod(0o755)
         self.environment = {**os.environ, 'PATH': f'{self.bin}:{os.environ["PATH"]}',
-                            'ROS_DISTRO': 'jazzy', 'PYTHONDONTWRITEBYTECODE': '1'}
+                            'ROS_DISTRO': 'lyrical', 'PYTHONDONTWRITEBYTECODE': '1'}
 
     def file(self, name, content=b'value=1\n'):
         path = self.source / name
@@ -136,10 +136,10 @@ class FormatterTests(unittest.TestCase):
         self.environment['PATH'] = str(self.bin)
         result = self.invoke(path, expected=2)
         self.assertIn(b'autopep8 is unavailable', result.stderr)
-        self.environment['ROS_DISTRO'] = 'humble'
+        self.environment['ROS_DISTRO'] = 'jazzy'
         source = self.file('main.cpp', b'int x=1;\n')
         result = self.invoke('--language', 'cpp', source, expected=2)
-        self.assertIn(b'targets ROS 2 Jazzy', result.stderr)
+        self.assertIn(b'targets ROS 2 Lyrical', result.stderr)
 
     def test_cpp_reformat_exit_one_is_verified_before_commit(self):
         source = self.file('main.cpp', b'int x=1;\n')

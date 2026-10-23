@@ -1,4 +1,4 @@
-# Compatibility function names; ROS 2 Jazzy C/C++ formatting uses ament_uncrustify.
+# Compatibility function names; ROS 2 Lyrical C/C++ formatting uses ament_uncrustify.
 # Explicit invocation writes files. Pass --check or --dry-run to preview changes.
 clang_autoformat() {
   command ros-format --language cpp "$@"

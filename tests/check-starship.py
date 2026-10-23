@@ -18,7 +18,7 @@ from runtime import Runner
 
 def main():
     if sys.platform != 'linux':
-        raise SystemExit('Run in Linux (Ubuntu 24.04 or WSL).')
+        raise SystemExit('Run in Linux (Ubuntu 26.04 or WSL).')
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}[platform.machine()]
     metadata = json.loads((ROOT / 'installer/versions.json').read_text())['starship'][arch]
     with tempfile.TemporaryDirectory(prefix='dotfiles-starship-test-') as temporary:
@@ -36,7 +36,7 @@ def main():
         env.update(HOME=str(home), XDG_CONFIG_HOME=str(home / '.config'), XDG_CACHE_HOME=str(home / '.cache'),
                    STARSHIP_CONFIG=str(ROOT / 'configs/starship.toml'), STARSHIP_SHELL='bash',
                    TERM='xterm-256color', PATH='/usr/bin:/bin', LANG='C.UTF-8', LC_ALL='C.UTF-8',
-                   ROS_DISTRO='jazzy', VIRTUAL_ENV=str(root / 'robot-env'),
+                   ROS_DISTRO='lyrical', VIRTUAL_ENV=str(root / 'robot-env'),
                    GIT_CONFIG_GLOBAL='/dev/null', GIT_CONFIG_NOSYSTEM='1')
         Path(env['VIRTUAL_ENV']).mkdir()
 
@@ -57,7 +57,7 @@ def main():
         (project / 'new.txt').write_text('new\n')
         result = run(str(binary), 'prompt', '--status', '7', '--cmd-duration', '2500', '--jobs', '2', '--terminal-width', '200')
         prompt = re.sub(r'\x1b\[[0-9;]*m', '', result.stdout)
-        for expected in ('prompt-test', 'mod:1', 'new:1', 'env:robot-env', 'ROS:jazzy', 'took:2s', 'jobs:2', 'exit:7', ''):
+        for expected in ('prompt-test', 'mod:1', 'new:1', 'env:robot-env', 'ROS:lyrical', 'took:2s', 'jobs:2', 'exit:7', ''):
             if expected not in prompt:
                 raise AssertionError(f'Missing {expected!r}: {prompt!r}')
         if re.search(r'\b(WARN|ERROR)\b', result.stderr):

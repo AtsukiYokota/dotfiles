@@ -29,7 +29,7 @@ _ros_workspace() {
 }
 
 ros_env() {
-  local selected=${DOTFILES_ROS_DISTRO:-jazzy} root=${DOTFILES_ROS_ROOT:-/opt/ros} workspace
+  local selected=${DOTFILES_ROS_DISTRO:-lyrical} root=${DOTFILES_ROS_ROOT:-/opt/ros} workspace
   if (( $# > 1 )) || [[ ! $selected =~ ^[a-z][a-z0-9]*$ ]]; then
     printf 'Usage: ros_env [workspace]; DOTFILES_ROS_DISTRO must name one ROS 2 distribution.\n' >&2
     return 2
@@ -79,7 +79,7 @@ ros_deps() (
   workspace=$(_ros_workspace) || return
   builtin cd -- "$workspace" || return
   ros_env || return
-  command rosdep install --from-paths src --ignore-src -r -y --rosdistro "${DOTFILES_ROS_DISTRO:-jazzy}" "$@"
+  command rosdep install --from-paths src --ignore-src -r -y --rosdistro "${DOTFILES_ROS_DISTRO:-lyrical}" "$@"
 )
 
 ros_clean() (

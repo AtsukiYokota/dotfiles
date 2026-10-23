@@ -3,6 +3,8 @@
 `shell`はStarshipのGruvbox RainbowプロンプトとGruvbox配色のtmuxを設定します。
 `neovim`もGruvboxを使います。`fonts`は`JetBrainsMono Nerd Font Mono`を導入し、`shell`の依存として自動選択されます。
 `macos-theme`はネイティブGNOMEにWhiteSur、下端で表示するDock、Big Sur風の壁紙を設定します。
+Ubuntu 26.04のGNOME 50向けに、[GNOME 50対応を含むWhiteSurの固定版](https://github.com/vinceliuice/WhiteSur-gtk-theme/releases/tag/2026-09-10)を使います。
+PtyxisやGNOME設定などlibadwaitaを使うアプリは標準の外観を維持します。GTK 4の強制上書きやGNOME Shell拡張の追加は行いません。
 
 ## 導入済みの環境に反映する
 
@@ -10,7 +12,7 @@ Neovimを終了し、Ubuntuのデスクトップ上の端末で実行します�
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin codex/ubuntu26.04
 bash setup_all.sh --modules shell,neovim,macos-theme
 ```
 
@@ -24,7 +26,7 @@ GNOMEのDock・壁紙はWSLの対象外です。
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin codex/ubuntu26.04
 bash setup_all.sh --modules shell,neovim
 ```
 
@@ -58,12 +60,13 @@ Lazyの記号が四角になる場合は、フォントが未導入か、端末�
 
 | 環境 | 設定内容 |
 | --- | --- |
-| UbuntuのGNOME | ユーザー用フォントを導入し、等幅フォントと既存のGNOME Terminalプロファイルを`JetBrainsMono Nerd Font Mono 11`に変更 |
+| UbuntuのGNOME | ユーザー用フォントを導入し、等幅フォント・Ptyxis・既存のGNOME Terminalプロファイルを`JetBrainsMono Nerd Font Mono 11`に変更 |
 | WSL + Windows Terminal | Windowsユーザーにもフォントを登録し、対象のWSLプロファイルのフォントを`JetBrainsMono NFM`に変更 |
 
 WSLからのWindows連携を無効化している場合や、別の端末を使う場合は、インストーラーの案内に従って端末側のフォントを選択してください。
 Windows Terminalの設定場所は「設定 → Ubuntuのプロファイル → 外観 → フォントフェイス」です。
 設定項目は[Windows Terminal公式資料](https://learn.microsoft.com/en-us/windows/terminal/customize-settings/profile-appearance#font-face)を参照してください。
+Ubuntu 26.04標準の端末はPtyxisです。フォントとコピー・貼り付けの設定は[Ptyxisの設定定義](https://gitlab.gnome.org/GNOME/ptyxis/-/blob/50.1/src/org.gnome.Ptyxis.gschema.xml.in)に従っています。
 
 Ubuntu側のフォントは次で確認できます。
 

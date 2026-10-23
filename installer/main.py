@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ubuntu 24.04 dotfiles installer: select, review, confirm, install."""
+"""Ubuntu 26.04 dotfiles installer: select, review, confirm, install."""
 import argparse
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -67,8 +67,8 @@ def parser():
 def check_platform(info, arch):
     if sys.version_info < (3, 12):
         raise ValueError('Python 3.12+ is required. Run bash setup_all.sh to use /usr/bin/python3.')
-    if sys.platform != 'linux' or info.get('ID') != 'ubuntu' or info.get('VERSION_ID') != '24.04':
-        raise ValueError('Installation supports Ubuntu 24.04 only. Use --dry-run for a preview on another OS.')
+    if sys.platform != 'linux' or info.get('ID') != 'ubuntu' or info.get('VERSION_ID') != '26.04':
+        raise ValueError('Installation supports Ubuntu 26.04 only. For Ubuntu 24.04 use the master branch; use --dry-run for a preview on another OS.')
     if arch not in ('amd64', 'arm64'):
         raise ValueError(f'Unsupported CPU architecture: {arch}')
     if os.geteuid() == 0:
@@ -100,19 +100,19 @@ def preflight(modules, configs_only):
 
 
 def show_plan(modules, requested, target, arch, args, versions, home):
-    print(f'\nDOTFILES / Ubuntu 24.04 / {target} / {arch}')
+    print(f'\nDOTFILES / Ubuntu 26.04 / {target} / {arch}')
     print('Mode: ' + ('configuration only' if args.configs_only else 'packages + configuration'))
     print(f'Home: {home}\nRepository: {REPO}\n')
     for name in modules:
         suffix = ' [dependency]' if name not in requested else ''
         print(f'  + {name:<14} {MODULES[name].title}{suffix}')
     if not args.configs_only:
-        print('\nAPT packages (latest available Ubuntu Noble updates):\n  ' + ' '.join(packages_for(modules)))
+        print('\nAPT packages (latest available Ubuntu Resolute updates):\n  ' + ' '.join(packages_for(modules)))
         print('  Bootstrap: software-properties-common gnupg; enable Ubuntu universe')
         if 'ros2' in modules:
-            ros = 'ros-jazzy-desktop' if 'ros-desktop' in modules else 'ros-jazzy-ros-base'
+            ros = 'ros-lyrical-desktop' if 'ros-desktop' in modules else 'ros-lyrical-ros-base'
             print(f'  ROS official repository: ros2-apt-source {versions["ros_source"]["version"]}; {ros} ros-dev-tools')
-            print('  rosdep init if needed; rosdep update --rosdistro jazzy')
+            print('  rosdep init if needed; rosdep update --rosdistro lyrical')
         for module, tool in (('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'), ('rust', 'rustup'), ('latex', 'texlab')):
             if module in modules:
                 print(f'  User tool: {tool} {versions[tool]["version"]} (HTTPS + pinned SHA-256)')
@@ -144,7 +144,7 @@ def show_plan(modules, requested, target, arch, args, versions, home):
         if target == 'wsl':
             print('  fonts: install/register the font for the Windows user; set the active WSL Windows Terminal profile font with a separate Windows backup')
         else:
-            print('  fonts: GNOME monospace font and existing GNOME Terminal profile fonts with backup (when a desktop session is available)')
+            print('  fonts: GNOME monospace font, Ptyxis font and existing GNOME Terminal profile fonts with backup (when a desktop session is available)')
     if 'shell' in modules:
         print('  shell: Gruvbox Rainbow prompt, a new tmux session per interactive terminal, vi=nvim, readline, ROS/formatting helpers, clipboard')
     if 'keyboard' in modules:

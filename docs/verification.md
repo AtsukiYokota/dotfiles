@@ -1,19 +1,19 @@
 # インストールと動作の確認
 
-Ubuntu 24.04に導入した環境を、実際に使うユーザーの端末で確認する手順です。
+Ubuntu 26.04に導入した環境を、実際に使うユーザーの端末で確認する手順です。
 全モジュールを試す場合は上から順に進め、選択導入の場合は対象モジュールの節だけを実行してください。
 正常時の表示を判定の目安として記載しています。実機での結果は、インストール先で確認してください。
 
 ## クリーン環境から全モジュールを導入する
 
-全モジュールを選べるのは、ネイティブのUbuntu Desktop 24.04・amd64・GNOMEセッションです。
+全モジュールを選べるのは、ネイティブのUbuntu Desktop 26.04・amd64・GNOMEセッションです。
 arm64ではChromeとibisOffice、WSLではネイティブ用モジュールが選択対象から外れます。
 以下はGNOMEの端末から一般ユーザーで実行します。
 
 ```bash
 sudo apt update
 sudo apt install -y git
-git clone --branch master https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
+git clone --branch codex/ubuntu26.04 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
 cat /etc/os-release
@@ -22,7 +22,7 @@ printf 'Desktop: %s\n' "$XDG_CURRENT_DESKTOP"
 df -h "$HOME" /
 ```
 
-Ubuntuのバージョンが`24.04`、アーキテクチャが`amd64`、Desktopに`GNOME`が含まれることを確認します。
+Ubuntuのバージョンが`26.04`、アーキテクチャが`amd64`、Desktopに`GNOME`が含まれることを確認します。
 LaTeXを含む全導入ではダウンロード量が多くなるため、空き容量も確認してください。
 
 端末の出力全体を残してインストーラーを起動します。`script`はUbuntu標準のutil-linuxに含まれます。
@@ -54,7 +54,7 @@ alias ls grep vi
 type cd
 ```
 
-`nvim`・`starship`・`uv`は通常`~/.local/bin/`、`ros2`は`/opt/ros/jazzy/bin/`にあります。
+`nvim`・`starship`・`uv`は通常`~/.local/bin/`、`ros2`は`/opt/ros/lyrical/bin/`にあります。
 このリポジトリが導入するNeovim・Starshipなどの版は[versions.json](../installer/versions.json)で確認できます。
 `uv tool list`には`basedpyright`、`cmake-language-server`、`autopep8`、`ruff`が表示されます。
 
@@ -62,10 +62,11 @@ type cd
 `cd ~`で移動すると、隠しファイルを含む一覧が自動表示されます。
 `alias ls grep`では`ls -avF --color=auto`と`grep --color=always --exclude-dir=.git`を確認します。
 `vi`は`nvim`を指します。Nerd Fontと外観の確認・再設定は[外観と端末の設定](appearance.md)を参照してください。
+Ubuntu 26.04の標準端末「Terminal」（Ptyxis）では、設定のフォントが`JetBrainsMono Nerd Font Mono`になり、プロンプトやNeovimのアイコンが表示されることを確認します。
 
 ## ROS 2の環境と通信を確認する
 
-### Jazzyと開発ツールを確認する
+### Lyricalと開発ツールを確認する
 
 ```bash
 printenv ROS_DISTRO ROS_VERSION ROS_PYTHON_VERSION
@@ -73,21 +74,21 @@ ros2 --help
 ros2 pkg prefix rclcpp
 ros2 pkg prefix rclpy
 rosdep --version
-rosdep resolve rclcpp --rosdistro jazzy
+rosdep resolve rclcpp --rosdistro lyrical
 colcon --help
 ```
 
-環境変数は順に`jazzy`、`2`、`3`、パッケージ位置は通常`/opt/ros/jazzy`です。
-rosdepの解決結果には`ros-jazzy-rclcpp`、colconのヘルプには`build`・`test`・`test-result`が表示されます。
+環境変数は順に`lyrical`、`2`、`3`、パッケージ位置は通常`/opt/ros/lyrical`です。
+rosdepの解決結果には`ros-lyrical-rclcpp`、colconのヘルプには`build`・`test`・`test-result`が表示されます。
 ROS環境が読み込まれていない場合は`ros_env`を実行して再確認します。
 
-Jazzyの`ros2`コマンドには`--version`がありません。CLIパッケージの版は次のコマンドで確認します。
+Lyricalの`ros2`コマンドには`--version`がありません。CLIパッケージの版は次のコマンドで確認します。
 
 ```bash
-dpkg-query -W ros-jazzy-ros2cli
+dpkg-query -W ros-lyrical-ros2cli
 ```
 
-[公式の環境確認手順](https://github.com/ros2/ros2_documentation/blob/jazzy/source/Tutorials/Beginner-CLI-Tools/Configuring-ROS2-Environment.rst)、[Jazzy CLIの引数](https://github.com/ros2/ros2cli/blob/jazzy/ros2cli/ros2cli/cli.py)を参照。
+[公式の環境確認手順](https://github.com/ros2/ros2_documentation/blob/lyrical/source/Get-Started/Configuring-ROS2-Environment.rst)、[Lyrical CLIの引数](https://github.com/ros2/ros2cli/blob/lyrical/ros2cli/ros2cli/cli.py)を参照。
 
 ### 同じUbuntuの2端末で送受信する
 
@@ -119,7 +120,7 @@ ros2 doctor --report
 `RMW_IMPLEMENTATION`はROS通信実装の選択です。未設定なら既定値を使います。
 `DISCOVERY=OFF`では同じPC上でも相手を自動発見できません。
 RMWを変更してノード一覧が更新されない場合は`ros2 daemon stop`後に再確認します。
-[ROS通信実装の切り替え](https://github.com/ros2/ros2_documentation/blob/jazzy/source/How-To-Guides/Working-with-multiple-RMW-implementations.rst)、[発見範囲の設定](https://github.com/ros2/ros2_documentation/blob/jazzy/source/Tutorials/Advanced/Improved-Dynamic-Discovery.rst)を参照。
+[ROS通信実装の切り替え](https://github.com/ros2/ros2_documentation/blob/lyrical/source/Get-Started/Installation/RMW-Implementations/Working-with-multiple-RMW-implementations.rst)、[発見範囲の設定](https://github.com/ros2/ros2_documentation/blob/lyrical/source/Developer-Tools/Introspection-and-analysis/Improved-Dynamic-Discovery.rst)を参照。
 
 ### C++・Pythonパッケージをビルドする
 
@@ -146,7 +147,7 @@ ROS_WORKSPACE="$workspace" ros_test
 この手順はビルド・パッケージ検索・実行の確認で、生成プログラム自身はROS通信を行いません。
 
 workspaceは確認後も残ります。作業を終えたらこの端末を閉じると、確認用workspaceの環境も解除できます。
-[パッケージ作成CLIとテンプレート](https://github.com/ros2/ros2cli/tree/jazzy/ros2pkg/ros2pkg)に基づく手順です。
+[パッケージ作成CLIとテンプレート](https://github.com/ros2/ros2cli/tree/lyrical/ros2pkg/ros2pkg)に基づく手順です。
 
 ### RVizを起動する
 
@@ -248,7 +249,7 @@ Neovimを終了し、リポジトリを更新して必要なモジュールを�
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin codex/ubuntu26.04
 bash setup_all.sh --modules neovim,rust,latex
 ```
 
@@ -331,7 +332,7 @@ tmuxは通常サーバー起動時に設定を読みます。既存サーバー�
 | Chrome | `google-chrome --version`、`google-chrome` | 版とウィンドウ |
 | SSHサーバー | `systemctl status ssh.socket ssh.service`、`ss -ltn 'sport = :22'` | socketまたはserviceが稼働し、ポート22が`LISTEN` |
 
-Ubuntu 24.04では通常、`ssh.socket`が待ち受けを管理します。接続前に`ssh.service`が稼働していなくても、それだけでは異常ではありません。
+`ssh.socket`が待ち受けを管理している環境では、接続前に`ssh.service`が稼働していなくても、それだけでは異常ではありません。
 仕組みは[UbuntuのSSH socket activationの説明](https://discourse.ubuntu.com/t/sshd-now-uses-socket-based-activation-ubuntu-22-10-and-later/30189)を参照してください。
 別端末からのSSH接続まで確認するには、LANのアドレスとファイアウォール設定も必要です。
 
@@ -395,11 +396,11 @@ Neovimで`.md`を開いて`:MarkdownPreview`を実行します。日本語を含
 
 ### ibisOfficeを追加して起動する
 
-ネイティブUbuntu 24.04のamd64環境で、必要に応じて追加できます。
+ネイティブUbuntu 26.04のamd64環境で、必要に応じて追加できます。
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin codex/ubuntu26.04
 bash setup_all.sh --modules ibis-office
 ```
 

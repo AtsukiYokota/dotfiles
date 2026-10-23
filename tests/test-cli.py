@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline end-to-end CLI checks on Ubuntu 24.04, using disposable HOME/PTYs.
+"""Offline end-to-end CLI checks on Ubuntu 26.04, using disposable HOME/PTYs.
 
 Run as an ordinary user: python3 tests/test-cli.py
 No packages, downloads, real home settings, or desktop settings are touched.
@@ -30,7 +30,7 @@ def supported_platform():
         return False
     release = Path('/etc/os-release').read_text(encoding='utf-8')
     values = dict(line.split('=', 1) for line in release.splitlines() if '=' in line)
-    return values.get('ID', '').strip('"') == 'ubuntu' and values.get('VERSION_ID', '').strip('"') == '24.04'
+    return values.get('ID', '').strip('"') == 'ubuntu' and values.get('VERSION_ID', '').strip('"') == '26.04'
 
 
 def snapshot(directory, exclude=None):
@@ -56,7 +56,7 @@ def snapshot(directory, exclude=None):
     return result
 
 
-@unittest.skipUnless(supported_platform(), 'requires Ubuntu 24.04, Python 3.12+, and a non-root user')
+@unittest.skipUnless(supported_platform(), 'requires Ubuntu 26.04, Python 3.12+, and a non-root user')
 class CliTests(unittest.TestCase):
     def setUp(self):
         self.scratch = tempfile.TemporaryDirectory(prefix='dotfiles-cli-test-')

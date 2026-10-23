@@ -173,6 +173,46 @@ class FontsTests(unittest.TestCase):
                 deploy.restore(ctx.backup.directory, ctx.home)
             self.assertEqual(state, original)
 
+    def test_ptyxis_font_is_reversible_without_gnome_terminal_profiles(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            ctx = self.context(Path(temporary))
+            directory = fonts.font_directory(ctx)
+            directory.mkdir(parents=True)
+            for name in fonts.FONT_FILES:
+                (directory / name).write_bytes(b'font')
+            (directory / '.dotfiles-sha256').write_text('f' * 64, encoding='ascii')
+            target = fonts.font_target(ctx)
+            target.parent.mkdir(parents=True)
+            target.symlink_to(directory, target_is_directory=True)
+            original = {('org.gnome.desktop.interface', 'monospace-font-name'): "'Monospace 11'",
+                        ('org.gnome.Ptyxis', 'use-system-font'): 'true',
+                        ('org.gnome.Ptyxis', 'font-name'): "'Ubuntu Mono 14'"}
+            state = original.copy()
+            writes = []
+
+            def capture(argv):
+                if argv == ['gsettings', 'list-schemas']:
+                    return 'org.gnome.desktop.interface\norg.gnome.Ptyxis'
+                return state[tuple(argv[2:4])]
+
+            def run(argv, **kwargs):
+                writes.append(argv)
+                state[tuple(argv[2:4])] = argv[4]
+
+            ctx.runner = SimpleNamespace(capture=capture, run=run)
+            with patch.dict(os.environ, {'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'DBUS_SESSION_BUS_ADDRESS': 'test'}), \
+                    patch.object(fonts.shutil, 'which', return_value='/usr/bin/gsettings'):
+                fonts.configure_fonts(ctx)
+                fonts.configure_fonts(ctx)
+            self.assertEqual(len(writes), 3)
+            self.assertEqual(len(ctx.backup.entries), 3)
+            self.assertEqual(state[('org.gnome.Ptyxis', 'use-system-font')], 'false')
+            self.assertEqual(state[('org.gnome.Ptyxis', 'font-name')], repr(fonts.FAMILY + ' 11'))
+            with patch.object(deploy.subprocess, 'check_output', side_effect=lambda argv, **kwargs: capture(argv)), \
+                    patch.object(deploy.subprocess, 'run', side_effect=run):
+                deploy.restore(ctx.backup.directory, ctx.home)
+            self.assertEqual(state, original)
+
     def test_windows_settings_preserve_comments_and_unrelated_profiles(self):
         text = '''{
           // Keep this comment and key ordering.
@@ -199,17 +239,17 @@ class FontsTests(unittest.TestCase):
 
     def test_windows_settings_scope_matches_only_active_or_exact_wsl_distro(self):
         text = json.dumps({'profiles': {'list': [
-            {'name': 'Ubuntu-24.04', 'source': 'Windows.Terminal.Wsl'},
-            {'name': 'Ubuntu-24.04', 'source': 'Other'},
+            {'name': 'Ubuntu-26.04', 'source': 'Windows.Terminal.Wsl'},
+            {'name': 'Ubuntu-26.04', 'source': 'Other'},
             {'name': 'Debian', 'source': 'Windows.Terminal.Wsl'}]}})
-        updated, found = fonts.patch_windows_terminal(text, '', 'Ubuntu-24.04')
+        updated, found = fonts.patch_windows_terminal(text, '', 'Ubuntu-26.04')
         self.assertTrue(found)
         value = fonts.JsonComments(updated).parse().value
         self.assertEqual(value['profiles']['list'][0]['font']['face'], fonts.WINDOWS_FAMILY)
         self.assertNotIn('font', value['profiles']['list'][1])
         self.assertNotIn('font', value['profiles']['list'][2])
         # An explicit active GUID must not silently configure another profile.
-        self.assertEqual(fonts.patch_windows_terminal(text, PROFILE, 'Ubuntu-24.04'), (text, False))
+        self.assertEqual(fonts.patch_windows_terminal(text, PROFILE, 'Ubuntu-26.04'), (text, False))
 
     def test_windows_settings_reject_duplicate_keys_and_ambiguous_profile(self):
         for text in ('{"profiles": [], "profiles": []}', '{"a": 1 "b": 2}', '{"a": 1,',

@@ -16,7 +16,7 @@ def choose(platform: str, arch: str, plain: bool = False) -> set[str]:
         except curses.error:
             print('Using the plain checklist for this terminal.')
     while True:
-        print(f'\nDOTFILES / Ubuntu 24.04 / {platform} / {arch}\n')
+        print(f'\nDOTFILES / Ubuntu 26.04 / {platform} / {arch}\n')
         for index, name in enumerate(choices, 1):
             module = MODULES[name]
             marker = 'x' if name in selected else ' '
@@ -64,7 +64,7 @@ def _checklist(screen, choices, selected, platform, arch):
         height, _ = screen.getmaxyx()
         if height < 12:
             raise curses.error('Terminal too small')
-        line(1, 2, f'DOTFILES   Ubuntu 24.04   {platform} / {arch}', curses.A_BOLD)
+        line(1, 2, f'DOTFILES   Ubuntu 26.04   {platform} / {arch}', curses.A_BOLD)
         line(3, 2, 'Up/Down: move   Space: toggle   Enter: review   q: cancel')
         visible = height - 10
         top = max(0, cursor - visible + 1)

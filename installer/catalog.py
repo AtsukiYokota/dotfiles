@@ -1,4 +1,4 @@
-"""Selectable modules and their Ubuntu 24.04 package dependencies."""
+"""Selectable modules and their Ubuntu 26.04 package dependencies."""
 from dataclasses import dataclass
 import os
 
@@ -15,7 +15,7 @@ class Module:
 
 BASE_PACKAGES = ('ca-certificates', 'curl', 'git', 'unzip', 'xz-utils')
 MODULES = {
-    'fonts': Module('Nerd Font + terminal font', 'JetBrainsMono Nerd Font Mono; configure GNOME Terminal or the active WSL Windows Terminal profile',
+    'fonts': Module('Nerd Font + terminal font', 'JetBrainsMono Nerd Font Mono; configure Ptyxis/GNOME Terminal or the active WSL Windows Terminal profile',
                     ('fontconfig',)),
     'shell': Module('Shell + tmux', 'Bash, Starship prompt, tmux, clipboard and familiar shortcuts',
                     ('bash-completion', 'tmux', 'ripgrep', 'fzf', 'tree', 'ncdu', 'jq', 'openssh-client', 'wl-clipboard', 'xsel'), ('fonts',)),
@@ -25,9 +25,9 @@ MODULES = {
                      ('python3-dev', 'python3-venv'), ('shell',)),
     'neovim': Module('Neovim + lazy.nvim', 'Pinned stable Neovim; retain existing editing keys and settings',
                      ('xdg-utils', 'lsof'), ('shell', 'cpp', 'python', 'node')),
-    'ros2': Module('ROS 2 Jazzy', 'ROS base, colcon, rosdep, vcstool; no ROS 1',
-                   ('software-properties-common', 'gnupg', 'locales', 'ros-jazzy-ament-uncrustify',
-                    'ros-jazzy-ament-flake8', 'ros-jazzy-ament-pep257', 'ros-jazzy-ament-cpplint'), ('shell', 'cpp', 'python')),
+    'ros2': Module('ROS 2 Lyrical', 'ROS base, colcon, rosdep, vcstool; no ROS 1',
+                   ('software-properties-common', 'gnupg', 'locales', 'ros-lyrical-ament-uncrustify',
+                    'ros-lyrical-ament-flake8', 'ros-lyrical-ament-pep257', 'ros-lyrical-ament-cpplint'), ('shell', 'cpp', 'python')),
     'ros-desktop': Module('ROS visualization', 'RViz, demos and tutorials (native desktop or WSLg)',
                           (), ('ros2',)),
     'rust': Module('Rust', 'Pinned stable toolchain, rustfmt, Clippy and rust-analyzer',
