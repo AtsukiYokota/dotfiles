@@ -60,7 +60,10 @@ class TmuxTests(unittest.TestCase):
             'HOME': str(self.home), 'TMPDIR': str(self.root / 'tmp'),
             'XDG_CONFIG_HOME': str(self.home / '.config'), 'XDG_CACHE_HOME': str(self.home / '.cache'),
             'XDG_STATE_HOME': str(self.home / '.local/state'), 'XDG_RUNTIME_DIR': str(self.root / 'tmp'),
-            'PATH': str(self.bin) + ':/usr/bin:/bin', 'TEST_ROOT': str(self.root),
+            # Clipboard helpers must invoke the same tmux version as the PTY
+            # client/server, including when testing a temporary source build.
+            'PATH': str(self.bin) + ':' + str(Path(TMUX).parent) + ':/usr/bin:/bin',
+            'TEST_ROOT': str(self.root),
             'WAYLAND_DISPLAY': 'mock-wayland', 'TERM': 'xterm-256color', 'SHELL': '/bin/bash',
             'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8', 'PS1': '$ ',
         })
@@ -177,6 +180,16 @@ class TmuxTests(unittest.TestCase):
         self.assertEqual(self.clipboard.read_bytes(), expected)
         self.assertEqual(self.run_tmux('show-buffer'), expected)
         self.wait_for(lambda: self.pane('#{pane_in_mode}') == '0')
+
+    def test_direct_ctrl_o_t_and_w_keep_original_shortcuts(self):
+        self.key(b'\x0f')  # Unshifted Ctrl+O: stacked split.
+        self.wait_for(lambda: self.count('list-panes') == 2)
+        self.key(b'\x14')  # Unshifted Ctrl+T: new window.
+        self.wait_for(lambda: self.count('list-windows') == 2)
+        self.assertEqual(self.pane('#{pane_current_path}'), str(self.project))
+        self.key(b'\x17')  # Ctrl+W closes the only pane and its window.
+        self.wait_for(lambda: self.count('list-windows') == 1)
+        self.assertEqual(self.count('list-panes'), 2)
 
     def test_mouse_drag_copies_without_an_extra_copy_key(self):
         self.shell(r"printf '\033[2J\033[Hmouse first\nsecond line\n'")
