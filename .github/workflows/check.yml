@@ -64,7 +64,7 @@ jobs:
       - name: TeX test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends latexmk texlive-lang-japanese texlive-luatex texlive-latex-extra texlive-fonts-recommended poppler-utils zathura zathura-pdf-poppler xvfb xauth x11-apps dbus-daemon
+          sudo apt-get install -y --no-install-recommends latexmk texlive-lang-japanese texlive-luatex texlive-latex-extra texlive-fonts-recommended poppler-utils zathura zathura-pdf-poppler xvfb xauth imagemagick python3-pil dbus-daemon
       - name: Neovim TeX preview lifecycle
         run: python3 -B tests/check-tex-preview.py
       - name: Japanese and English PDF compilation on save

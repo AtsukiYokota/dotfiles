@@ -2,23 +2,25 @@
 """Verify real PDF redraws after consecutive TeX saves in a private Xvfb.
 
 Requires latexmk, pLaTeX/dvipdfmx, Japanese TeX fonts, poppler-utils, zathura,
-zathura-pdf-poppler, xvfb, xauth, x11-apps (xwd), and dbus-daemon. No host
+zathura-pdf-poppler, xvfb, xauth, imagemagick, python3-pil, and dbus-daemon. No host
 desktop is accessed; compiler, viewer, X server, and D-Bus are private jobs.
 """
 from __future__ import annotations
 
 import hashlib
+import io
 import os
 from pathlib import Path
 import secrets
 import select
 import shutil
 import signal
-import struct
 import subprocess
 import sys
 import tempfile
 import time
+
+from PIL import Image
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
@@ -102,36 +104,26 @@ def wait_pdf(pdf, marker, compiler, environment, timeout=90):
 
 
 def snapshot(environment):
-    # Explicit -display and private XAUTHORITY prevent any default-display use.
-    data = subprocess.check_output(['xwd', '-display', environment['DISPLAY'], '-root', '-silent'],
+    # ImageMagick handles X11 visual depth/scanline differences. Explicit
+    # -display and private XAUTHORITY prevent any default-display capture.
+    data = subprocess.check_output(['import', '-display', environment['DISPLAY'],
+                                    '-window', 'root', '-depth', '8', 'png:-'],
                                    env=environment, stderr=subprocess.PIPE, timeout=5)
-    if len(data) < 100:
-        raise RuntimeError('xwd returned an incomplete header')
-    header = struct.unpack('>25I', data[:100])
-    header_size, version, format_, _, width, height = header[:6]
-    byte_order, bits, stride = header[7], header[11], header[12]
-    red, green, blue, colors = header[14], header[15], header[16], header[19]
-    if (version, format_, width, height, bits, red, green, blue) != (
-            7, 2, 1000, 800, 32, 0xff0000, 0xff00, 0xff):
-        raise RuntimeError(f'Unexpected Xvfb pixel layout: {header}')
-    pixels = data[header_size + colors * 12:]
-    if len(pixels) != stride * height:
-        raise RuntimeError('xwd returned incomplete pixel data')
     # Test content is a fixed page plus an increasingly large black rectangle.
     # Sample its interior viewport, excluding most of the desktop/window border.
     # Requiring MORE dark pixels rejects a transient blank/loading page, while
     # the >500 increase also rules out a changed window title/status message.
-    order = '<I' if byte_order == 0 else '>I'
-    dark = white = 0
-    for row in range(20, 650, 2):
-        part = pixels[row * stride + 150 * 4:row * stride + 750 * 4]
-        for index, (pixel,) in enumerate(struct.iter_unpack(order, part)):
-            if index % 2:
-                continue
-            rgb = ((pixel >> 16) & 255, (pixel >> 8) & 255, pixel & 255)
-            dark += max(rgb) < 96
-            white += min(rgb) > 235
-    return hashlib.sha256(pixels).hexdigest(), dark, white
+    with Image.open(io.BytesIO(data)) as captured:
+        if captured.size != (1000, 800):
+            raise RuntimeError(f'Unexpected private Xvfb image size: {captured.size}')
+        with captured.convert('RGB') as image:
+            digest = hashlib.sha256(image.tobytes()).hexdigest()
+            with image.crop((150, 20, 750, 650)) as region:
+                with region.resize((300, 315), Image.Resampling.NEAREST) as sampled:
+                    colors = list(sampled.getdata())
+    dark = sum(max(rgb) < 96 for rgb in colors)
+    white = sum(min(rgb) > 235 for rgb in colors)
+    return digest, dark, white
 
 
 def wait_frame(environment, viewer, xvfb, previous, initial=False, timeout=35):
@@ -243,7 +235,7 @@ def run(root):
 def main():
     if sys.platform != 'linux':
         raise RuntimeError('Run the actual PDF redraw test under Linux.')
-    for command in ('latexmk', 'platex', 'dvipdfmx', 'pdftotext', 'zathura', 'Xvfb', 'xauth', 'xwd', 'dbus-daemon'):
+    for command in ('latexmk', 'platex', 'dvipdfmx', 'pdftotext', 'zathura', 'Xvfb', 'xauth', 'import', 'dbus-daemon'):
         if not shutil.which(command):
             raise RuntimeError(f'Missing test dependency: {command}')
     with tempfile.TemporaryDirectory(prefix='dotfiles-pdf-reload-') as temporary:
