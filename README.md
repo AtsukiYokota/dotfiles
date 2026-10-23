@@ -1,8 +1,10 @@
 # dotfiles
 
-[![Ubuntu dotfiles checks](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml/badge.svg)](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml)
+[![Ubuntu dotfiles checks](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml/badge.svg?branch=ubuntu24)](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml?query=branch%3Aubuntu24)
 
 Ubuntu 24.04向けの開発環境セットアップです。ネイティブUbuntuとWSLに対応し、必要なモジュールを選んで導入できます。
+
+Ubuntu 26.04用は[`ubuntu26`ブランチ](https://github.com/AtsukiYokota/dotfiles/tree/ubuntu26)を使ってください。
 
 ## インストール
 
@@ -11,7 +13,7 @@ Ubuntu 24.04のamd64・arm64に対応しています。UbuntuのBashから、一
 ```bash
 sudo apt update
 sudo apt install -y git
-git clone --branch master https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
+git clone --branch ubuntu24 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 bash setup_all.sh
 ```

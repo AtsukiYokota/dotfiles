@@ -4,7 +4,7 @@
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin ubuntu24
 bash setup_all.sh --modules neovim,latex,diagrams
 ```
 

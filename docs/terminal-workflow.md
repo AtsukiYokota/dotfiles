@@ -130,7 +130,7 @@ set -g @dotfiles-separator-left '|'
 
 ## 旧設定から更新した記述
 
-以下は旧masterの`.tmux.conf`とUbuntu 24.04上のtmux 3.4を照合した結果である。
+以下は旧設定の`.tmux.conf`とUbuntu 24.04上のtmux 3.4を照合した結果である。
 廃止optionを握りつぶす設定は追加せず、現在の記法へ置き換えた。
 
 | 旧記述 | tmux 3.4での扱いと今回の変更 |

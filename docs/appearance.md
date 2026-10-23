@@ -10,7 +10,7 @@ Neovimを終了し、Ubuntuのデスクトップ上の端末で実行します�
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin ubuntu24
 bash setup_all.sh --modules shell,neovim,macos-theme
 ```
 
@@ -24,7 +24,7 @@ GNOMEのDock・壁紙はWSLの対象外です。
 
 ```bash
 cd ~/dotfiles
-git pull --ff-only origin master
+git pull --ff-only origin ubuntu24
 bash setup_all.sh --modules shell,neovim
 ```
 
