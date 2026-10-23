@@ -15,7 +15,7 @@ local function check()
   vim.fn.mkdir(directory, "p")
   local filename = directory .. "/preview 日本語 #.md"
   vim.fn.writefile({ "# InitialPreview 日本語", "", "![image](image.png)" }, filename)
-  local png = vim.base64.decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=")
+  local png = vim.base64.decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==")
   local image = assert(io.open(directory .. "/image.png", "wb"))
   image:write(png)
   image:close()
