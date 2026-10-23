@@ -1,5 +1,7 @@
 # dotfiles
 
+[![Ubuntu dotfiles checks](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml/badge.svg)](https://github.com/AtsukiYokota/dotfiles/actions/workflows/check.yml)
+
 Ubuntu 24.04向けの開発環境セットアップです。ネイティブUbuntuとWSLに対応し、必要なモジュールを選んで導入できます。
 
 ## インストール
@@ -36,8 +38,8 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `ros-desktop` | RViz、ROSデモ |
 | `rust` | Rust、rustfmt、Clippy、rust-analyzer |
 | `node` | Node.js LTS、npm、Bash・JSON・YAML・HTML・CSS・JS/TS用LSP |
-| `latex` | 日本語TeX、LuaLaTeX、latexmk、biber、Texlab |
-| `diagrams` | PlantUML、Graphviz、画像のEPS変換 |
+| `latex` | 日本語TeX、LuaLaTeX、latexmk、Texlab、PDFライブプレビュー |
+| `diagrams` | PlantUML、Graphviz、画像のライブプレビュー・EPS変換 |
 | `desktop` | Inkscape、VLC、フォント |
 | `keyboard` | Caps LockをCtrlへ変更 |
 | `japanese-input` | Fcitx 5＋Mozc、日本語入力の有効・無効キー |
@@ -48,6 +50,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 
 `desktop,keyboard,japanese-input,vscode,chrome,macos-theme`はネイティブ用です。`chrome`はamd64用、`keyboard,japanese-input,macos-theme`はGNOMEセッションが必要です。
 WSLのGUIにはWSLgなどの表示環境を使います。`ssh-server`を選ぶとSSH待ち受けサービスを導入します。
+WSLは自動検出し、ネイティブ専用モジュールを選択対象から外します。GNOMEのデスクトップ設定も適用しません。
 `neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。
 `shell`には`fonts`が含まれ、対応する端末のNerd Fontも設定します。
 
@@ -71,4 +74,5 @@ bash setup_all.sh --modules shell,neovim,ros-desktop,latex
 - [ターミナル操作](docs/terminal-workflow.md)
 - [外観・フォント設定と既存環境への反映](docs/appearance.md)
 - [日本語入力](docs/japanese-input.md)
+- [NeovimのTeX・PlantUMLプレビューと整形](docs/editor-preview.md)
 - [ROS 2コード整形](docs/ros-formatting.md)

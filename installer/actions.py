@@ -136,7 +136,8 @@ def deploy_configs(ctx):
         from japanese_input import configure_japanese_input
         configure_japanese_input(ctx)
     if 'diagrams' in ctx.modules:
-        for source, binary in (('png2eps.sh', 'png2eps'), ('jpg2eps.sh', 'jpg2eps'), ('image2eps.py', 'image2eps.py')):
+        for source, binary in (('png2eps.sh', 'png2eps'), ('jpg2eps.sh', 'jpg2eps'), ('image2eps.py', 'image2eps.py'),
+                               ('plantuml-render.py', 'dotfiles-plantuml-render')):
             target = home / '.local/bin' / binary
             ctx.backup.write_text(target, (repo / 'commands' / source).read_text(encoding='utf-8'))
             target.chmod(0o755)

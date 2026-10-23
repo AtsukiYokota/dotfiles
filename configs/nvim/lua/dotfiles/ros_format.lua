@@ -1,6 +1,10 @@
 local M = {}
 
 function M.format()
+  if not vim.bo.modifiable then
+    vim.notify("This buffer is not modifiable", vim.log.levels.WARN)
+    return
+  end
   local filetype = vim.bo.filetype
   if filetype ~= "c" and filetype ~= "cpp" and filetype ~= "python" then
     vim.notify("RosFormat supports C, C++ and Python buffers", vim.log.levels.ERROR)

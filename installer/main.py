@@ -15,7 +15,7 @@ sys.dont_write_bytecode = True
 from actions import deploy_configs, install_modules
 from catalog import defaults_for, MODULES, available, packages_for, resolve
 from deploy import Backup, restore
-from runtime import Runner
+from runtime import Runner, is_wsl
 from ui import choose
 
 REPO = Path(__file__).resolve().parent.parent
@@ -29,10 +29,8 @@ def detect_platform():
             if '=' in line:
                 key, value = line.split('=', 1)
                 info[key] = value.strip('"')
-    kernel = Path('/proc/sys/kernel/osrelease')
-    wsl = kernel.exists() and 'microsoft' in kernel.read_text(encoding='utf-8').lower()
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64', 'AMD64': 'amd64'}.get(host_platform.machine(), host_platform.machine())
-    return info, 'wsl' if wsl else 'native', arch
+    return info, 'wsl' if is_wsl() else 'native', arch
 
 
 @dataclass
@@ -156,7 +154,9 @@ def show_plan(modules, requested, target, arch, args, versions, home):
     if 'neovim' in modules:
         print('  neovim: XDG config/nvim and fallback ~/.vimrc')
     if 'latex' in modules:
-        print('  latex: ~/.latexmkrc')
+        print('  latex: ~/.latexmkrc; :TexPreview starts latexmk + Zathura; save to rebuild (native desktop or WSLg)')
+    if 'diagrams' in modules:
+        print('  diagrams: :PlantumlPreview renders locally and refreshes feh on save (native desktop or WSLg)')
     if 'macos-theme' in modules:
         print('  macos-theme: WhiteSur appearance, bottom-edge Dock autohide, Big Sur-style wallpaper; previous settings backed up')
     print('No OS release upgrade or full-upgrade. No Git identity, NTP server, or fixed host addresses.')

@@ -71,7 +71,7 @@ def fixture_context(root: Path):
     (repo / 'scripts').mkdir()
     (repo / 'scripts/clipboard.sh').write_text('#!/bin/sh\n', encoding='utf-8')
     (repo / 'commands').mkdir()
-    for name in ('fetchall.sh', 'png2eps.sh', 'jpg2eps.sh', 'image2eps.py', 'ros-format.py'):
+    for name in ('fetchall.sh', 'png2eps.sh', 'jpg2eps.sh', 'image2eps.py', 'ros-format.py', 'plantuml-render.py'):
         (repo / 'commands' / name).write_text('# test helper\n', encoding='utf-8')
     (repo / 'configs/nvim').mkdir(parents=True)
     (repo / 'configs/nvim/init.lua').write_text('-- managed\n', encoding='utf-8')
@@ -101,7 +101,7 @@ class DeploymentTests(unittest.TestCase):
             self.assertIn('export KEEP_ME=yes', (ctx.home / '.bashrc').read_text())
             self.assertEqual((ctx.home / '.bashrc').read_text().count('# >>> dotfiles managed >>>'), 1)
             self.assertEqual((ctx.config / 'nvim').resolve(), ctx.repo / 'configs/nvim')
-            for name in ('fetchall', 'png2eps', 'jpg2eps', 'image2eps.py', 'dotfiles-clipboard'):
+            for name in ('fetchall', 'png2eps', 'jpg2eps', 'image2eps.py', 'dotfiles-clipboard', 'dotfiles-plantuml-render'):
                 self.assertTrue(os.access(ctx.home / '.local/bin' / name, os.X_OK))
             installed_bashrc = (ctx.home / '.bashrc').read_text()
             second = deploy.Backup(ctx.home / 'backups/second', ctx.home)

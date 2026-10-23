@@ -165,8 +165,24 @@ function M.setup()
     return vim.fn.pumvisible() == 1 and vim.fn.complete_info().selected >= 0 and "<C-y>" or "<C-g>u<CR>"
   end, { expr = true })
   vim.api.nvim_create_user_command("Format", function()
-    vim.lsp.buf.format({ async = false, timeout_ms = 5000 })
-  end, { desc = "Format with an attached language server (manual only)" })
+    if not vim.bo.modifiable then
+      vim.notify("This buffer is not modifiable", vim.log.levels.WARN)
+      return
+    end
+    if vim.tbl_contains({ "c", "cpp", "python" }, vim.bo.filetype) then
+      require("dotfiles.ros_format").format()
+      return
+    end
+    local clients = vim.lsp.get_clients({ bufnr = 0, method = "textDocument/formatting" })
+    if #clients == 0 then
+      vim.notify("No formatter is attached for " .. vim.bo.filetype .. "; run :DotfilesLsp to check installed servers",
+        vim.log.levels.WARN)
+      return
+    end
+    -- Apply exactly one formatter; competing servers can undo each other's edits.
+    table.sort(clients, function(a, b) return a.name < b.name end)
+    vim.lsp.buf.format({ id = clients[1].id, async = false, timeout_ms = 5000 })
+  end, { desc = "Format this buffer: ROS rules for C/C++/Python, attached LSP for other languages" })
   vim.api.nvim_create_user_command("ClangFormat", function()
     if vim.fn.executable("clang-format") == 0 then
       vim.notify("clang-format is not installed", vim.log.levels.ERROR)

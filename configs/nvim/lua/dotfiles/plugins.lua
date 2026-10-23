@@ -45,12 +45,7 @@ return {
     -- VimTeX handles its own filetype loading; no compiler until requested.
     lazy = false,
     init = function()
-      vim.g.vimtex_compiler_latexmk = {
-        background = 1, build_dir = "", continuous = 1,
-        options = { "-pdfdvi", "-verbose", "-file-line-error", "-synctex=1", "-interaction=nonstopmode" },
-      }
-      vim.g.vimtex_quickfix_open_on_warning = 0
-      vim.g.vimtex_view_general_options = "-r @line @pdf @tex"
+      require("dotfiles.tex_preview").setup()
     end,
   },
 }

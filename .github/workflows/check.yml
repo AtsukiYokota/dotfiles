@@ -19,18 +19,20 @@ jobs:
       - name: Test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends python3-pil tmux clangd fontconfig fcitx5 fcitx5-mozc python3-dbus dbus-daemon libglib2.0-bin
+          sudo apt-get install -y --no-install-recommends python3-pil tmux clangd fontconfig fcitx5 fcitx5-mozc python3-dbus dbus-daemon libglib2.0-bin openjdk-21-jre-headless graphviz fonts-noto-cjk
       - name: Offline checks
         run: |
           python3 -B tests/check-syntax.py
           python3 -B tests/test-installer.py
           python3 -B tests/test-cli.py
+          python3 -B tests/test-wsl.py
           python3 -B tests/test-terminal-setup.py
           python3 -B tests/test-japanese-input.py
           python3 -B tests/test-fonts.py
           python3 -B tests/test-editor-cache.py
           python3 -B tests/test-theme-settings.py
           python3 -B tests/test-ros-format.py
+          python3 -B tests/test-plantuml-preview.py
           bash tests/test-shell.sh
           python3 -B tests/test-shell-startup.py
           python3 -B tests/test-tmux.py
@@ -50,6 +52,23 @@ jobs:
         run: python3 -B tests/check-lsp.py
       - name: ROS formatter integration
         run: python3 -B tests/check-ros-format.py
+      - name: PlantUML live preview rendering
+        run: python3 -B tests/check-plantuml-preview.py
+  tex-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: TeX test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends latexmk texlive-lang-japanese texlive-luatex texlive-latex-extra texlive-fonts-recommended poppler-utils
+      - name: Neovim TeX preview lifecycle
+        run: python3 -B tests/check-tex-preview.py
+      - name: Japanese and English PDF compilation on save
+        run: python3 -B tests/check-tex-preview.py --real-tex
   windows-settings:
     runs-on: windows-latest
     timeout-minutes: 5

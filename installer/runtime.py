@@ -1,10 +1,28 @@
-"""Checked downloads and subprocess execution. No shell command interpolation."""
+"""Host detection, checked downloads and subprocess execution."""
 import hashlib
 import os
 from pathlib import Path
 import shlex
 import subprocess
 import urllib.request
+
+
+def is_wsl() -> bool:
+    """Recognize WSL even when a custom kernel omits Microsoft's release name.
+
+    Environment variables can be absent in login/service contexts, so retain
+    both kernel sources as fallbacks. Display/session variables are not WSL
+    indicators: WSLg provides them without a native GNOME desktop.
+    """
+    if os.environ.get('WSL_DISTRO_NAME') or os.environ.get('WSL_INTEROP'):
+        return True
+    for name in ('/proc/sys/kernel/osrelease', '/proc/version'):
+        try:
+            if 'microsoft' in Path(name).read_text(encoding='utf-8').lower():
+                return True
+        except OSError:
+            continue
+    return False
 
 
 class Runner:

@@ -1,6 +1,6 @@
 # ROS 2 Jazzy用コード整形
 
-以前の4つの関数を、ROS 2 Jazzy向けの共通コマンド`ros-format`で復元した。
+4つの関数はROS 2 Jazzy向けの共通コマンド`ros-format`を使う。
 関数を実行すると対象ファイルを書き換える。保存時やシェル起動時の自動実行は行わない。
 
 | 関数 | 対象 | 例 |
@@ -84,10 +84,11 @@ ros_test
 
 ## Neovimからの実行
 
-`:RosFormat`は現在のC/C++・Pythonバッファを同じ規則で整形する。未保存の内容も対象になる。
+`:Format`はファイルの種類に応じて整形する。C/C++・Pythonではシェル関数と同じ`ros-format`を使い、その他の言語では対応するLSPの整形機能を使う。
+`:RosFormat`でも現在のC/C++・Pythonバッファを同じ規則で整形できる。未保存の内容も対象になる。
 失敗時はバッファを変更せず、成功後もディスクへの保存は`:write`で行う。
 C/C++では`ros_env`を実行したシェルからNeovimを起動する。
-従来の`:AutoPep8`は`--aggressive`を2回指定する設定を保持し、`:ClangFormat`もプロジェクト設定を使う独立したコマンドとして残している。
+`:ClangFormat`はプロジェクトの`.clang-format`を使いたい場合の独立したコマンド。`:AutoPep8`は`--aggressive`を2回指定するため、ROS 2向けには`:Format`を使う。
 
 ## 検証方法
 

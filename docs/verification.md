@@ -367,6 +367,7 @@ test -s "$tex_dir/check.pdf" && printf 'PDF: %s\n' "$tex_dir/check.pdf"
 ```
 
 表示されたPDFを開き、日本語の本文を確認します。
+Neovimでこの`.tex`を開いて`:TexPreview`を実行し、本文を変更して`:w`で保存します。PDFの表示も更新されればライブプレビューが動作しています。停止は`:TexPreviewStop`です。
 
 ### PlantUMLで画像を作る
 
@@ -384,6 +385,8 @@ test -s "$diagram_dir/check.eps" && printf 'EPS: %s\n' "$diagram_dir/check.eps"
 ```
 
 PNGを開き、矢印と日本語ラベルを確認します。EPSも生成されれば画像変換まで確認できています。
+Neovimでこの`.puml`を開いて`:PlantumlPreview`を実行し、ラベルを変更して`:w`で保存します。画像も更新されることを確認し、`:PlantumlStop`で停止します。
+プレビューの環境条件・エンジン選択・整形コマンドは[Neovimのプレビューと整形](editor-preview.md)を参照してください。
 
 ### GNOMEの外観とCaps Lockを確認する
 

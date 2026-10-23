@@ -26,8 +26,14 @@ local function check()
   assert(vim.fn.exists(":LivePreview") == 2, "LivePreview command missing")
   assert(vim.fn.exists(":AutoPep8") == 2, "AutoPep8 command missing")
   assert(vim.fn.exists(":ClangFormat") == 2, "ClangFormat command missing")
-  assert(vim.fn.exists(":Format") == 2, "LSP Format command missing")
-  assert(vim.g.vimtex_compiler_latexmk.options[1] == "-pdfdvi", "TeX workflow changed")
+  assert(vim.fn.exists(":Format") == 2, "Format command missing")
+  for _, command in ipairs({ "TexPreview", "TexPreviewStop", "TexView", "PlantumlPreview", "PlantumlStop" }) do
+    assert(vim.fn.exists(":" .. command) == 2, command .. " missing")
+  end
+  assert(vim.g.vimtex_compiler_latexmk_engines._ == "-pdfdvi", "pLaTeX default changed")
+  for _, option in ipairs(vim.g.vimtex_compiler_latexmk.options) do
+    assert(not vim.tbl_contains({ "-pdf", "-pdfdvi", "-lualatex", "-xelatex" }, option), "Compiler mode must respect TeX magic comments")
+  end
   assert(vim.fn.globpath(vim.o.runtimepath, "syntax/plantuml.vim") ~= "", "PlantUML syntax missing")
   assert(vim.fn.globpath(vim.o.runtimepath, "autoload/vimtex.vim") ~= "", "VimTeX missing")
   assert(vim.o.ambiwidth == "double" and vim.o.tabstop == 2 and not vim.o.swapfile, "Plugins changed retained options")

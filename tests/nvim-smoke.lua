@@ -55,6 +55,7 @@ local function check()
   assert(vim.bo.filetype == "xml", "ROS XML filetype was not retained")
   local test_dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
   dofile(test_dir .. "/nvim-ros-format.lua")
+  dofile(test_dir .. "/nvim-plantuml.lua")
   print("Neovim offline smoke: settings, mappings, write hook, ANSI cleanup and CP932 passed")
 end
 
