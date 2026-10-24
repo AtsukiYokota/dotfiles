@@ -16,6 +16,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Use public Ubuntu APT mirrors
+        run: sudo --preserve-env=GITHUB_ACTIONS python3 -B tests/configure-ci-apt.py
       - name: Test dependencies
         run: |
           sudo apt-get update
@@ -23,6 +25,7 @@ jobs:
       - name: Offline checks
         run: |
           python3 -B tests/check-syntax.py
+          python3 -B tests/test-ci-apt.py
           python3 -B tests/test-installer.py
           python3 -B tests/test-office.py
           python3 -B tests/test-cli.py
@@ -66,6 +69,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Use public Ubuntu APT mirrors
+        run: sudo --preserve-env=GITHUB_ACTIONS python3 -B tests/configure-ci-apt.py
       - name: TeX test dependencies
         run: |
           sudo apt-get update
@@ -83,6 +88,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Use public Ubuntu APT mirrors
+        run: sudo --preserve-env=GITHUB_ACTIONS python3 -B tests/configure-ci-apt.py
       - name: Markdown browser test dependencies
         run: |
           sudo apt-get update
@@ -103,6 +110,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Use public Ubuntu APT mirrors
+        run: sudo --preserve-env=GITHUB_ACTIONS python3 -B tests/configure-ci-apt.py
       - name: Verified ROS repository for Ubuntu 26.04
         run: |
           python3 - <<'PY'
