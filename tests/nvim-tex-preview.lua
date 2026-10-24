@@ -29,6 +29,27 @@ local function running()
   return vim.fn.eval("b:vimtex.compiler.is_running() ? 1 : 0") == 1
 end
 
+local compiler_jobs = {}
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VimtexEventCompileStarted",
+  callback = function()
+    table.insert(compiler_jobs, vim.fn.eval("b:vimtex.compiler.job"))
+  end,
+})
+
+local function wait_for_jobs(jobs)
+  for _, status in ipairs(vim.fn.jobwait(jobs, 5000)) do
+    assert(status >= 0 or status == -3, "Compiler job did not finish after stop: " .. status)
+  end
+end
+
+local function stop_current()
+  local job = vim.fn.eval("b:vimtex.compiler.job")
+  vim.cmd.TexPreviewStop()
+  wait_for_jobs({ job })
+  assert(not running(), "Stop left the compiler running")
+end
+
 local function check()
   vim.cmd.enew()
   vim.bo.filetype = "text"
@@ -100,8 +121,7 @@ local function check()
     return text(pdf):find("RecoveredPreview", 1, true)
   end)
   vim.api.nvim_set_current_buf(source_buf)
-  vim.cmd.TexPreviewStop()
-  wait_for("Stop left the compiler running", function() return not running() end)
+  stop_current()
   vim.cmd.TexPreviewStop()
 
   if not real then
@@ -134,14 +154,20 @@ local function check()
       return result:find(case[4]:match("^%w+"), 1, true)
         and (case[1] == "pdflatex" or result:find("日本語", 1, true))
     end)
-    vim.cmd.TexPreviewStop()
+    stop_current()
   end
   vim.bo[unsaved].modified = false
   print("TeX preview: root/engine selection, paths, first view, repeat start, save rebuild, errors/recovery and stop passed")
 end
 
 local ok, err = xpcall(check, debug.traceback)
-pcall(vim.fn["vimtex#compiler#stop_all"])
+local cleanup_ok, cleanup_err = xpcall(function()
+  vim.fn["vimtex#compiler#stop_all"]()
+  wait_for_jobs(compiler_jobs)
+end, debug.traceback)
+if not cleanup_ok then
+  ok, err = false, tostring(err or "") .. "\n" .. cleanup_err
+end
 if not ok then
   io.stderr:write(table.concat(notices, "\n") .. "\n")
   io.stderr:write(tostring(err) .. "\n")

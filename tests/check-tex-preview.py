@@ -6,15 +6,18 @@ engines and extracts the resulting Japanese/English PDF text. The PDF viewer
 is always a fixture, so no window is opened on the host desktop.
 """
 import argparse
+import ctypes
 import json
 import os
 from pathlib import Path
 import platform
 import shutil
+import signal
 import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 
 sys.dont_write_bytecode = True
 REPO = Path(__file__).resolve().parent.parent
@@ -61,6 +64,9 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
+# Deliberately finish after the launching shell, exposing cleanup races.
+time.sleep(0.15)
 with Path(os.environ['TEX_TEST_VIEWER']).open('a') as log:
     log.write(json.dumps({'cwd': str(Path.cwd()), 'args': sys.argv[1:]}) + '\n')
 '''
@@ -69,6 +75,58 @@ with Path(os.environ['TEX_TEST_VIEWER']).open('a') as log:
 def executable(path, body):
     path.write_text(f'#!{sys.executable}\n' + body)
     path.chmod(0o755)
+
+
+def wait_for_children(timeout):
+    """Reap adopted fixture jobs, including background viewers in other groups."""
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            pid, _ = os.waitpid(-1, os.WNOHANG)
+        except ChildProcessError:
+            return True
+        if pid:
+            continue
+        if time.monotonic() >= deadline:
+            return False
+        time.sleep(0.01)
+
+
+def signal_children(sig):
+    def children(pid):
+        try:
+            return [int(value) for value in Path(f'/proc/{pid}/task/{pid}/children').read_text().split()]
+        except FileNotFoundError:
+            return []
+
+    def stop(pid):
+        for child in children(pid):
+            stop(child)
+        try:
+            os.kill(pid, sig)
+        except ProcessLookupError:
+            pass
+
+    for child in children(os.getpid()):
+        stop(child)
+
+
+def finish_processes(process):
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
+    if wait_for_children(5):
+        return
+    signal_children(signal.SIGTERM)
+    if not wait_for_children(2):
+        signal_children(signal.SIGKILL)
+        if not wait_for_children(5):
+            raise RuntimeError('TeX test descendants did not exit after SIGKILL')
+    raise RuntimeError('TeX test left background jobs running after editor exit')
 
 
 def main():
@@ -115,6 +173,12 @@ def main():
             TEX_TEST_REAL='1' if args.real_tex else '0', DISPLAY=':test-fixture', WAYLAND_DISPLAY='',
             GIT_CONFIG_GLOBAL='/dev/null', GIT_CONFIG_NOSYSTEM='1',
         )
+        # VimTeX launches viewers with a background shell command. Neovim's
+        # job/session boundaries do not contain every viewer, so adopt orphaned
+        # descendants and reap them before deleting the private fixture tree.
+        libc = ctypes.CDLL(None, use_errno=True)
+        if libc.prctl(36, 1, 0, 0, 0) != 0:  # PR_SET_CHILD_SUBREAPER
+            raise OSError(ctypes.get_errno(), 'Cannot supervise TeX test descendants')
         process = subprocess.Popen(
             [str(nvim), '--headless', '-u', 'NONE', '-i', 'NONE', '-l', str(REPO / 'tests/nvim-tex-preview.lua')],
             env=environment, start_new_session=True,
@@ -123,12 +187,7 @@ def main():
             if process.wait(timeout=300):
                 raise RuntimeError('TeX preview integration failed')
         finally:
-            # This process group contains only this isolated Neovim and its jobs.
-            import signal
-            try:
-                os.killpg(process.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
+            finish_processes(process)
     print('TeX preview integration passed' + (' (real Japanese/English PDFs).' if args.real_tex else ' (process fixtures).'))
 
 
