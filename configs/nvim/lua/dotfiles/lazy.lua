@@ -21,6 +21,7 @@ function M.setup(config_dir)
   end
   require("lazy").setup(specs, {
     lockfile = config_dir .. "/lazy-lock.json",
+    performance = { rtp = { paths = { config_dir } } },
     install = { missing = false },
     checker = { enabled = false },
     change_detection = { notify = false },

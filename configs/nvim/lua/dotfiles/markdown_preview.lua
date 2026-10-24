@@ -34,6 +34,7 @@ function M.start()
   if not ok then
     return fail("live-preview.nvim is missing; rerun bash setup_all.sh --modules neovim in the dotfiles repository")
   end
+  require("dotfiles.preview_security").setup()
   local written, error = pcall(vim.cmd, "update")
   if not written then return fail(tostring(error)) end
   local directory = vim.fs.dirname(filename)

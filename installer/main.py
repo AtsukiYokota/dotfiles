@@ -117,7 +117,8 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             if module in modules:
                 print(f'  User tool: {tool} {versions[tool]["version"]} (HTTPS + pinned SHA-256)')
         if 'python' in modules:
-            print('  Isolated Python CLI tools: basedpyright cmake-language-server autopep8 ruff')
+            print('  Isolated Python CLI tools: cmake-language-server autopep8 ruff')
+            print(f'  Python LSP: basedpyright@{versions["basedpyright"]} using the verified Node runtime; migrate any previous uv-based tool')
         if 'fonts' in modules:
             print(f'  Nerd Font: JetBrainsMono Nerd Font Mono {versions["nerd_font"]["version"]} (HTTPS + pinned SHA-256)')
         if 'node' in modules:
@@ -130,15 +131,17 @@ def show_plan(modules, requested, target, arch, args, versions, home):
         if 'chrome' in modules:
             print('  Google APT repository + scoped signing key; google-chrome-stable')
         if 'vscode' in modules:
-            print('  Snap: code --classic')
+            print('  Snap: install code --classic, or refresh the existing code installation on its current channel')
         if 'ibis-office' in modules:
             print(f'  ibisOffice {versions["ibis_office"]["version"]} official Linux x86_64 AppImage (HTTPS + pinned SHA-256)')
         if 'macos-theme' in modules:
             print('  WhiteSur theme/icons/cursors + Big Sur-style light/dark wallpapers; Dock hidden until pointer reaches the bottom edge')
         if 'ssh-server' in modules:
             print('  openssh-server may start a listening SSH service.')
-        if 'neovim' in modules and not args.no_plugins:
-            print('  Neovim: explicit plugin bootstrap using the committed lazy lockfile')
+        if 'neovim' in modules:
+            print(f'  Markdown preview assets {versions["markdown_preview"]["version"]}: verified archives and locked Mermaid build; npm install scripts disabled')
+            if not args.no_plugins:
+                print('  Neovim: explicit plugin bootstrap using the committed lazy lockfile')
     print('\nConfiguration: selected modules only; existing targets are backed up.')
     if 'fonts' in modules:
         if target == 'wsl':

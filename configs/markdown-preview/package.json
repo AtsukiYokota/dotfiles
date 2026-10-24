@@ -1,0 +1,13 @@
+{
+  "name": "dotfiles-markdown-preview",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Local Mermaid browser bundle with reviewed dependency versions",
+  "dependencies": {
+    "dompurify": "3.4.17",
+    "mermaid": "12.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

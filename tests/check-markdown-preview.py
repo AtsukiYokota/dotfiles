@@ -6,6 +6,8 @@ local preview page in headless Chromium and checks updates without reloading.
 """
 import argparse
 import base64
+import hashlib
+import http.client
 import json
 import os
 from pathlib import Path
@@ -15,6 +17,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+from types import SimpleNamespace
 import urllib.parse
 import urllib.request
 
@@ -22,6 +25,9 @@ sys.dont_write_bytecode = True
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / 'installer'))
 from runtime import Runner
+from deploy import Backup
+from preview_assets import install_preview_assets
+from actions import install_archive
 
 
 def record(kind, **values):
@@ -35,16 +41,49 @@ def client(url, browser):
     with urllib.request.urlopen(request, timeout=10) as response:
         html = response.read().decode('utf-8')
         assert response.headers['Content-Type'] == 'text/html; charset=UTF-8'
+        assert "script-src 'self'" in response.headers['Content-Security-Policy']
+        assert response.headers['X-Content-Type-Options'] == 'nosniff'
     assert 'InitialPreview' in html and '日本語' in html
     assert '/live-preview.nvim/static/markdown/markdown-it.min.js' in html
     with urllib.request.urlopen(urllib.parse.urljoin(url, 'image.png'), timeout=10) as response:
         assert response.read().startswith(b'\x89PNG\r\n\x1a\n')
+    parsed = urllib.parse.urlsplit(url)
+    origin = f'http://127.0.0.1:{parsed.port}'
+    def rejected(path, **headers):
+        connection = http.client.HTTPConnection(parsed.hostname, parsed.port, timeout=10)
+        try:
+            connection.request('GET', path, headers=headers)
+            response = connection.getresponse()
+            assert response.status == 403, (path, headers, response.status)
+            assert b'FixturePrivate' not in response.read()
+        finally:
+            connection.close()
+    for path in ('/../private.md', '/%2e%2e/private.md', '/outside.md', '/.hidden.md', '/public.md',
+                 '/live-preview.nvim/README.md', '/live-preview.nvim/static/../../README.md'):
+        rejected(path)
+    rejected(parsed.path, Host='untrusted.example')
+    rejected(parsed.path, Origin='http://untrusted.example')
+    for headers in ({}, {'Origin': 'http://untrusted.example'}):
+        rejected('/', Upgrade='websocket', Connection='Upgrade',
+                 **{'Sec-WebSocket-Key': base64.b64encode(os.urandom(16)).decode(),
+                    'Sec-WebSocket-Version': '13'}, **headers)
+    with urllib.request.urlopen(origin + '/live-preview.nvim/static/markdown/main.js', timeout=10) as response:
+        script = response.read()
+        assert b'html: false' in script and b'html: true' not in script
+    manifest = json.loads((Path(os.environ['XDG_DATA_HOME']) / 'dotfiles/preview-assets.json').read_text())
+    for relative in ('static/markdown/markdown-it.min.js', 'static/markdown/markdown-it-emoji.min.js', 'static/katex/katex.min.js',
+                     'static/katex/katex.min.css', 'static/mermaid/mermaid.min.js'):
+        for request_path in (relative, relative.replace('static/', 'static//', 1)):
+            with urllib.request.urlopen(origin + '/live-preview.nvim/' + request_path, timeout=10) as response:
+                assert hashlib.sha256(response.read()).hexdigest() == manifest['files'][relative]['sha256'], \
+                    'An unreviewed plugin-bundled asset was served'
     expected = ('EditPreview', 'SavedPreview', 'SavedAgain')
     if browser:
         from playwright.sync_api import sync_playwright
         with sync_playwright() as playwright:
             chromium = playwright.chromium.launch(headless=True)
             page = chromium.new_page()
+            page.on('pageerror', lambda error: print('Preview browser error: ' + str(error), file=sys.stderr, flush=True))
             external = []
             def local_only(route):
                 if urllib.parse.urlsplit(route.request.url).hostname == '127.0.0.1':
@@ -54,21 +93,37 @@ def client(url, browser):
                     route.abort()
             page.route('**/*', local_only)
             page.goto(url)
-            page.wait_for_function("document.querySelector('h1')?.textContent.includes('InitialPreview')")
-            page.wait_for_function("document.querySelector('img')?.complete && document.querySelector('img')?.naturalWidth > 0")
-            page.wait_for_function("typeof socket !== 'undefined' && socket.readyState === WebSocket.OPEN")
+            page.wait_for_function("() => document.querySelector('h1')?.textContent.includes('InitialPreview')")
+            page.wait_for_function("() => document.querySelector('img')?.complete && document.querySelector('img')?.naturalWidth > 0")
+            page.wait_for_function("() => typeof socket !== 'undefined' && socket.readyState === WebSocket.OPEN")
+            page.wait_for_function("() => document.querySelector('.katex') !== null")
+            page.wait_for_function("() => document.querySelector('.language-mermaid svg') !== null")
+            assert '😄' in page.locator('.markdown-body').inner_text()
+            assert page.evaluate('() => mermaid.mermaidAPI.getConfig().securityLevel') == 'strict'
+            fallback = page.evaluate("""() => {
+                const render = katex.renderToString;
+                katex.renderToString = () => { throw new Error('Fixture render failure'); };
+                try { return md.render('$<img src=x onerror=alert(1)>$'); }
+                finally { katex.renderToString = render; }
+            }""")
+            assert '<img' not in fallback and '&#60;img' in fallback
+            assert page.evaluate('typeof window.previewInjected') == 'undefined'
+            assert page.locator('.markdown-body iframe, .markdown-body script').count() == 0
+            page.evaluate("() => { window.previewReceived = []; socket.addEventListener('message', e => window.previewReceived.push(e.data)); }")
             record('ready', rendered=True)
             for marker in expected:
                 page.wait_for_function("marker => document.querySelector('h1')?.textContent.includes(marker)", arg=marker)
                 assert '日本語' in page.locator('.markdown-body').inner_text()
+                page.wait_for_function("() => document.querySelector('.katex') !== null && document.querySelector('.language-mermaid svg') !== null")
                 record('update', marker=marker, rendered=True)
             assert not external, f'Unexpected remote page resources: {external}'
+            assert 'FixturePrivate' not in ''.join(page.evaluate('() => window.previewReceived'))
             chromium.close()
         return
-    parsed = urllib.parse.urlsplit(url)
     with socket.create_connection((parsed.hostname, parsed.port), timeout=10) as connection:
         key = base64.b64encode(os.urandom(16)).decode('ascii')
         connection.sendall((f'GET / HTTP/1.1\r\nHost: 127.0.0.1:{parsed.port}\r\n'
+                            f'Origin: {origin}\r\n'
                             f'Upgrade: websocket\r\nConnection: Upgrade\r\n'
                             f'Sec-WebSocket-Key: {key}\r\nSec-WebSocket-Version: 13\r\n\r\n').encode())
         reader = connection.makefile('rb')
@@ -86,6 +141,7 @@ def client(url, browser):
                 elif length == 127:
                     length = int.from_bytes(reader.read(8), 'big')
                 message = json.loads(reader.read(length))
+                assert 'FixturePrivate' not in json.dumps(message), 'Hidden buffer was broadcast'
                 if message.get('type') == 'update' and marker in message.get('content', ''):
                     assert '日本語' in message['content']
                     record('update', marker=marker, rendered=False)
@@ -103,7 +159,8 @@ def main():
     if sys.platform != 'linux':
         parser.error('Run under Linux / WSL.')
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}[platform.machine()]
-    version = json.loads((REPO / 'installer/versions.json').read_text())['neovim'][arch]
+    versions = json.loads((REPO / 'installer/versions.json').read_text())
+    version = versions['neovim'][arch]
     commit = json.loads((REPO / 'configs/nvim/lazy-lock.json').read_text())['live-preview.nvim']['commit']
     with tempfile.TemporaryDirectory(prefix='dotfiles-markdown-test-') as temp:
         root = Path(temp)
@@ -120,6 +177,14 @@ def main():
         home, binaries = root / 'home', root / 'bin'
         home.mkdir()
         binaries.mkdir()
+        context = SimpleNamespace(
+            repo=REPO, arch=arch, home=home, data=home / '.local/share/dotfiles', temp=root,
+            versions=versions, runner=Runner(root / 'assets.log'),
+            backup=Backup(home / '.local/state/assets-backup', home),
+        )
+        if versions['markdown_preview'].get('mermaid_bundle'):
+            install_archive(context, 'node', {'node': 'bin/node', 'npm': 'bin/npm', 'npx': 'bin/npx'})
+        install_preview_assets(context)
         opener = binaries / 'explorer.exe'
         opener.write_text(f'#!{sys.executable}\nimport json, os, sys\nfrom pathlib import Path\n'
                           'with Path(os.environ["MD_TEST_OPENED"]).open("a") as out:\n'

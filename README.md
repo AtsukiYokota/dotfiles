@@ -12,6 +12,7 @@ Ubuntu 24.04のamd64・arm64に対応しています。UbuntuのBashから、一
 
 ```bash
 sudo apt update
+sudo apt upgrade
 sudo apt install -y git
 git clone --branch ubuntu24 https://github.com/AtsukiYokota/dotfiles.git ~/dotfiles
 cd ~/dotfiles
@@ -54,7 +55,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 `desktop,keyboard,japanese-input,vscode,chrome,ibis-office,macos-theme`はネイティブ用です。`chrome,ibis-office`はamd64用、`keyboard,japanese-input,macos-theme`はGNOMEセッションが必要です。
 WSLのGUIにはWSLgなどの表示環境を使います。`ssh-server`を選ぶとSSH待ち受けサービスを導入します。
 WSLは自動検出し、ネイティブ専用モジュールを選択対象から外します。GNOMEのデスクトップ設定も適用しません。
-`neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。
+`python`・`neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。
 `shell`には`fonts`が含まれ、対応する端末のNerd Fontも設定します。
 
 選択内容をコマンドで指定することもできます。
@@ -73,6 +74,9 @@ bash setup_all.sh --modules shell,neovim,ros-desktop,latex
 
 個別設定は`~/.bashrc.local`に記述します。[記入例](configs/shell/bashrc.local.example)を参照してください。
 ログと変更前の設定は`~/.local/state/dotfiles/backups/`に保存します。設定の復元コマンドは導入完了時に表示されます。
+
+OSの更新は`sudo apt update && sudo apt upgrade`で適用します。ユーザー領域のツールは`git pull --ff-only`後、必要なモジュールを再実行して更新してください。
+Node.js・Brotliの確認には`python3 scripts/check-security.py`を使えます。2026年10月の関連アドバイザリに対象を絞った確認で、`UNKNOWN`は配布元での確認が必要な項目です。追加のPython仮想環境は`--venv /path/to/venv`で指定できます。
 
 - [ターミナル操作](docs/terminal-workflow.md)
 - [外観・フォント設定と既存環境への反映](docs/appearance.md)

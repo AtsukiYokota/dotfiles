@@ -8,6 +8,7 @@ configs/shell/*.example text eol=lf
 *.lua text eol=lf
 *.vim text eol=lf
 *.json text eol=lf
+*.js text eol=lf
 *.md text eol=lf
 *.yml text eol=lf
 .bashrc text eol=lf

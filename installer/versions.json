@@ -1,5 +1,5 @@
 {
-  "reviewed": "2026-10-23",
+  "reviewed": "2026-10-25",
   "ibis_office": {
     "version": "0.8.4",
     "amd64": {
@@ -28,6 +28,7 @@
     "amd64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-x64.tar.xz", "sha256": "6c172a9ab6718f7b801fb5a7bd486af2ee5e32758086a04b84fcce2aa77095e6"},
     "arm64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-arm64.tar.xz", "sha256": "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e"}
   },
+  "basedpyright": "1.40.2",
   "npm_language_servers": {
     "bash-language-server": "5.8.1",
     "vscode-langservers-extracted": "4.10.0",
@@ -54,6 +55,56 @@
     "version": "1.2026.9",
     "url": "https://github.com/plantuml/plantuml/releases/download/v1.2026.9/plantuml-1.2026.9.jar",
     "sha256": "aa4a1d06f8911c4b842beff4828dd955be431692b631a312d04c0e9fab9581de"
+  },
+  "markdown_preview": {
+    "version": "2026-10-25",
+    "packages": {
+      "markdown-it": {
+        "version": "15.0.3",
+        "url": "https://registry.npmjs.org/markdown-it/-/markdown-it-15.0.3.tgz",
+        "sha256": "98a7453983ab0e268c17dbd5260bf7190ba46b4cca912327fc1c1a2578e4b56d",
+        "files": {
+          "package/dist/browser/markdown-it.umd.min.js": "static/markdown/markdown-it.min.js",
+          "package/LICENSE": "licenses/markdown-it.txt"
+        }
+      },
+      "markdown-it-emoji": {
+        "version": "3.1.0",
+        "url": "https://registry.npmjs.org/markdown-it-emoji/-/markdown-it-emoji-3.1.0.tgz",
+        "sha256": "9ce648b8d484edfbd84d530de1d6ad121dfc605057cf28ce2a352cf0387fa266",
+        "files": {
+          "package/dist/markdown-it-emoji.min.js": "static/markdown/markdown-it-emoji.min.js",
+          "package/LICENSE": "licenses/markdown-it-emoji.txt"
+        }
+      },
+      "katex": {
+        "version": "0.19.1",
+        "url": "https://registry.npmjs.org/katex/-/katex-0.19.1.tgz",
+        "sha256": "24da5a599eb2fcede2e270b99a6ff48bca816beecc95feeb84e8cccbd1bb34fd",
+        "files": {
+          "package/dist/katex.min.js": "static/katex/katex.min.js",
+          "package/dist/katex.min.css": "static/katex/katex.min.css",
+          "package/LICENSE": "licenses/katex.txt"
+        },
+        "directories": {"package/dist/fonts": "static/katex/fonts"}
+      },
+      "mermaid": {
+        "version": "12.2.0",
+        "url": "https://registry.npmjs.org/mermaid/-/mermaid-12.2.0.tgz",
+        "sha256": "071914164d0f6d53e5c26a10a220230d4ae8d37ed0f2263fbf072266f0af3a0a",
+        "files": {
+          "package/LICENSE": "licenses/mermaid.txt"
+        }
+      }
+    },
+    "mermaid_bundle": {
+      "files": {
+        "package.json": "722cc4d2db2dbad45ca780aff4874caef03998b999692ce32ae72823994e53eb",
+        "package-lock.json": "3f4f5890a93bfc15eb4ef896ef55bafb9b67a23711d1127102c43b7bf3a96dd8",
+        "mermaid-entry.js": "c5ab1cf16be0550a134e11d7534ed49af1b88106258082f58a4e7edc2aca58b5"
+      },
+      "sha256": "18ee834d5d1eaed1291aa889dcaa17873095ba2e3e99ae391643d7f2e9034876"
+    }
   },
   "starship": {
     "version": "1.27.0",

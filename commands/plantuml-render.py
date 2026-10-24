@@ -50,7 +50,7 @@ def publish_png(data: bytes, output: Path):
     images = []
     try:
         for encoded in split_pngs(data):
-            with Image.open(io.BytesIO(encoded)) as image:
+            with Image.open(io.BytesIO(encoded), formats=['PNG']) as image:
                 if image.width * image.height > MAX_PIXELS:
                     raise ValueError('The diagram is too large for live preview (40 million pixels).')
                 images.append(image.convert('RGBA'))
@@ -84,8 +84,21 @@ def render(source: Path, output: Path, *, executable='plantuml', timeout=60):
     # Argument lists and stdin keep filenames, Japanese text, and shell characters literal.
     command = [executable, '-tpng', '-charset', 'UTF-8', '-nometadata', '-pipe',
                '-SdefaultFontName=Noto Sans CJK JP']
+    # Preview document text may come from another repository. The SANDBOX
+    # profile permits self-contained diagrams and bundled standard-library
+    # resources, but blocks filesystem and network includes/images.
+    environment = dict(os.environ)
+    for name in ('plantuml.allowlist.path', 'plantuml.include.path', 'plantuml.allowlist.url'):
+        environment.pop(name, None)
+    # JVM startup options can override the environment profile with -D flags.
+    for name in ('JAVA_TOOL_OPTIONS', '_JAVA_OPTIONS', 'JDK_JAVA_OPTIONS'):
+        environment.pop(name, None)
+    environment.update({'PLANTUML_SECURITY_PROFILE': 'SANDBOX',
+                        'PLANTUML_ALLOWLIST_PATH': '', 'PLANTUML_INCLUDE_PATH': '',
+                        'PLANTUML_ALLOWLIST_URL': ''})
     process = subprocess.Popen(command, cwd=source.parent, stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True,
+                               env=environment)
     try:
         result, errors = process.communicate(content.encode('utf-8'), timeout=timeout)
     finally:

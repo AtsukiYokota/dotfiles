@@ -262,6 +262,25 @@ class SettingsTests(unittest.TestCase):
 
 
 class ActionTests(unittest.TestCase):
+    def test_vscode_selection_refreshes_existing_snap_or_installs_new(self):
+        for installed in (True, False):
+            with self.subTest(installed=installed), tempfile.TemporaryDirectory() as temporary:
+                runner = mock.Mock()
+                def capture(argv):
+                    if argv == ['snap', 'list', 'code'] and not installed:
+                        raise subprocess.CalledProcessError(1, argv)
+                    return ''
+                runner.capture.side_effect = capture
+                ctx = SimpleNamespace(modules=['vscode'], runner=runner, versions={},
+                                      backup=SimpleNamespace(directory=Path(temporary)))
+                with mock.patch.object(actions, 'prepare_apt'), \
+                     mock.patch.object(actions, 'deploy_configs'), \
+                     contextlib.redirect_stdout(io.StringIO()):
+                    actions.install_modules(ctx)
+                expected = ['sudo', 'snap', 'refresh', 'code'] if installed else \
+                    ['sudo', 'snap', 'install', 'code', '--classic']
+                runner.run.assert_called_once_with(expected)
+
     def test_old_theme_retirement_requires_successful_plugin_bootstrap(self):
         for outcome in ('success', 'failure', 'skipped'):
             with self.subTest(outcome=outcome), tempfile.TemporaryDirectory() as temporary:
@@ -276,6 +295,7 @@ class ActionTests(unittest.TestCase):
                 with mock.patch.object(actions, 'prepare_apt'), \
                      mock.patch.object(actions, 'deploy_configs'), \
                      mock.patch.object(actions, 'install_archive'), \
+                     mock.patch('preview_assets.install_preview_assets'), \
                      mock.patch('editor.retire_obsolete_theme') as retire, \
                      contextlib.redirect_stdout(io.StringIO()):
                     if outcome == 'failure':
@@ -298,7 +318,7 @@ class ActionTests(unittest.TestCase):
                 modules = catalog.resolve(requested, 'wsl', 'amd64')
                 runner = mock.Mock()
                 runner.capture.return_value = ''
-                ctx = SimpleNamespace(home=home, config=home / '.config', modules=modules,
+                ctx = SimpleNamespace(home=home, config=home / '.config', data=home / '.local/share/dotfiles', modules=modules,
                                       versions=versions, runner=runner, no_plugins=True,
                                       backup=SimpleNamespace(directory=home, write_text=mock.Mock()))
                 args = installer_main.parser().parse_args(['--modules', ','.join(requested)])
@@ -308,15 +328,21 @@ class ActionTests(unittest.TestCase):
                 with mock.patch.object(actions, 'prepare_apt'), \
                      mock.patch.object(actions, 'deploy_configs'), \
                      mock.patch('fonts.install_fonts') as install_fonts, \
+                     mock.patch('preview_assets.install_preview_assets') as install_preview_assets, \
                      mock.patch.object(actions, 'install_archive', return_value=home / 'pinned-node') as archive, \
                      contextlib.redirect_stdout(io.StringIO()):
                     actions.install_modules(ctx)
                 self.assertEqual({call.args[1] for call in archive.call_args_list}, expected)
                 install_fonts.assert_called_once_with(ctx)
+                if 'neovim' in modules:
+                    install_preview_assets.assert_called_once_with(ctx)
+                    self.assertIn('Markdown preview assets', output.getvalue())
+                else:
+                    install_preview_assets.assert_not_called()
                 self.assertIn('Nerd Font: JetBrainsMono Nerd Font Mono', output.getvalue())
                 npm_calls = [call for call in runner.run.call_args_list if '--global' in call.args[0]]
                 if 'node' in modules:
-                    self.assertEqual(len(npm_calls), 1)
+                    self.assertEqual(len(npm_calls), 2 if 'python' in modules else 1)
                     for package, version in versions['npm_language_servers'].items():
                         self.assertIn(f'{package}@{version}', npm_calls[0].args[0])
                         self.assertIn(f'{package}@{version}', output.getvalue())
@@ -341,10 +367,46 @@ class ActionTests(unittest.TestCase):
             self.assertEqual(argv[:2], [str(node / 'bin/node'), str(node / 'lib/node_modules/npm/bin/npm-cli.js')])
             self.assertNotIn('sudo', argv)
             self.assertNotIn('--force', argv)
+            self.assertIn('--ignore-scripts', argv)
             self.assertEqual(argv[argv.index('--prefix') + 1], str(home / '.local'))
             environment = ctx.runner.run.call_args.kwargs['env']
             self.assertEqual(environment['NPM_CONFIG_PREFIX'], str(home / '.local'))
             self.assertEqual(environment['PATH'], str(node / 'bin') + os.pathsep + '/usr/bin')
+
+    def test_python_uses_verified_node_before_installing_basedpyright(self):
+        modules = catalog.resolve({'python'}, 'wsl', 'amd64')
+        self.assertLess(modules.index('node'), modules.index('python'))
+
+    def test_basedpyright_migrates_only_its_previous_uv_environment(self):
+        for installed in ('basedpyright v1.40.2\n- basedpyright\n- basedpyright-langserver\nruff v1.0.0\n',
+                          'ruff v1.0.0\n- ruff\n', ''):
+            with self.subTest(installed=installed), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                runner = mock.Mock()
+                runner.capture.return_value = installed
+                ctx = SimpleNamespace(home=home, data=home / 'data', runner=runner,
+                                      versions={'node': {'version': '24.22.1'}, 'basedpyright': '1.40.2'})
+                uv = home / '.local/bin/uv'
+                actions.install_basedpyright(ctx, uv)
+                runner.capture.assert_called_once_with([str(uv), 'tool', 'list', '--color', 'never'])
+                commands = [call.args[0] for call in runner.run.call_args_list]
+                if installed.startswith('basedpyright '):
+                    self.assertEqual(commands[0], [str(uv), 'tool', 'uninstall', 'basedpyright'])
+                    self.assertEqual(len(commands), 2)
+                else:
+                    self.assertEqual(len(commands), 1)
+                self.assertIn('basedpyright@1.40.2', commands[-1])
+                self.assertEqual(commands[-1][0], str(home / 'data/tools/node/24.22.1/bin/node'))
+                self.assertNotIn('--force', commands[-1])
+
+    def test_failed_uv_migration_does_not_replace_basedpyright_entrypoints(self):
+        runner = mock.Mock()
+        runner.capture.return_value = 'basedpyright v1.40.2\n'
+        runner.run.side_effect = subprocess.CalledProcessError(1, ['uv', 'tool', 'uninstall'])
+        ctx = SimpleNamespace(runner=runner)
+        with self.assertRaises(subprocess.CalledProcessError):
+            actions.install_basedpyright(ctx, Path('/home/test/.local/bin/uv'))
+        runner.run.assert_called_once_with(['/home/test/.local/bin/uv', 'tool', 'uninstall', 'basedpyright'])
 
     @unittest.skipUnless(sys.platform == 'linux', 'Linux symlink semantics')
     def test_npm_refuses_prefix_subdirectories_outside_home(self):
@@ -354,7 +416,7 @@ class ActionTests(unittest.TestCase):
             (home / '.local/lib').mkdir(parents=True)
             outside.mkdir()
             (home / '.local/lib/node_modules').symlink_to(outside)
-            ctx = SimpleNamespace(home=home, runner=mock.Mock())
+            ctx = SimpleNamespace(home=home, runner=mock.Mock(), versions={'npm_language_servers': {}})
             with self.assertRaisesRegex(ValueError, 'inside home'):
                 actions.install_node_language_servers(ctx, home / 'node')
             ctx.runner.run.assert_not_called()
