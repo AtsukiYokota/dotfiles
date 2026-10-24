@@ -34,6 +34,11 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | --- | --- |
 | `fonts` | JetBrainsMono Nerd Font Mono、端末フォント設定 |
 | `shell` | Bash、Starship、tmux、検索・クリップボード・Git補助 |
+| `zoxide` | 訪問したディレクトリへ素早く移動 |
+| `atuin` | ローカル履歴の検索（Ctrl+R） |
+| `just` | プロジェクトの作業コマンド集 |
+| `git-tools` | lazygit、deltaによるGit操作・差分表示 |
+| `direnv` | プロジェクト単位の環境切替 |
 | `cpp` | C/C++コンパイラー、CMake、Ninja、clangd、clang-format |
 | `python` | uv、basedpyright、CMake言語サーバー、autopep8、Ruff |
 | `neovim` | Neovim、lazy.nvim、LSP・補完 |
@@ -67,7 +72,8 @@ bash setup_all.sh --modules shell,neovim,ros-desktop,latex
 
 ## インストール後
 
-新しい端末を開き、[セットアップ確認ガイド](docs/verification.md)に沿って動作を確認してください。
+新しい端末で`doctor`を実行すると、導入したモジュールの状態と対処方法を確認できます。
+[セットアップ確認ガイド](docs/verification.md)に沿って動作を確認してください。
 クリーン環境での全モジュール導入、ROS通信・ビルド、Neovim、tmux、各追加ツールの確認手順を掲載しています。
 端末や端末のタブごとに、新しいtmuxセッションを自動で開きます。Neovimは`vi`でも起動できます。
 プロンプトはGruvbox Rainbow、NeovimとtmuxもGruvboxの配色です。
@@ -78,6 +84,10 @@ bash setup_all.sh --modules shell,neovim,ros-desktop,latex
 OSの更新は`sudo apt update && sudo apt upgrade`で適用します。ユーザー領域のツールは`git pull --ff-only`後、必要なモジュールを再実行して更新してください。
 Node.js・Brotliの確認には`python3 scripts/check-security.py`を使えます。2026年10月の関連アドバイザリに対象を絞った確認で、`UNKNOWN`は配布元での確認が必要な項目です。追加のPython仮想環境は`--venv /path/to/venv`で指定できます。
 
+- [診断コマンド](docs/doctor.md)
+- [インストール前の差分・容量確認](docs/installer-preview.md)
+- [zoxide・Atuin・just・Git・direnv](docs/workflow-tools.md)
+- [ROSワークスペース・compile_commands.json](docs/project-workflow.md)
 - [ターミナル操作](docs/terminal-workflow.md)
 - [外観・フォント設定と既存環境への反映](docs/appearance.md)
 - [日本語入力](docs/japanese-input.md)

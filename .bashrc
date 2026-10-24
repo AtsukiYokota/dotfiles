@@ -97,6 +97,10 @@ if [[ ${DOTFILES_AUTO_ROS:-1} == 1 ]] && declare -F ros_env >/dev/null; then
   fi
 fi
 
+if [[ -r ${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/workflow.bash ]]; then
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/workflow.bash"
+fi
+
 # Start a new, independent session for each terminal shell. Detaching returns to
 # this shell; nested shells, bash -ic commands and dumb terminals do not start one.
 # Set DOTFILES_AUTO_TMUX=0 in ~/.bashrc.local to opt out on this machine.

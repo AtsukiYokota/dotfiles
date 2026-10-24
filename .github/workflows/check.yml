@@ -29,6 +29,10 @@ jobs:
           python3 -B tests/test-security.py
           python3 -B tests/test-preview-assets.py
           python3 -B tests/test-installer.py
+          python3 -B tests/test-planning.py
+          python3 -B tests/test-doctor.py
+          python3 -B tests/test-ros-workspace.py
+          python3 -B tests/test-workflow-tools.py
           python3 -B tests/test-office.py
           python3 -B tests/test-cli.py
           python3 -B tests/test-wsl.py
@@ -50,6 +54,8 @@ jobs:
         run: python3 -B tests/check-neovim.py --plugins
       - name: Starship Gruvbox Rainbow integration
         run: python3 -B tests/check-starship.py
+      - name: Workflow tools and shell integration
+        run: python3 -B tests/check-workflow-tools.py
       - name: Nerd Font integration
         run: python3 -B tests/check-fonts.py
       - name: Japanese input directional keys
@@ -100,6 +106,15 @@ jobs:
           "$RUNNER_TEMP/markdown-preview/bin/python" -m playwright install --with-deps chromium
       - name: Markdown updates in a real browser without manual reload
         run: '"$RUNNER_TEMP/markdown-preview/bin/python" -B tests/check-markdown-preview.py --browser'
+  workflow-tools-arm64:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Workflow tools on ARM64
+        run: python3 -B tests/check-workflow-tools.py
   windows-settings:
     runs-on: windows-latest
     timeout-minutes: 5

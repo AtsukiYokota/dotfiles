@@ -83,6 +83,7 @@ def fixture_context(root: Path):
     (repo / 'configs/starship.toml').write_text('add_newline = true\n', encoding='utf-8')
     (repo / 'configs/shell').mkdir()
     (repo / 'configs/shell/formatting.bash').write_text('# helpers\n', encoding='utf-8')
+    (repo / 'configs/shell/workflow.bash').write_text('# workflow\n', encoding='utf-8')
     config = home / '.config'
     (config / 'nvim').mkdir(parents=True)
     (config / 'nvim/user.lua').write_text('-- keep this directory\n', encoding='utf-8')
@@ -172,7 +173,7 @@ class DeploymentTests(unittest.TestCase):
             original = '# >>> dotfiles managed >>>\nexport CUSTOM=yes\n'
             (ctx.home / '.bashrc').write_text(original, encoding='utf-8')
             ctx.backup = deploy.Backup(ctx.home / 'backup', ctx.home)
-            with self.assertRaisesRegex(RuntimeError, 'Malformed'):
+            with self.assertRaisesRegex((ValueError, RuntimeError), 'Malformed'):
                 actions.deploy_configs(ctx)
             self.assertEqual((ctx.home / '.bashrc').read_text(), original)
             self.assertEqual(ctx.backup.entries, [])

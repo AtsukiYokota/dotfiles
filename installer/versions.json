@@ -15,18 +15,36 @@
   },
   "neovim": {
     "version": "0.12.6",
-    "amd64": {"url": "https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-x86_64.tar.gz", "sha256": "474430d53e6264f6d6dd18db42d6dc9df3a1b56ca9e88a325bbf860e1a811d87"},
-    "arm64": {"url": "https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-arm64.tar.gz", "sha256": "8f1f64a0bdb97247034038c3823c6cbad5bdf9ecd5751b85494b71c3ee04c815"}
+    "amd64": {
+      "url": "https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-x86_64.tar.gz",
+      "sha256": "474430d53e6264f6d6dd18db42d6dc9df3a1b56ca9e88a325bbf860e1a811d87"
+    },
+    "arm64": {
+      "url": "https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-arm64.tar.gz",
+      "sha256": "8f1f64a0bdb97247034038c3823c6cbad5bdf9ecd5751b85494b71c3ee04c815"
+    }
   },
   "uv": {
     "version": "0.13.5",
-    "amd64": {"url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-gnu.tar.gz", "sha256": "f68d291c75783122dad58ab77def0e13f3233f358731db5d6d7e8715603b928f"},
-    "arm64": {"url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-aarch64-unknown-linux-gnu.tar.gz", "sha256": "4bb69cf95ed13f23713bb7bc09f241896ea0c75b7c557e615a20604b82f9c403"}
+    "amd64": {
+      "url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-gnu.tar.gz",
+      "sha256": "f68d291c75783122dad58ab77def0e13f3233f358731db5d6d7e8715603b928f"
+    },
+    "arm64": {
+      "url": "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-aarch64-unknown-linux-gnu.tar.gz",
+      "sha256": "4bb69cf95ed13f23713bb7bc09f241896ea0c75b7c557e615a20604b82f9c403"
+    }
   },
   "node": {
     "version": "24.22.1",
-    "amd64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-x64.tar.xz", "sha256": "6c172a9ab6718f7b801fb5a7bd486af2ee5e32758086a04b84fcce2aa77095e6"},
-    "arm64": {"url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-arm64.tar.xz", "sha256": "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e"}
+    "amd64": {
+      "url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-x64.tar.xz",
+      "sha256": "6c172a9ab6718f7b801fb5a7bd486af2ee5e32758086a04b84fcce2aa77095e6"
+    },
+    "arm64": {
+      "url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-arm64.tar.xz",
+      "sha256": "dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e"
+    }
   },
   "basedpyright": "1.40.2",
   "npm_language_servers": {
@@ -38,13 +56,26 @@
   },
   "texlab": {
     "version": "5.26.0",
-    "amd64": {"url": "https://github.com/latex-lsp/texlab/releases/download/v5.26.0/texlab-x86_64-linux.tar.gz", "sha256": "8697bd5e479d4584b14b7eed5c320c80ec4e1d91ebefbb6801e6bf38e9971300"},
-    "arm64": {"url": "https://github.com/latex-lsp/texlab/releases/download/v5.26.0/texlab-aarch64-linux.tar.gz", "sha256": "a85cdfcd22454b8d8550f4b0f0620c45ab51760f302fac7a12bc18a890f70f8c"}
+    "amd64": {
+      "url": "https://github.com/latex-lsp/texlab/releases/download/v5.26.0/texlab-x86_64-linux.tar.gz",
+      "sha256": "8697bd5e479d4584b14b7eed5c320c80ec4e1d91ebefbb6801e6bf38e9971300"
+    },
+    "arm64": {
+      "url": "https://github.com/latex-lsp/texlab/releases/download/v5.26.0/texlab-aarch64-linux.tar.gz",
+      "sha256": "a85cdfcd22454b8d8550f4b0f0620c45ab51760f302fac7a12bc18a890f70f8c"
+    }
   },
   "rustup": {
-    "version": "1.29.2", "toolchain": "1.99.1",
-    "amd64": {"url": "https://static.rust-lang.org/rustup/archive/1.29.2/x86_64-unknown-linux-gnu/rustup-init", "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"},
-    "arm64": {"url": "https://static.rust-lang.org/rustup/archive/1.29.2/aarch64-unknown-linux-gnu/rustup-init", "sha256": "a9c168dbea81a84671c6b7a5c1795cb0eb699020110d107ddfca427bd797e697"}
+    "version": "1.29.2",
+    "toolchain": "1.99.1",
+    "amd64": {
+      "url": "https://static.rust-lang.org/rustup/archive/1.29.2/x86_64-unknown-linux-gnu/rustup-init",
+      "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"
+    },
+    "arm64": {
+      "url": "https://static.rust-lang.org/rustup/archive/1.29.2/aarch64-unknown-linux-gnu/rustup-init",
+      "sha256": "a9c168dbea81a84671c6b7a5c1795cb0eb699020110d107ddfca427bd797e697"
+    }
   },
   "ros_source": {
     "version": "1.3.0",
@@ -86,7 +117,9 @@
           "package/dist/katex.min.css": "static/katex/katex.min.css",
           "package/LICENSE": "licenses/katex.txt"
         },
-        "directories": {"package/dist/fonts": "static/katex/fonts"}
+        "directories": {
+          "package/dist/fonts": "static/katex/fonts"
+        }
       },
       "mermaid": {
         "version": "12.2.0",
@@ -108,7 +141,103 @@
   },
   "starship": {
     "version": "1.27.0",
-    "amd64": {"url": "https://github.com/starship/starship/releases/download/v1.27.0/starship-x86_64-unknown-linux-musl.tar.gz", "sha256": "10c8eb4cb3b761d9bf59ea828444c2dab36c900b7d69a69e08814b286969df89"},
-    "arm64": {"url": "https://github.com/starship/starship/releases/download/v1.27.0/starship-aarch64-unknown-linux-musl.tar.gz", "sha256": "341f5cbf24699fa0b27ec88965ad25f862ea09e15d35a543fd6ffdff1d2aa00d"}
+    "amd64": {
+      "url": "https://github.com/starship/starship/releases/download/v1.27.0/starship-x86_64-unknown-linux-musl.tar.gz",
+      "sha256": "10c8eb4cb3b761d9bf59ea828444c2dab36c900b7d69a69e08814b286969df89"
+    },
+    "arm64": {
+      "url": "https://github.com/starship/starship/releases/download/v1.27.0/starship-aarch64-unknown-linux-musl.tar.gz",
+      "sha256": "341f5cbf24699fa0b27ec88965ad25f862ea09e15d35a543fd6ffdff1d2aa00d"
+    }
+  },
+  "zoxide": {
+    "version": "0.10.0",
+    "amd64": {
+      "url": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide-0.10.0-x86_64-unknown-linux-musl.tar.gz",
+      "sha256": "2d93385b99f3e82cf2701609a1bffcad863fbeb75aa3fe7eb6be4d29be68b1ae",
+      "size": 591384,
+      "installed_size": 1349628
+    },
+    "arm64": {
+      "url": "https://github.com/ajeetdsouza/zoxide/releases/download/v0.10.0/zoxide-0.10.0-aarch64-unknown-linux-musl.tar.gz",
+      "sha256": "f1f16c5d6298d63dee467eedea1cdcd8490e43e493bea43acd416dc9033ef641",
+      "size": 551084,
+      "installed_size": 1160628
+    }
+  },
+  "atuin": {
+    "version": "18.24.2",
+    "amd64": {
+      "url": "https://github.com/atuinsh/atuin/releases/download/v18.24.2/atuin-x86_64-unknown-linux-musl.tar.gz",
+      "sha256": "311cd1ba4b8be27de7071dbcae1c95ff4c2b38aeec82d557707b6b832bfceddf",
+      "size": 20351592,
+      "installed_size": 50085208
+    },
+    "arm64": {
+      "url": "https://github.com/atuinsh/atuin/releases/download/v18.24.2/atuin-aarch64-unknown-linux-musl.tar.gz",
+      "sha256": "9addf06ece26e68e842489cefa33e81860c288da373538986ea58c23eccb4f14",
+      "size": 19129327,
+      "installed_size": 41248904
+    }
+  },
+  "just": {
+    "version": "1.59.0",
+    "amd64": {
+      "url": "https://github.com/casey/just/releases/download/1.59.0/just-1.59.0-x86_64-unknown-linux-musl.tar.gz",
+      "sha256": "409044617b6f06517c1035e55ca38c8c856ff8b650e41bc2aa1ef82d5903a23e",
+      "size": 2572537,
+      "installed_size": 6722711
+    },
+    "arm64": {
+      "url": "https://github.com/casey/just/releases/download/1.59.0/just-1.59.0-aarch64-unknown-linux-musl.tar.gz",
+      "sha256": "23871b1702bfd550fb5f901778fd4290ecf2ee034a45a889fbe96d89b188086d",
+      "size": 2343258,
+      "installed_size": 5951671
+    }
+  },
+  "lazygit": {
+    "version": "0.66.2",
+    "amd64": {
+      "url": "https://github.com/jesseduffield/lazygit/releases/download/v0.66.2/lazygit_0.66.2_linux_x86_64.tar.gz",
+      "sha256": "158efc9ddfa1241fab5fb3526bb442c8dc6c4b1904d73213b9e4e93e03c52034",
+      "size": 7332397,
+      "installed_size": 20664766
+    },
+    "arm64": {
+      "url": "https://github.com/jesseduffield/lazygit/releases/download/v0.66.2/lazygit_0.66.2_linux_arm64.tar.gz",
+      "sha256": "79a3161eeb642f0473e23db6341f7baabd4a5933e921a9c1167c5d5c765c41a4",
+      "size": 6654577,
+      "installed_size": 19374526
+    }
+  },
+  "delta": {
+    "version": "0.20.1",
+    "amd64": {
+      "url": "https://github.com/dandavison/delta/releases/download/0.20.1/delta-0.20.1-x86_64-unknown-linux-musl.tar.gz",
+      "sha256": "69dcb4043f55c29118f408c6efd30115e0a4e0a6709253343b8c8fa814ab4a31",
+      "size": 3403612,
+      "installed_size": 7154346
+    },
+    "arm64": {
+      "url": "https://github.com/dandavison/delta/releases/download/0.20.1/delta-0.20.1-aarch64-unknown-linux-gnu.tar.gz",
+      "sha256": "da7f4338f593572ff426ae153e0870e2fdc72729416eff551b40cdeb67940db8",
+      "size": 3158438,
+      "installed_size": 6457706
+    }
+  },
+  "direnv": {
+    "version": "2.38.2",
+    "amd64": {
+      "url": "https://github.com/direnv/direnv/releases/download/v2.38.2/direnv.linux-amd64",
+      "sha256": "148820a187930d36ca6a204504e5cdb30d8396cd1a97e64c3b3f10d793c11247",
+      "size": 8548514,
+      "installed_size": 8548514
+    },
+    "arm64": {
+      "url": "https://github.com/direnv/direnv/releases/download/v2.38.2/direnv.linux-arm64",
+      "sha256": "ec2a32dbe2f19dd085bd9315a1b4ea88b55ec288aa7eabe8723490baf466cb23",
+      "size": 7930018,
+      "installed_size": 7930018
+    }
   }
 }
