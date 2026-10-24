@@ -531,6 +531,9 @@ class InteractiveTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             with mock.patch.object(installer_main.Path, 'home', return_value=home), \
+                 mock.patch.dict(os.environ, {'HOME': str(home), 'XDG_CONFIG_HOME': str(home / '.config'),
+                                              'XDG_DATA_HOME': str(home / '.local/share'),
+                                              'XDG_STATE_HOME': str(home / '.local/state')}), \
                  mock.patch.object(installer_main, 'detect_platform', return_value=({'ID': 'ubuntu', 'VERSION_ID': '26.04'}, 'wsl', 'amd64')), \
                  mock.patch.object(installer_main, 'check_platform'), \
                  mock.patch('builtins.input', return_value=''), \
