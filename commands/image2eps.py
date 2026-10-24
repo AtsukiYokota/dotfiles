@@ -6,6 +6,16 @@ from pathlib import Path
 import sys
 import tempfile
 
+MAX_EXIF_BYTES = 1024 * 1024
+
+
+def check_exif(image):
+    data = image.info.get('exif', b'')
+    # Bound EXIF work and reject the repeated prefix behind CVE-2026-96643.
+    # Normal JPEG EXIF has one prefix; normal PNG EXIF is normalized by Pillow.
+    if len(data) > MAX_EXIF_BYTES or data.startswith(b'Exif\x00\x00' * 2):
+        raise ValueError('Refusing oversized or malformed EXIF metadata.')
+
 
 def convert(source: Path, destination: Path, expected_format: str):
     try:
@@ -15,9 +25,18 @@ def convert(source: Path, destination: Path, expected_format: str):
 
     if destination.exists() or destination.is_symlink():
         raise FileExistsError(f'Refusing to overwrite: {destination}')
-    with Image.open(source) as original:
+    if expected_format not in ('PNG', 'JPEG'):
+        raise ValueError('Only PNG and JPEG inputs are supported.')
+    # Restrict decoder selection before inspecting any untrusted file contents.
+    # A filename extension does not keep Image.open from invoking FPX/TIFF/etc.
+    with Image.open(source, formats=[expected_format]) as original:
         if original.format != expected_format:
             raise ValueError(f'Expected {expected_format}, found {original.format}: {source}')
+        check_exif(original)
+        # PNG can place eXIf after IDAT. Read those chunks before EXIF parsing;
+        # the cap bounds parsing work, not the decoder's initial chunk read.
+        original.load()
+        check_exif(original)
         foreground = ImageOps.exif_transpose(original).convert('RGBA')
         background = Image.new('RGBA', foreground.size, 'white')
         background.alpha_composite(foreground)

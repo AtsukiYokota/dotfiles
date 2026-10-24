@@ -56,7 +56,7 @@ type cd
 
 `nvim`・`starship`・`uv`は通常`~/.local/bin/`、`ros2`は`/opt/ros/lyrical/bin/`にあります。
 このリポジトリが導入するNeovim・Starshipなどの版は[versions.json](../installer/versions.json)で確認できます。
-`uv tool list`には`basedpyright`、`cmake-language-server`、`autopep8`、`ruff`が表示されます。
+`uv tool list`には`cmake-language-server`、`autopep8`、`ruff`が表示されます。`basedpyright`はNode.jsで実行し、`basedpyright --version`で確認します。
 
 プロンプトはGruvbox Rainbow配色で、ユーザー名・ホスト名・作業ディレクトリが表示されます。
 `cd ~`で移動すると、隠しファイルを含む一覧が自動表示されます。

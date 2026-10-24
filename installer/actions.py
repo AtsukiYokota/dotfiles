@@ -178,19 +178,33 @@ def install_plantuml(ctx):
     wrapper.chmod(0o755)
 
 
-def install_node_language_servers(ctx, node):
-    """Use this installation's Node even before the user's new shell loads PATH."""
+def install_npm_packages(ctx, node, packages):
+    """Use the verified Node without running dependency lifecycle scripts."""
     prefix = ctx.home / '.local'
     for directory in (prefix, prefix / 'bin', prefix / 'lib/node_modules'):
         if not directory.resolve().is_relative_to(ctx.home.resolve()):
             raise ValueError(f'npm installation must stay inside home: {directory}')
-    # Upstream typescript-language-server requires TypeScript 6's tsserver;
-    # TypeScript 7 is a different implementation and no longer ships that binary.
-    packages = [f'{package}@{version}' for package, version in ctx.versions['npm_language_servers'].items()]
+    packages = [f'{package}@{version}' for package, version in packages.items()]
     ctx.runner.run([str(node / 'bin/node'), str(node / 'lib/node_modules/npm/bin/npm-cli.js'),
-                    'install', '--global', '--prefix', str(prefix), '--no-audit', '--no-fund', *packages],
+                    'install', '--global', '--prefix', str(prefix), '--ignore-scripts', '--no-audit', '--no-fund', *packages],
                    env={'PATH': str(node / 'bin') + os.pathsep + os.environ.get('PATH', ''),
                         'NPM_CONFIG_PREFIX': str(prefix)})
+
+
+def install_node_language_servers(ctx, node):
+    # TypeScript 7 no longer ships the tsserver required by this language server.
+    install_npm_packages(ctx, node, ctx.versions['npm_language_servers'])
+
+
+def install_basedpyright(ctx, uv):
+    """Retire the uv tool's separate Node runtime before installing its npm build."""
+    installed = ctx.runner.capture([str(uv), 'tool', 'list', '--color', 'never'])
+    if re.search(r'^basedpyright(?:\s|$)', installed, re.M):
+        # Use uv's receipt, including a customized UV_TOOL_DIR, to remove only
+        # this tool and its bundled nodejs-wheel-binaries environment.
+        ctx.runner.run([str(uv), 'tool', 'uninstall', 'basedpyright'])
+    node = ctx.data / 'tools/node' / ctx.versions['node']['version']
+    install_npm_packages(ctx, node, {'basedpyright': ctx.versions['basedpyright']})
 
 
 def prepare_apt(ctx):
@@ -245,12 +259,15 @@ def install_modules(ctx):
         elif name == 'python':
             install_archive(ctx, 'uv', {'uv': 'uv', 'uvx': 'uvx'})
             uv = ctx.home / '.local/bin/uv'
-            for package in ('basedpyright', 'cmake-language-server', 'autopep8', 'ruff'):
+            install_basedpyright(ctx, uv)
+            for package in ('cmake-language-server', 'autopep8', 'ruff'):
                 # uv-managed tools live separately from the interpreter used by ROS.
                 ctx.runner.run([str(uv), 'tool', 'install', '--upgrade', '--python', '/usr/bin/python3', package])
             ctx.runner.run([str(uv), 'tool', 'list'])
         elif name == 'neovim':
             install_archive(ctx, 'neovim', {'nvim': 'bin/nvim'})
+            from preview_assets import install_preview_assets
+            install_preview_assets(ctx)
         elif name == 'node':
             node = install_archive(ctx, 'node', {'node': 'bin/node', 'npm': 'bin/npm', 'npx': 'bin/npx'})
             # Avoid writes to the versioned Node directory for global npm tools.
@@ -279,7 +296,7 @@ def install_modules(ctx):
             except subprocess.CalledProcessError:
                 ctx.runner.run(['sudo', 'snap', 'install', 'code', '--classic'])
             else:
-                print('  VS Code is already installed; updates remain managed by Snap.')
+                ctx.runner.run(['sudo', 'snap', 'refresh', 'code'])
         elif name == 'macos-theme':
             from theme import install_theme
             install_theme(ctx)

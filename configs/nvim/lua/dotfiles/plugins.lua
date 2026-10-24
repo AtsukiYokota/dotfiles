@@ -37,6 +37,7 @@ return {
     cmd = { "LivePreview" },
     config = function()
       require("livepreview.config").set({ address = "127.0.0.1", dynamic_root = true, picker = "vim.ui.select" })
+      require("dotfiles.preview_security").setup()
     end,
   },
   { "aklt/plantuml-syntax", ft = { "plantuml" } },

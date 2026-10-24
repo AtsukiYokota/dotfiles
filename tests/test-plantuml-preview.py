@@ -79,6 +79,11 @@ class PreviewTests(unittest.TestCase):
                             f'assert os.getcwd() == {str(self.root)!r}\n'
                             "assert sys.stdin.buffer.read().decode('utf-8').find('日本語 English') >= 0\n"
                             "assert '-charset' in sys.argv and 'UTF-8' in sys.argv\n"
+                            "assert os.environ['PLANTUML_SECURITY_PROFILE'] == 'SANDBOX'\n"
+                            "assert os.environ['PLANTUML_ALLOWLIST_PATH'] == ''\n"
+                            "assert os.environ['PLANTUML_INCLUDE_PATH'] == ''\n"
+                            "assert os.environ['PLANTUML_ALLOWLIST_URL'] == ''\n"
+                            "assert not any(k in os.environ for k in ('JAVA_TOOL_OPTIONS', '_JAVA_OPTIONS', 'JDK_JAVA_OPTIONS'))\n"
                             f'sys.stdout.buffer.write({png()!r})\n', encoding='utf-8')
         compiler.chmod(0o755)
         renderer.render(self.source, self.output, executable=str(compiler))

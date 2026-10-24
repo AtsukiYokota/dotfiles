@@ -282,16 +282,15 @@ def main():
                    NPM_CONFIG_CACHE=str(root / 'npm-cache'))
         runner = Runner(root / 'commands.log')
         nvim = next(unpack(runner, versions, 'neovim', arch, root).glob('*/bin/nvim'))
-        uv = next(unpack(runner, versions, 'uv', arch, root).glob('*/uv'))
         node = next(unpack(runner, versions, 'node', arch, root).glob('*/bin/node'))
         texlab = unpack(runner, versions, 'texlab', arch, root) / 'texlab'
         prefix = home / '.local'
         env['PATH'] = ':'.join([str(prefix / 'bin'), str(node.parent), str(texlab.parent), '/usr/bin', '/bin'])
-        subprocess.run([uv, 'tool', 'install', '--python', '/usr/bin/python3', 'basedpyright'],
-                       env=env, check=True, timeout=180)
         packages = [name + '@' + version for name, version in versions['npm_language_servers'].items()]
+        packages.append('basedpyright@' + versions['basedpyright'])
         subprocess.run([node, node.parent.parent / 'lib/node_modules/npm/bin/npm-cli.js', 'install', '--global',
-                        '--prefix', prefix, '--no-fund', '--no-audit', *packages], env=env, check=True, timeout=180)
+                        '--prefix', prefix, '--ignore-scripts', '--no-fund', '--no-audit', *packages],
+                       env=env, check=True, timeout=180)
         prepare_clangd(root, env)
         editor = Editor(nvim, root, env)
         try:

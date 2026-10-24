@@ -13,11 +13,15 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+from types import SimpleNamespace
 
 sys.dont_write_bytecode = True
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / 'installer'))
 from runtime import Runner
+from actions import install_archive
+from deploy import Backup
+from preview_assets import install_preview_assets
 
 
 def main():
@@ -27,7 +31,8 @@ def main():
     if sys.platform != 'linux':
         parser.error('Run in Linux (Ubuntu 26.04 or WSL).')
     arch = {'x86_64': 'amd64', 'aarch64': 'arm64'}[platform.machine()]
-    version = json.loads((REPO / 'installer/versions.json').read_text())['neovim'][arch]
+    versions = json.loads((REPO / 'installer/versions.json').read_text())
+    version = versions['neovim'][arch]
     lock = REPO / 'configs/nvim/lazy-lock.json'
     expected = json.loads(lock.read_text())
     with tempfile.TemporaryDirectory(prefix='dotfiles-neovim-test-') as temp:
@@ -48,6 +53,11 @@ def main():
         subprocess.run([str(nvim), '--headless', '--cmd', 'set loadplugins', '-i', 'NONE', '-u', str(REPO / 'configs/nvim/init.lua'),
                         '-l', str(REPO / 'tests/nvim-smoke.lua')], env=environment, check=True, timeout=60)
         if args.plugins:
+            ctx = SimpleNamespace(repo=REPO, home=home, data=home / '.local/share/dotfiles',
+                                  temp=root, arch=arch, versions=versions, runner=runner,
+                                  backup=Backup(home / '.local/state/asset-test', home))
+            install_archive(ctx, 'node', {'node': 'bin/node'})
+            install_preview_assets(ctx)
             bootstrap = [str(nvim), '--headless', '-u', 'NONE', '-i', 'NONE', '-l', str(REPO / 'configs/nvim/bootstrap.lua')]
             for _ in range(2):
                 subprocess.run(bootstrap, env=environment, check=True, timeout=300)
