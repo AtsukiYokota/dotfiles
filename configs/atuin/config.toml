@@ -1,0 +1,18 @@
+# History stays on this machine; no account or background sync is configured.
+auto_sync = false
+update_check = false
+search_mode = "fuzzy"
+filter_mode = "global"
+style = "compact"
+inline_height = 20
+# Select a command for editing before executing it.
+enter_accept = false
+secrets_filter = true
+history_filter = ['^\s']
+
+[daemon]
+enabled = false
+autostart = false
+
+[threads]
+capture = false

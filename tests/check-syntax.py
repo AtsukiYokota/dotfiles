@@ -21,7 +21,8 @@ for path in [ROOT / 'setup_all.sh', ROOT / '.bashrc', ROOT / '.rosrc',
 for path in (ROOT / 'installer/versions.json', ROOT / 'configs/nvim/lazy-lock.json'):
     json.loads(path.read_text(encoding='utf-8'))
     count += 1
-tomllib.loads((ROOT / 'configs/starship.toml').read_text(encoding='utf-8'))
-count += 1
+for path in (ROOT / 'configs').rglob('*.toml'):
+    tomllib.loads(path.read_text(encoding='utf-8'))
+    count += 1
 subprocess.run(['perl', '-c', str(ROOT / '.latexmkrc')], check=True)
 print(f'Syntax checks passed: {count} files + latexmk configuration.')

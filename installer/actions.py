@@ -75,60 +75,12 @@ def install_archive(ctx, name, binaries, *, flat=False):
 
 
 def deploy_configs(ctx):
-    home, repo = ctx.home, ctx.repo
+    # Preview and deployment share the exact same file transformations.
+    from planning import apply_file_operations
+    apply_file_operations(ctx)
     if 'fonts' in ctx.modules:
         from fonts import configure_fonts
         configure_fonts(ctx)
-    if 'shell' in ctx.modules:
-        bashrc = home / '.bashrc'
-        # Replace old dotfiles links, but never edit the repository through a symlink.
-        if bashrc.is_symlink():
-            target = bashrc.resolve()
-            if target == repo / '.bashrc' or not bashrc.exists():
-                skeleton = Path('/etc/skel/.bashrc')
-                current = skeleton.read_text(encoding='utf-8') if skeleton.exists() else ''
-            else:
-                current = bashrc.read_text(encoding='utf-8')
-        else:
-            current = bashrc.read_text(encoding='utf-8') if bashrc.exists() else ''
-        if hashlib.sha256(current.encode('utf-8')).hexdigest() in LEGACY_BASHRC_SHA256:
-            skeleton = Path('/etc/skel/.bashrc')
-            current = skeleton.read_text(encoding='utf-8') if skeleton.exists() else ''
-        begin, end = '# >>> dotfiles managed >>>', '# <<< dotfiles managed <<<'
-        pattern = re.compile(re.escape(begin) + r'.*?' + re.escape(end) + r'\n?', re.S)
-        if current.count(begin) != current.count(end) or current.count(begin) > 1:
-            raise RuntimeError('Malformed dotfiles block in ~/.bashrc; inspect it before installation.')
-        current = pattern.sub('', current).rstrip() + '\n\n'
-        block = f'{begin}\nsource {shlex.quote(str(repo / ".bashrc"))}\n{end}\n'
-        ctx.backup.write_text(bashrc, current + block)
-        # Login shells need user tools even when the shell module is sourced later.
-        profile = home / '.profile'
-        text = profile.read_text(encoding='utf-8') if profile.exists() else ''
-        pbegin, pend = '# >>> dotfiles PATH >>>', '# <<< dotfiles PATH <<<'
-        ppattern = re.compile(re.escape(pbegin) + r'.*?' + re.escape(pend) + r'\n?', re.S)
-        if text.count(pbegin) != text.count(pend) or text.count(pbegin) > 1:
-            raise RuntimeError('Malformed dotfiles PATH block in ~/.profile.')
-        text = ppattern.sub('', text).rstrip() + '\n\n'
-        text += pbegin + '\ncase ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) PATH="$HOME/.local/bin:$PATH" ;; esac\nexport PATH\n' + pend + '\n'
-        ctx.backup.write_text(profile, text)
-        for name in ('.inputrc', '.dircolors', '.tmux.conf', '.rosrc'):
-            ctx.backup.link(repo / name, home / name)
-        ctx.backup.link(repo / 'configs/starship.toml', ctx.config / 'starship.toml')
-        ctx.backup.link(repo / 'configs/shell/formatting.bash', ctx.config / 'dotfiles/formatting.bash')
-        formatter = home / '.local/bin/ros-format'
-        ctx.backup.write_text(formatter, (repo / 'commands/ros-format.py').read_text(encoding='utf-8'))
-        formatter.chmod(0o755)
-        clipboard = home / '.local/bin/dotfiles-clipboard'
-        ctx.backup.write_text(clipboard, (repo / 'scripts/clipboard.sh').read_text(encoding='utf-8'))
-        clipboard.chmod(0o755)
-        fetchall = home / '.local/bin/fetchall'
-        ctx.backup.write_text(fetchall, (repo / 'commands/fetchall.sh').read_text(encoding='utf-8'))
-        fetchall.chmod(0o755)
-    if 'neovim' in ctx.modules:
-        ctx.backup.link(repo / 'configs/nvim', ctx.config / 'nvim')
-        ctx.backup.link(repo / '.vimrc', home / '.vimrc')
-    if 'latex' in ctx.modules:
-        ctx.backup.link(repo / '.latexmkrc', home / '.latexmkrc')
     if 'keyboard' in ctx.modules:
         from keyboard import configure_keyboard
         configure_keyboard(ctx)
@@ -138,12 +90,6 @@ def deploy_configs(ctx):
     if 'ibis-office' in ctx.modules:
         from office import configure_office
         configure_office(ctx)
-    if 'diagrams' in ctx.modules:
-        for source, binary in (('png2eps.sh', 'png2eps'), ('jpg2eps.sh', 'jpg2eps'), ('image2eps.py', 'image2eps.py'),
-                               ('plantuml-render.py', 'dotfiles-plantuml-render')):
-            target = home / '.local/bin' / binary
-            ctx.backup.write_text(target, (repo / 'commands' / source).read_text(encoding='utf-8'))
-            target.chmod(0o755)
 
 
 def install_plantuml(ctx):
@@ -256,6 +202,9 @@ def install_modules(ctx):
             install_fonts(ctx)
         elif name == 'shell':
             install_archive(ctx, 'starship', {'starship': 'starship'}, flat=True)
+        elif name in ('zoxide', 'atuin', 'just', 'git-tools', 'direnv'):
+            from workflow_tools import install_tools
+            install_tools(ctx, name)
         elif name == 'python':
             install_archive(ctx, 'uv', {'uv': 'uv', 'uvx': 'uvx'})
             uv = ctx.home / '.local/bin/uv'

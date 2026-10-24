@@ -54,6 +54,9 @@ def parser():
     p.add_argument('--modules', help='Comma-separated module IDs; omit to open the checklist.')
     p.add_argument('--list-modules', action='store_true')
     p.add_argument('--dry-run', action='store_true', help='Preview only: no files, network, sudo or installation.')
+    p.add_argument('--show-diff', action='store_true', help='Show bounded configuration diffs in the local preview.')
+    p.add_argument('--doctor', action='store_true', help='Read-only diagnosis of the installed environment.')
+    p.add_argument('--json', action='store_true', help='Machine-readable output for --doctor.')
     p.add_argument('--yes', action='store_true', help='Accept the plan; requires --modules.')
     p.add_argument('--plain', action='store_true', help='Use a numbered checklist instead of the full-screen UI.')
     p.add_argument('--configs-only', action='store_true', help='Deploy configuration only; no packages or plugins.')
@@ -113,7 +116,8 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             ros = 'ros-lyrical-desktop' if 'ros-desktop' in modules else 'ros-lyrical-ros-base'
             print(f'  ROS official repository: ros2-apt-source {versions["ros_source"]["version"]}; {ros} ros-dev-tools')
             print('  rosdep init if needed; rosdep update --rosdistro lyrical')
-        for module, tool in (('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'), ('rust', 'rustup'), ('latex', 'texlab')):
+        for module, tool in (('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'), ('rust', 'rustup'), ('latex', 'texlab'),
+                             ('zoxide', 'zoxide'), ('atuin', 'atuin'), ('just', 'just'), ('git-tools', 'lazygit'), ('git-tools', 'delta'), ('direnv', 'direnv')):
             if module in modules:
                 print(f'  User tool: {tool} {versions[tool]["version"]} (HTTPS + pinned SHA-256)')
         if 'python' in modules:
@@ -150,6 +154,15 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             print('  fonts: GNOME monospace font, Ptyxis font and existing GNOME Terminal profile fonts with backup (when a desktop session is available)')
     if 'shell' in modules:
         print('  shell: Gruvbox Rainbow prompt, a new tmux session per interactive terminal, vi=nvim, readline, ROS/formatting helpers, clipboard')
+    print('  doctor: read-only checks; successful installations record selected modules locally')
+    if set(modules).intersection({'cpp', 'ros2', 'just'}):
+        print('  ros-workspace: build / aggregate compile_commands.json / opt-in justfile template; no project files changed during installation')
+    if 'atuin' in modules:
+        print('  atuin: local history only, Ctrl+R search, ordinary arrow keys; no automatic history import or account setup')
+    if 'git-tools' in modules:
+        print('  git-tools: delta display settings via a managed ~/.gitconfig include; existing identity and credentials retained')
+    if 'direnv' in modules:
+        print('  direnv: Bash hook; project .envrc requires explicit direnv allow')
     if 'keyboard' in modules:
         print('  keyboard: Caps Lock -> Ctrl in GNOME xkb-options; preserve unrelated options, back up original')
     if 'japanese-input' in modules:
@@ -177,6 +190,18 @@ def show_plan(modules, requested, target, arch, args, versions, home):
 
 def main(argv=None):
     args = parser().parse_args(argv)
+    if args.doctor:
+        if (args.restore or args.configs_only or args.dry_run or args.yes or args.show_diff or args.list_modules
+                or args.platform != 'auto' or args.arch or args.no_plugins or args.plain):
+            raise ValueError('--doctor cannot be combined with installation options.')
+        command = [sys.executable, '-B', str(REPO / 'commands/doctor.py'), '--repo', str(REPO)]
+        if args.modules is not None:
+            command += ['--modules', args.modules]
+        if args.json:
+            command.append('--json')
+        return subprocess.call(command)
+    if args.json:
+        raise ValueError('--json requires --doctor.')
     info, detected, detected_arch = detect_platform()
     target = detected if args.platform == 'auto' else args.platform
     arch = args.arch or detected_arch
@@ -220,23 +245,33 @@ def main(argv=None):
     else:
         raise ValueError('Use an interactive terminal, or specify --modules and --yes / --dry-run.')
     modules = resolve(requested, target, arch)
-    versions = json.loads((REPO / 'installer/versions.json').read_text(encoding='utf-8'))
-    show_plan(modules, requested, target, arch, args, versions, home)
-    if args.dry_run:
-        print('\nPreview complete. No changes made.')
-        return 0
-    check_platform(info, arch)
-    preflight(modules, args.configs_only)
-    if not args.yes and input('\nType INSTALL to start, or press Enter to cancel: ').strip() != 'INSTALL':
-        print('Cancelled. No changes made.')
-        return 0
-    # The first write happens only after confirmation.
     state = Path(os.environ.get('XDG_STATE_HOME', str(home / '.local/state'))) / 'dotfiles'
     config = Path(os.environ.get('XDG_CONFIG_HOME', str(home / '.config')))
     data = Path(os.environ.get('XDG_DATA_HOME', str(home / '.local/share'))) / 'dotfiles'
     for directory in (state, config, data):
         if not directory.is_absolute() or not directory.resolve().is_relative_to(home):
             raise ValueError('XDG state/config/data must be absolute paths inside this home.')
+        if directory.exists() and not directory.is_dir():
+            raise ValueError('XDG state/config/data must be directories, not regular files.')
+    versions = json.loads((REPO / 'installer/versions.json').read_text(encoding='utf-8'))
+    show_plan(modules, requested, target, arch, args, versions, home)
+    from planning import show_details
+    details = show_details(REPO, home, config, data, modules, versions, arch, target,
+                           configs_only=args.configs_only, no_plugins=args.no_plugins, show_diff=args.show_diff)
+    if args.dry_run:
+        print('\nPreview complete. No changes made.')
+        return 0
+    if details.get('configuration_error') or any(item['status'] == 'BLOCKED' for item in details['configurations']):
+        raise ValueError('Resolve the configuration preview error before installation.')
+    receipt = state / 'installed.json'
+    if not args.configs_only and (receipt.is_symlink() or (receipt.exists() and not receipt.is_file())):
+        raise ValueError('Inspect ~/.local/state/dotfiles/installed.json: the receipt must be a regular file.')
+    check_platform(info, arch)
+    preflight(modules, args.configs_only)
+    if not args.yes and input('\nType INSTALL to start, or press Enter to cancel: ').strip() != 'INSTALL':
+        print('Cancelled. No changes made.')
+        return 0
+    # The first write happens only after confirmation.
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
     backup = Backup(state / 'backups' / stamp, home)
     runner = Runner(backup.directory / 'install.log')
@@ -255,6 +290,8 @@ def main(argv=None):
                     configure_theme(ctx)
             else:
                 install_modules(ctx)
+                from workflow_tools import record_installation
+                record_installation(state, modules, target, arch)
         except BaseException:
             print(f'\nStopped. Completed changes: {backup.directory}', file=sys.stderr)
             print('Fix the error and rerun the selection, or use --restore for configuration.', file=sys.stderr)
