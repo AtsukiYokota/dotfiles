@@ -62,7 +62,7 @@ class ServiceSetupTests(unittest.TestCase):
         run.assert_not_called()
         popen.assert_not_called()
         self.assertIn('onedrive          installed', self.stdout.getvalue())
-        self.assertNotIn('notion', self.stdout.getvalue().lower())
+        self.assertIn('notion-electron', self.stdout.getvalue())
 
     def test_redirected_setup_refuses_before_oauth(self):
         with patch.object(setup.subprocess, 'run') as run:
@@ -266,6 +266,27 @@ class ServiceSetupTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'receipt'):
                 self.apps.dispatch('setup', 'google-drive')
         run.assert_not_called()
+
+    def test_notion_disables_logging_and_self_updates_with_native_binary(self):
+        self.receipt(['notion-electron'])
+        with patch.object(setup, 'require_terminal'), patch.object(setup.shutil, 'which', return_value='/usr/bin/notion-electron'), patch.object(setup.subprocess, 'Popen') as popen:
+            self.assertEqual(self.apps.dispatch('setup', 'notion-electron'), 0)
+        command = popen.call_args.args[0]
+        self.assertEqual(command, ['/usr/bin/notion-electron', '--disable-logging', '--disable-update-functionality'])
+        self.assertNotIn('--no-sandbox', command)
+        self.assertEqual(popen.call_args.kwargs['stdout'], subprocess.DEVNULL)
+        self.assertEqual(popen.call_args.kwargs['stderr'], subprocess.DEVNULL)
+
+    def test_notion_package_and_product_profiles_cannot_target_git(self):
+        (self.home / '.config').mkdir()
+        for name in ('notion-electron', 'Notion Electron'):
+            profile = self.home / '.config' / name
+            profile.symlink_to(self.repo)
+            with patch.object(setup, 'require_terminal'), patch.object(setup.subprocess, 'Popen') as popen:
+                with self.assertRaises(ValueError):
+                    self.apps.launch_gui('notion-electron')
+            popen.assert_not_called()
+            profile.unlink()
 
 
 if __name__ == '__main__':

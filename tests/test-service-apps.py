@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Install-client boundaries: verified artifacts, no login, no service start."""
 import hashlib
+import importlib.util
 import io
 from pathlib import Path
 import stat
@@ -38,6 +39,27 @@ def snap_info(name, arch='amd64'):
 
 
 class ServiceTests(unittest.TestCase):
+    def test_ci_diagnostics_cannot_pollute_the_installer_account_check(self):
+        spec = importlib.util.spec_from_file_location('service_integration', ROOT / 'tests/check-service-apps.py')
+        integration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(integration)
+        with tempfile.TemporaryDirectory() as temporary:
+            ctx = context(Path(temporary))
+            def probe(arguments, *, env):
+                # Reproduce OneDrive's config initialization during --version.
+                config = Path(env['XDG_CONFIG_HOME']) / 'onedrive'
+                config.mkdir(parents=True, exist_ok=True)
+                self.assertNotEqual(Path(env['HOME']), ctx.home)
+                return 'onedrive v2.5.12' if '--version' in arguments else '--confdir --sync --monitor --dry-run'
+            with mock.patch.object(integration, 'checked', side_effect=probe):
+                integration.verify_onedrive_cli(ctx, {'HOME': str(ctx.home)})
+            self.assertFalse((ctx.home / '.config/onedrive').exists())
+            self.assertTrue((ctx.temp / 'onedrive-cli-probe/.config/onedrive').is_dir())
+            (ctx.home / '.config/onedrive').mkdir(parents=True)
+            with mock.patch.object(integration, 'checked') as command, self.assertRaises(AssertionError):
+                integration.verify_onedrive_cli(ctx, {'HOME': str(ctx.home)})
+            command.assert_not_called()
+
     def test_snap_install_and_refresh_do_not_launch_clients(self):
         with tempfile.TemporaryDirectory() as temporary:
             ctx = context(Path(temporary))
@@ -84,6 +106,19 @@ class ServiceTests(unittest.TestCase):
             ctx.arch = 'arm64'
             with self.assertRaises(ValueError):
                 service.install_dropbox(ctx)
+
+    def test_notion_installs_verified_deb_without_launching_or_disabling_sandbox(self):
+        for arch in ('amd64', 'arm64'):
+            with self.subTest(arch=arch), tempfile.TemporaryDirectory() as temporary:
+                ctx = context(Path(temporary))
+                ctx.arch = arch
+                ctx.versions['notion_electron'] = {arch: {'url': 'https://example.invalid/notion.deb', 'sha256': 'c' * 64}}
+                ctx.runner.download.side_effect = lambda url, target, digest: target.write_bytes(b'package')
+                service.install_service(ctx, 'notion-electron')
+                ctx.runner.download.assert_called_once_with('https://example.invalid/notion.deb', ctx.temp / 'notion-electron.deb', 'c' * 64)
+                ctx.runner.run.assert_called_once_with(['sudo', 'apt-get', 'install', '-y', '--no-remove',
+                                                       '--no-install-recommends', str(ctx.temp / 'notion-electron.deb')])
+                ctx.runner.capture.assert_not_called()
 
     def test_onedrive_selects_matching_repository_and_does_not_enable_service(self):
         for series in ('24.04', '26.04'):

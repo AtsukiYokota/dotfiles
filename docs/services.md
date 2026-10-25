@@ -4,7 +4,7 @@
 
 ```bash
 git pull --ff-only
-bash setup_all.sh --modules dropbox,onedrive,google-drive,slack,obsidian,teams-for-linux
+bash setup_all.sh --modules dropbox,onedrive,google-drive,slack,obsidian,teams-for-linux,notion-electron
 ~/.local/bin/dotfiles-apps
 ```
 
@@ -19,6 +19,7 @@ bash setup_all.sh --modules dropbox,onedrive,google-drive,slack,obsidian,teams-f
 | `slack` | Slack公式Snap、stable | `dotfiles-apps setup slack` |
 | `obsidian` | Obsidian公式Snap、stable、classic | `dotfiles-apps setup obsidian` |
 | `teams-for-linux` | コミュニティ版Snap、stable | `dotfiles-apps setup teams-for-linux` |
+| `notion-electron` | 開発元の検証済みdeb | `dotfiles-apps setup notion-electron` |
 
 `dotfiles-apps`が見つからない場合は`~/.local/bin/dotfiles-apps`と指定してください。
 Snapアプリがメニューに表示されない場合は、ログアウトして入り直してください。
@@ -75,11 +76,14 @@ dotfiles-apps resume google-drive
 エラー後は接続と双方のフォルダーを確認してから`resume`を実行します。再初期化が必要な状態では再び停止するため、無理に`--resync`を実行せず、ファイルを保全して[rcloneの復旧手順](https://rclone.org/bisync/#recovering-from-errors)を確認してください。
 バックアップは自動削除しません。同期先とは別にバックアップ容量も確保してください。
 
-## Slack・Obsidian・Teams
+## Slack・Obsidian・Teams・Notion
 
 アプリ内でログインします。Obsidianはローカルの保管庫だけならアカウント不要です。公式Obsidian Syncの利用には別途契約が必要です。
 [Teams for Linux](https://github.com/IsmaelMartinez/teams-for-linux)はMicrosoft公式ではなく、TeamsのWeb版を専用ウィンドウで利用するクライアントです。組織のアクセス制限によってログインが許可されない場合があります。
 画面共有はGNOMEの共有許可ダイアログで選択します。
+
+[Notion Electron](https://github.com/anechunaev/notion-electron)も非公式クライアントです。Notionを専用ウィンドウで開き、タブ・通知・Notion Calendarを利用できます。
+アプリ内で本人がログインしてください。オフライン利用や企業のSSO対応は、Notion側とクライアント側の仕様に依存します。
 
 ## 認証情報と更新
 
@@ -88,6 +92,6 @@ OneDriveとrcloneの認証情報は`~/.config/dotfiles-services/`に置き、デ
 GUIアプリのログイン状態は各アプリのユーザーデータ領域で管理します。これらの領域をdotfilesへコピーしたり、リポジトリへのリンクに置き換えたりしないでください。
 初期設定を端末録画・画面共有しながら実行しないでください。
 
-APTとSnapの更新はそれぞれの仕組みを使います。rcloneの更新は`git pull --ff-only`後に`bash setup_all.sh --modules google-drive`を実行します。
+APTとSnapの更新はそれぞれの仕組みを使います。rcloneとNotion Electronの更新は`git pull --ff-only`後に`bash setup_all.sh --modules google-drive,notion-electron`を実行します。
 再インストールや`--configs-only`は保存済みの認証情報を上書きしません。
 `doctor`はクライアントと起動用コマンドを確認します。アカウントの有効性や実際のクラウド通信は検査しません。

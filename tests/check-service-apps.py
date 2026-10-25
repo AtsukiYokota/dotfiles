@@ -51,22 +51,81 @@ def verify_snap_metadata(arch):
     return available
 
 
+def verify_onedrive_cli(ctx, env):
+    # The client creates its config directory even for --version / --help.
+    # Check the installation first, then keep diagnostic side effects separate.
+    if (ctx.home / '.config/onedrive').exists():
+        raise AssertionError('OneDrive installation unexpectedly initialized account configuration.')
+    probe = ctx.temp / 'onedrive-cli-probe'
+    probe.mkdir()
+    probe_env = dict(env, HOME=str(probe), XDG_CONFIG_HOME=str(probe / '.config'),
+                     XDG_DATA_HOME=str(probe / '.local/share'), XDG_STATE_HOME=str(probe / '.local/state'),
+                     XDG_CACHE_HOME=str(probe / '.cache'))
+    version = checked(['/usr/bin/onedrive', '--version'], env=probe_env)
+    if 'onedrive v2.' not in version:
+        raise AssertionError('Unexpected OneDrive version output.')
+    print(version.strip(), flush=True)
+    help_text = checked(['/usr/bin/onedrive', '--help'], env=probe_env)
+    for option in ('--confdir', '--sync', '--monitor', '--dry-run'):
+        if option not in help_text:
+            raise AssertionError(f'Installed OneDrive lacks {option}.')
+
+
+def contains_bytes(path, marker):
+    """Inspect a bundled runtime without launching it or loading account state."""
+    tail = b''
+    with path.open('rb') as stream:
+        while chunk := stream.read(1024 * 1024):
+            data = tail + chunk
+            if marker in data:
+                return True
+            tail = data[-len(marker):]
+    return False
+
+
+def verify_notion_package(ctx):
+    service.install_service(ctx, 'notion-electron')
+    version = checked(['dpkg-query', '-W', '-f=${Version}', 'notion-electron'])
+    if version.strip() != ctx.versions['notion_electron']['version']:
+        raise AssertionError('Unexpected Notion Electron package version.')
+    directory = Path('/opt/Notion Electron')
+    binary = directory / 'notion-electron'
+    if Path('/usr/bin/notion-electron').resolve() != binary:
+        raise AssertionError('Unexpected Notion Electron executable path.')
+    launcher = Path('/usr/share/applications/notion-electron.desktop').read_text()
+    if '"/opt/Notion Electron/notion-electron"' not in launcher or '--no-sandbox' in launcher:
+        raise AssertionError('Unexpected Notion Electron application launcher or disabled sandbox.')
+    if not list(Path('/usr/share/icons/hicolor').glob('*/apps/notion-electron.*')):
+        raise AssertionError('Notion Electron application icon is missing.')
+    profile = (directory / 'resources/apparmor-profile').read_text()
+    if 'userns,' not in profile or '"/opt/Notion Electron/notion-electron"' not in profile:
+        raise AssertionError('The package is missing its scoped AppArmor user-namespace profile.')
+    if not (directory / 'chrome-sandbox').is_file():
+        raise AssertionError('The Chromium sandbox helper is missing.')
+    # v2.5.0 uses Electron 44.7.0 / Chromium 152.0.7977.130. Electron's
+    # patches/node/build_add_gn_build_files.patch links //third_party/brotli:dec.
+    # https://github.com/electron/electron/blob/v44.7.0/patches/node/build_add_gn_build_files.patch
+    # https://chromium.googlesource.com/chromium/src/+/152.0.7977.130/third_party/brotli/dec/decode.c
+    # That exact Chromium tag vendors cfa184a997ac19454d5a3ae97f6d600aac2445a6
+    # with the FORMAT_BLOCK_SWITCH / BROTLI_SAFE_WITH_STATUS decoder fix.
+    # The shared decoder's binary marker is present even though Node's displayed
+    # version is 24.21.0 and its JavaScript constants do not export the new enum.
+    # This is a Brotli-specific regression check, not a general security audit.
+    if not contains_bytes(binary, b'ERROR_FORMAT_BLOCK_SWITCH'):
+        raise AssertionError('Notion Electron lacks the reviewed Brotli decoder fix marker.')
+    print('Notion Electron: verified package, launcher, sandbox and Brotli fix evidence; application not started.', flush=True)
+
+
 def verify_packages(ctx, snap_names, env):
     # This path is explicitly restricted to disposable GitHub-hosted machines.
     # User account setup and all graphical client launches remain excluded.
     service.install_service(ctx, 'onedrive')
-    version = checked(['/usr/bin/onedrive', '--version'], env=env)
-    if 'onedrive v2.' not in version:
-        raise AssertionError('Unexpected OneDrive version output.')
-    print(version.strip(), flush=True)
-    help_text = checked(['/usr/bin/onedrive', '--help'], env=env)
-    for option in ('--confdir', '--sync', '--monitor', '--dry-run'):
-        if option not in help_text:
-            raise AssertionError(f'Installed OneDrive lacks {option}.')
+    verify_onedrive_cli(ctx, env)
     if Path('/etc/systemd/user/default.target.wants/onedrive.service').exists():
         raise AssertionError('Fresh OneDrive package unexpectedly enabled background synchronization.')
     # Reinstall exercises existing signed source reuse, without duplicate entries.
     service.install_service(ctx, 'onedrive')
+    verify_notion_package(ctx)
     if ctx.arch == 'amd64':
         service.install_service(ctx, 'dropbox')
         version = checked(['dpkg-query', '-W', '-f=${Version}', 'dropbox'])
@@ -98,7 +157,7 @@ def verify_packages(ctx, snap_names, env):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--system-packages', action='store_true',
-                        help='Install OneDrive, Dropbox and signed Snaps on a disposable GitHub-hosted runner.')
+                        help='Install OneDrive, Dropbox, Notion Electron and signed Snaps on a disposable GitHub-hosted runner.')
     args = parser.parse_args()
     if sys.platform != 'linux':
         parser.error('This integration test requires Linux.')

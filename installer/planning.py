@@ -50,7 +50,7 @@ def file_operations(repo, home, config, modules):
               + shlex.quote(str(repo)) + ' "$@"\n', 0o755)
 
     wrapper('doctor', 'doctor.py')
-    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}):
+    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux', 'notion-electron'}):
         wrapper('dotfiles-apps', 'service_setup.py')
     if 'google-drive' in modules:
         wrapper('dotfiles-drive', 'cloud_drive.py')
@@ -351,6 +351,12 @@ def user_tools_report(modules, versions, home, data, arch, no_plugins=False):
             result.append({'name': 'preview/' + name, 'installed': 'validated during installation', 'candidate': package['version'],
                            'status': 'VERIFY', 'download_bytes': package.get('size'), 'note': 'archive plus locked Mermaid dependencies'})
     extras = []
+    if 'notion-electron' in modules:
+        artifact = versions['notion_electron'][arch]
+        result.append({'name': 'Notion Electron (system DEB)', 'installed': 'checked by APT during installation',
+                       'candidate': versions['notion_electron']['version'], 'status': 'VERIFY/INSTALL',
+                       'download_bytes': artifact.get('size'), 'installed_bytes': artifact.get('installed_size')})
+        extras.append('Notion Electron DEB dependencies: resolved after verified download')
     if 'dropbox' in modules:
         artifact = versions['dropbox']['amd64']
         result.append({'name': 'Dropbox (system DEB launcher)', 'installed': 'checked by APT during installation',

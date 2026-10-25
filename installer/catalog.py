@@ -61,6 +61,8 @@ MODULES = {
                        ('snapd',), native_only=True, amd64_only=True),
     'teams-for-linux': Module('Teams for Linux', 'Unofficial Teams desktop client, stable Snap; manual sign-in',
                               ('snapd', 'xdg-desktop-portal', 'xdg-desktop-portal-gnome'), native_only=True),
+    'notion-electron': Module('Notion Electron', 'Unofficial Notion desktop client; verified DEB, manual sign-in',
+                             ('xdg-utils',), native_only=True),
     'keyboard': Module('Caps Lock -> Ctrl', 'GNOME keyboard mapping; preserve other XKB options and back up changes',
                        ('libglib2.0-bin',), native_only=True),
     'japanese-input': Module('Japanese input (Mozc)', 'Fcitx 5 + Mozc; right Alt / Henkan enable, left Alt / Muhenkan disable; keep the desktop language',

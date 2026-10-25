@@ -58,6 +58,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `slack` | Slack公式アプリ |
 | `obsidian` | Obsidian公式アプリ |
 | `teams-for-linux` | Teamsの専用ウィンドウ（非公式クライアント） |
+| `notion-electron` | Notionの専用ウィンドウ（非公式クライアント） |
 | `keyboard` | Caps LockをCtrlへ変更 |
 | `japanese-input` | Fcitx 5＋Mozc、日本語入力の有効・無効キー |
 | `vscode` | VS Code |
@@ -67,7 +68,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `ssh-server` | OpenSSHサーバー |
 
 `desktop,launcher,screen-capture,keyboard,japanese-input,vscode,chrome,ibis-office,macos-theme`はネイティブ用です。`chrome,ibis-office`はamd64用、`launcher,screen-capture,keyboard,japanese-input,macos-theme`はGNOMEセッションが必要です。
-サービス用の`dropbox,onedrive,google-drive,slack,obsidian,teams-for-linux`もネイティブ専用です。このうち`dropbox,slack,obsidian`はamd64に対応します。
+サービス用の`dropbox,onedrive,google-drive,slack,obsidian,teams-for-linux,notion-electron`もネイティブ専用です。このうち`dropbox,slack,obsidian`はamd64に対応します。
 WSLのGUIにはWSLgなどの表示環境を使います。`ssh-server`を選ぶとSSH待ち受けサービスを導入します。
 WSLは自動検出し、ネイティブ専用モジュールを選択対象から外します。GNOMEのデスクトップ設定も適用しません。
 `python`・`neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。
@@ -103,7 +104,7 @@ Node.js・Brotliの確認には`python3 scripts/check-security.py`を使えま�
 - [ターミナル操作](docs/terminal-workflow.md)
 - [外観・フォント設定と既存環境への反映](docs/appearance.md)
 - [アプリ検索・スクリーンショット・画面録画](docs/desktop-tools.md)
-- [クラウド同期・Slack・Obsidian・Teams](docs/services.md)
+- [クラウド同期・Slack・Obsidian・Teams・Notion](docs/services.md)
 - [日本語入力](docs/japanese-input.md)
 - [NeovimのTeX・Markdown・PlantUMLプレビューと整形](docs/editor-preview.md)
 - [ROS 2コード整形](docs/ros-formatting.md)

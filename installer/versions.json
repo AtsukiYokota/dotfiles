@@ -1,5 +1,20 @@
 {
   "reviewed": "2026-10-25",
+  "notion_electron": {
+    "version": "2.5.0",
+    "amd64": {
+      "url": "https://github.com/anechunaev/notion-electron/releases/download/v2.5.0/Notion_Electron-2.5.0-amd64.deb",
+      "sha256": "5789d20ba575b58cba9cc0422fa0fb1c1c784c19925a733ac89dc488b0334cdb",
+      "size": 114282284,
+      "installed_size": 340319232
+    },
+    "arm64": {
+      "url": "https://github.com/anechunaev/notion-electron/releases/download/v2.5.0/Notion_Electron-2.5.0-arm64.deb",
+      "sha256": "db00813b90c488188b3dfd3f44e58358d34270580f83ed9e2fc0dd8fbe66502d",
+      "size": 108605968,
+      "installed_size": 344714240
+    }
+  },
   "rclone": {
     "version": "1.75.2",
     "amd64": {
