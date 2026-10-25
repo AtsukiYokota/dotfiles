@@ -134,7 +134,7 @@ def lazygit_session(binary, env, project):
 def exercise(ctx, env):
     home = ctx.home
     binary = home / '.local/bin'
-    for name in ('zoxide', 'atuin', 'just', 'lazygit', 'delta', 'direnv', 'starship'):
+    for name in ('fd', 'bat', 'zoxide', 'atuin', 'just', 'lazygit', 'delta', 'direnv', 'starship'):
         argument = 'version' if name == 'direnv' else '--version'
         version = checked([binary / name, argument], env, home)
         assert ctx.versions[name]['version'] in version, (name, version)
@@ -155,6 +155,23 @@ def exercise(ctx, env):
     checked(['git', 'init', '-b', 'fixture'], env, git_project)
     (git_project / 'test.py').write_text('print("fixture")\n')
     lazygit_session(binary / 'lazygit', env, git_project)
+
+    # Search respects Git ignore rules and hidden files. bat must load the
+    # configured theme, render source code, and keep redirected output plain.
+    (git_project / 'main.cpp').write_text('int main() { return 0; }\n')
+    (git_project / 'ignored.cpp').write_text('// ignored fixture\n')
+    (git_project / '.hidden.cpp').write_text('// hidden fixture\n')
+    (git_project / '.gitignore').write_text('ignored.cpp\n')
+    found = checked([binary / 'fd', '--color=never', '-e', 'cpp'], env, git_project).splitlines()
+    assert found == ['main.cpp'], found
+    found_all = checked([binary / 'fd', '--color=never', '-HI', '-e', 'cpp'], env, git_project).splitlines()
+    assert set(found_all) == {'main.cpp', 'ignored.cpp', '.hidden.cpp'}, found_all
+    themes = checked([binary / 'bat', '--list-themes', '--color=never'], env, git_project)
+    assert 'gruvbox-dark' in themes
+    plain = checked([binary / 'bat', '--paging=never', 'main.cpp'], env, git_project)
+    assert plain == (git_project / 'main.cpp').read_text(), repr(plain)
+    highlighted = checked([binary / 'bat', '--paging=never', '--color=always', '--style=numbers', 'main.cpp'], env, git_project)
+    assert '\x1b[' in highlighted and 'main' in highlighted, repr(highlighted)
 
     # No account, service or network access is required for local history.
     env['ATUIN_SESSION'] = checked([binary / 'atuin', 'uuid'], env, home).strip()
@@ -205,7 +222,8 @@ def exercise(ctx, env):
     # subdirectory invocation and workspace-root execution.
     checked([sys.executable, '-B', REPO / 'tests/test-ros-workspace.py'], env, home)
     print('Workflow tools: verified binaries, repeat install, Git/delta/lazygit config, local Atuin history,')
-    print('direnv approval/unload, zoxide lookup, real just recipes and interactive Bash/Starship/Atuin keys passed.')
+    print('fd search/ignore rules, bat theme/rendering, direnv approval/unload, zoxide lookup,')
+    print('real just recipes and interactive Bash/Starship/Atuin keys passed.')
 
 
 def main():
@@ -225,7 +243,7 @@ def main():
         backup = Backup(home / '.local/state/dotfiles/backups/test', home)
         ctx = SimpleNamespace(repo=REPO, home=home, config=config, data=data, temp=temp,
                               arch=arch, platform='native', versions=versions,
-                              modules=['shell', 'zoxide', 'atuin', 'just', 'git-tools', 'direnv'],
+                              modules=['shell', 'file-tools', 'zoxide', 'atuin', 'just', 'git-tools', 'direnv'],
                               backup=backup, runner=Runner(root / 'install.log'))
         (home / '.gitconfig').write_text('[user]\n  name = Workflow Test\n  email = fixture@example.invalid\n')
         env = {key: value for key, value in os.environ.items() if key in ('HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY', 'https_proxy', 'http_proxy', 'no_proxy')}

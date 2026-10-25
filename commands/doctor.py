@@ -16,6 +16,7 @@ import sys
 # Only version-only invocations are allowed here. LSP/ROS/GUI startup can load
 # project code or open services, so those checks inspect executable files only.
 TOOLS = {
+    'file-tools': [('fd', '--version', 'fd'), ('bat', '--version', 'bat')],
     'shell': [('tmux', '-V', None), ('starship', '--version', 'starship')],
     'node': [('node', '--version', 'node'), ('bash-language-server', None, None),
              ('typescript-language-server', None, None), ('vscode-json-language-server', None, None),
@@ -40,8 +41,11 @@ TOOLS = {
     'chrome': [('google-chrome', None, None)],
     'ibis-office': [('ibis-office', None, None)],
     'desktop': [('inkscape', None, None), ('vlc', None, None)],
+    'launcher': [('albert', None, None)],
+    'screen-capture': [('flatpak', '--version', None)],
 }
 DEPENDENCIES = {
+    'file-tools': ('shell',),
     'shell': ('fonts',), 'python': ('node',), 'node': ('shell',),
     'neovim': ('shell', 'cpp', 'python', 'node'), 'ros2': ('shell', 'cpp', 'python'),
     'ros-desktop': ('ros2',), 'rust': ('shell', 'cpp'), 'latex': ('shell',),
@@ -238,7 +242,7 @@ class Doctor:
 
     def desktop(self, modules):
         graphical = bool(self.env.get('DISPLAY') or self.env.get('WAYLAND_DISPLAY'))
-        needs_display = bool(modules & {'neovim', 'latex', 'diagrams', 'ros-desktop', 'desktop', 'macos-theme', 'japanese-input', 'keyboard', 'vscode', 'chrome', 'ibis-office'})
+        needs_display = bool(modules & {'neovim', 'latex', 'diagrams', 'ros-desktop', 'desktop', 'macos-theme', 'japanese-input', 'keyboard', 'vscode', 'chrome', 'ibis-office', 'launcher', 'screen-capture'})
         self.add('display', 'PASS' if graphical else ('WARN' if needs_display else 'SKIP'),
                  ('A display variable is present; server connectivity was not tested.' if graphical else 'No GUI display is advertised in this shell.'),
                  None if graphical or not needs_display else ('For GUI previews use WSLg; open a fresh WSL terminal.' if self.wsl else 'Run GUI previews from your desktop session. Headless/SSH use is valid.'))
@@ -247,7 +251,7 @@ class Doctor:
                      'WSL detected; native GNOME settings do not apply. WSLg availability is inferred from its mount and display variables.')
         else:
             gnome = 'GNOME' in self.env.get('XDG_CURRENT_DESKTOP', '').upper() and bool(self.env.get('DBUS_SESSION_BUS_ADDRESS'))
-            needs_gnome = bool(modules & {'keyboard', 'macos-theme', 'japanese-input'})
+            needs_gnome = bool(modules & {'keyboard', 'macos-theme', 'japanese-input', 'launcher', 'screen-capture'})
             self.add('desktop-session', 'PASS' if gnome else ('WARN' if needs_gnome else 'SKIP'),
                      'GNOME session metadata is present.' if gnome else 'No active GNOME session detected; desktop settings were not queried.',
                      'Run the relevant module from a GNOME terminal.' if needs_gnome and not gnome else None)
@@ -282,6 +286,13 @@ class Doctor:
             self.add('editor-runtime', 'SKIP', 'LSP attachment/completion and preview rendering need an editor session; run :DotfilesLsp and follow docs/verification.md.')
         if 'ros2' in selected:
             self.ros('ros-desktop' in selected)
+        if 'launcher' in selected:
+            self.exists('albert-config', self.config / 'albert/config', 'launcher')
+            self.exists('albert-autostart', self.config / 'autostart/albert.desktop', 'launcher')
+        if 'screen-capture' in selected:
+            flatpak_data = Path(self.env.get('FLATPAK_USER_DIR') or self.data / 'flatpak')
+            self.exists('kooha', flatpak_data / 'app/io.github.seadve.Kooha/current/active/metadata',
+                        'screen-capture', detail='Kooha user installation metadata is present; the application was not launched.')
         if 'fonts' in selected:
             # Do not run fontconfig here: it can refresh caches on a first
             # invocation. Respect custom XDG data directories without touching
@@ -293,7 +304,7 @@ class Doctor:
                      'Managed Nerd Font files are present; font registration and terminal selection need a visual check.' if ok else 'The managed Nerd Font files are incomplete or missing.',
                      None if ok else self.fix('fonts'))
         self.desktop(selected)
-        for module in sorted(selected & {'ssh-server', 'keyboard', 'macos-theme'}):
+        for module in sorted(selected & {'ssh-server', 'keyboard', 'macos-theme', 'launcher', 'screen-capture'}):
             self.add(module + '-runtime', 'SKIP', 'Service/desktop behavior is not actively tested by this read-only check; use docs/verification.md.')
         self.add('security-scope', 'SKIP', 'This is an installation check, not a vulnerability scan. For the dated Node/Brotli inventory: python3 scripts/check-security.py')
         return {'platform': 'wsl' if self.wsl else 'native', 'modules': sorted(selected),

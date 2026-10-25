@@ -91,7 +91,9 @@ def file_operations(repo, home, config, modules):
 
 def all_file_operations(repo, home, config, modules):
     from workflow_tools import workflow_operations
-    return file_operations(repo, home, config, modules) + workflow_operations(repo, home, config, modules)
+    from desktop_extras import launcher_file_operations
+    return (file_operations(repo, home, config, modules) + workflow_operations(repo, home, config, modules)
+            + launcher_file_operations(repo, home, config, modules))
 
 
 def apply_file_operations(ctx):
@@ -307,7 +309,7 @@ def user_tools_report(modules, versions, home, data, arch, no_plugins=False):
     selections = [('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'),
                   ('latex', 'texlab'), ('rust', 'rustup'), ('fonts', 'nerd_font'), ('diagrams', 'plantuml'),
                   ('ibis-office', 'ibis_office'), ('zoxide', 'zoxide'), ('atuin', 'atuin'), ('just', 'just'),
-                  ('git-tools', 'lazygit'), ('git-tools', 'delta'), ('direnv', 'direnv')]
+                  ('git-tools', 'lazygit'), ('git-tools', 'delta'), ('direnv', 'direnv'), ('file-tools', 'fd'), ('file-tools', 'bat')]
     for module, name in selections:
         if module not in modules or name not in versions:
             continue
@@ -344,6 +346,14 @@ def user_tools_report(modules, versions, home, data, arch, no_plugins=False):
             result.append({'name': 'preview/' + name, 'installed': 'validated during installation', 'candidate': package['version'],
                            'status': 'VERIFY', 'download_bytes': package.get('size'), 'note': 'archive plus locked Mermaid dependencies'})
     extras = []
+    if 'launcher' in modules:
+        artifact = versions['albert'][arch]
+        result.append({'name': 'Albert (system DEB)', 'installed': 'checked by APT during installation',
+                       'candidate': versions['albert']['version'], 'status': 'VERIFY/INSTALL',
+                       'download_bytes': artifact.get('size'), 'installed_bytes': artifact.get('installed_size')})
+        extras.append('Albert DEB dependencies: final APT plan is resolved after the verified package is downloaded')
+    if 'screen-capture' in modules:
+        extras.append('Kooha stable Flatpak and shared GNOME runtime: candidate versions/download/disk sizes require Flathub metadata; may need over 1 GiB on a first install')
     if 'python' in modules:
         extras.append('uv Python tools: candidate versions/dependency sizes require registry access')
     if 'rust' in modules:
@@ -408,7 +418,7 @@ def show_details(repo, home, config, data, modules, versions, arch, platform,
         print('  Add --show-diff to inspect bounded text diffs. Existing file contents are hidden by default.')
     else:
         print('  Sensitive-looking lines are redacted, but review this local output before sharing it.')
-    dynamic = set(modules).intersection({'fonts', 'keyboard', 'japanese-input', 'macos-theme', 'ibis-office'})
+    dynamic = set(modules).intersection({'fonts', 'keyboard', 'japanese-input', 'macos-theme', 'ibis-office', 'launcher'})
     if dynamic:
         print('  Session/application-dependent settings are evaluated during installation: ' + ', '.join(sorted(dynamic)))
         print('  GNOME, IME, Windows Terminal, font registration and app launcher diffs are not available in this offline preview.')
@@ -431,11 +441,11 @@ def show_details(repo, home, config, data, modules, versions, arch, platform,
     if len(apt['unknown']) > 12:
         print(f'  ... {len(apt["unknown"]) - 12} more packages without complete metadata')
     users = report['user_tools'] = user_tools_report(modules, versions, home, data, arch, no_plugins)
-    print('\nUser tools (managed metadata; no tool binaries executed):')
+    print('\nDirect downloads (managed metadata; no tool binaries executed):')
     for item in users['tools']:
         print(f'  {item["status"]:<14} {item["name"]}: {item["installed"]} -> {item["candidate"]}')
         if item.get('download_bytes') is not None or item.get('installed_bytes') is not None:
-            print(f'    archive={human_size(item.get("download_bytes"))}, additional managed files={human_size(item.get("installed_bytes"))}')
+            print(f'    archive={human_size(item.get("download_bytes"))}, tool payload={human_size(item.get("installed_bytes"))}')
     print('\nDownload / disk estimates:')
     qualifier = '' if apt['complete'] else 'known subtotal only; incomplete: '
     print(f'  APT archive download: {qualifier}{human_size(apt["download_bytes"])} (before archive-cache reuse)')
@@ -443,8 +453,8 @@ def show_details(repo, home, config, data, modules, versions, arch, platform,
     known_bytes = sum(item['download_bytes'] for item in users['tools'] if isinstance(item['download_bytes'], int))
     known_installed = sum(item['installed_bytes'] for item in users['tools'] if isinstance(item.get('installed_bytes'), int))
     unknown = [item['name'] for item in users['tools'] if item['download_bytes'] is None]
-    print('  User-tool archive download, known subtotal: ' + human_size(known_bytes))
-    print('  User-tool additional files, known subtotal: ' + human_size(known_installed))
+    print('  Direct archive download, known subtotal: ' + human_size(known_bytes))
+    print('  Direct tool payload, known subtotal (before existing-file reuse): ' + human_size(known_installed))
     if unknown:
         print('  Archive download UNKNOWN: ' + ', '.join(unknown))
     for note in users['unknown']:

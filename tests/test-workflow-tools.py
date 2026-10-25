@@ -20,6 +20,27 @@ from workflow_tools import workflow_operations, install_binary, record_installat
 
 
 class WorkflowTests(unittest.TestCase):
+    @unittest.skipUnless(sys.platform == 'linux', 'Linux symlink semantics')
+    def test_existing_bat_configuration_is_backed_up_and_restored(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            target = home / '.config/bat/config'
+            target.parent.mkdir(parents=True)
+            original = '--theme="Monokai Extended"\n--style=plain\n'
+            target.write_text(original)
+            ctx = SimpleNamespace(home=home, repo=ROOT, config=home / '.config', modules=['file-tools'],
+                                  backup=Backup(home / 'backups/first', home))
+            first = ctx.backup
+            apply_file_operations(ctx)
+            self.assertTrue(target.is_symlink())
+            self.assertIn('gruvbox-dark', target.read_text())
+            ctx.backup = Backup(home / 'backups/second', home)
+            apply_file_operations(ctx)
+            self.assertEqual(ctx.backup.entries, [])
+            restore(first.directory, home)
+            self.assertFalse(target.is_symlink())
+            self.assertEqual(target.read_text(), original)
+
     def test_selection_receipt_accumulates_successes_and_recovers_invalid_metadata(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = Path(temporary)

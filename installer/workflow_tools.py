@@ -7,6 +7,7 @@ import shutil
 import tempfile
 
 TOOL_MODULES = {
+    'file-tools': ('fd', 'bat'),
     'zoxide': ('zoxide',), 'atuin': ('atuin',), 'just': ('just',),
     'git-tools': ('lazygit', 'delta'), 'direnv': ('direnv',),
 }
@@ -15,6 +16,9 @@ TOOL_MODULES = {
 def workflow_operations(repo, home, config, modules):
     from planning import FileOperation
     operations = []
+    if 'file-tools' in modules:
+        operations.append(FileOperation('link', config / 'bat/config',
+                                        source=repo / 'configs/bat/config'))
     if 'atuin' in modules:
         operations.append(FileOperation('link', config / 'atuin/config.toml',
                                         source=repo / 'configs/atuin/config.toml'))

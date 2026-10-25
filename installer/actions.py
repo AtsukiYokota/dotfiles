@@ -90,6 +90,9 @@ def deploy_configs(ctx):
     if 'ibis-office' in ctx.modules:
         from office import configure_office
         configure_office(ctx)
+    if 'launcher' in ctx.modules:
+        from desktop_extras import configure_launcher
+        configure_launcher(ctx)
 
 
 def install_plantuml(ctx):
@@ -202,9 +205,15 @@ def install_modules(ctx):
             install_fonts(ctx)
         elif name == 'shell':
             install_archive(ctx, 'starship', {'starship': 'starship'}, flat=True)
-        elif name in ('zoxide', 'atuin', 'just', 'git-tools', 'direnv'):
+        elif name in ('file-tools', 'zoxide', 'atuin', 'just', 'git-tools', 'direnv'):
             from workflow_tools import install_tools
             install_tools(ctx, name)
+        elif name == 'launcher':
+            from desktop_extras import install_launcher
+            install_launcher(ctx)
+        elif name == 'screen-capture':
+            from flatpak_apps import install_capture
+            install_capture(ctx)
         elif name == 'python':
             install_archive(ctx, 'uv', {'uv': 'uv', 'uvx': 'uvx'})
             uv = ctx.home / '.local/bin/uv'

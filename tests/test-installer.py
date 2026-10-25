@@ -313,7 +313,8 @@ class ActionTests(unittest.TestCase):
         versions = json.loads((ROOT / 'installer/versions.json').read_text(encoding='utf-8'))
         for requested, expected in (({'neovim'}, {'starship', 'uv', 'node', 'neovim'}),
                                     ({'latex'}, {'starship', 'texlab'}),
-                                    ({'shell'}, {'starship'})):
+                                    ({'shell'}, {'starship'}),
+                                    ({'file-tools'}, {'starship', 'fd', 'bat'})):
             with self.subTest(selection=requested), tempfile.TemporaryDirectory() as temporary:
                 home = Path(temporary)
                 modules = catalog.resolve(requested, 'wsl', 'amd64')
