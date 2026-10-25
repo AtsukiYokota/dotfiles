@@ -21,6 +21,7 @@ SERVICES = {
     'slack': ('Slack', 'Sign in to your workspaces in the Slack application.'),
     'obsidian': ('Obsidian', 'Choose or create a local vault; sign in only if you use Obsidian Sync.'),
     'teams-for-linux': ('Teams for Linux', 'Sign in in the community Teams for Linux application.'),
+    'notion-electron': ('Notion Electron', 'Sign in in the community Notion Electron application.'),
 }
 GUI_COMMANDS = {
     'dropbox': ('/usr/bin/dropbox', 'start', '-i'),
@@ -28,6 +29,7 @@ GUI_COMMANDS = {
     'obsidian': ('/snap/bin/obsidian', '--disable-logging'),
     'teams-for-linux': ('/snap/bin/teams-for-linux', '--disable-logging', '--logConfig',
                         '{"transports":{"console":{"level":false},"file":{"level":false}}}'),
+    'notion-electron': ('/usr/bin/notion-electron', '--disable-logging', '--disable-update-functionality'),
 }
 UNIT = 'dotfiles-onedrive.service'
 MARKER = '.dotfiles-onedrive-access'
@@ -319,8 +321,11 @@ class Onboarding:
         for variable, default in (('XDG_CONFIG_HOME', '.config'), ('XDG_DATA_HOME', '.local/share'),
                                   ('XDG_STATE_HOME', '.local/state'), ('XDG_CACHE_HOME', '.cache')):
             safe_path(Path(self.env.get(variable, self.home / default)), self.home, self.repo)
-        for candidate in (self.home / '.dropbox', self.home / '.dropbox-dist') if name == 'dropbox' else (self.home / 'snap' / name, config / {'slack': 'Slack', 'obsidian': 'obsidian', 'teams-for-linux': 'teams-for-linux'}[name]):
+        for candidate in (self.home / '.dropbox', self.home / '.dropbox-dist') if name == 'dropbox' else (self.home / 'snap' / name, config / {'slack': 'Slack', 'obsidian': 'obsidian', 'teams-for-linux': 'teams-for-linux', 'notion-electron': 'notion-electron'}[name]):
             safe_path(candidate, self.home, self.repo)
+        if name == 'notion-electron':
+            # Electron packages can choose the package or product name for userData.
+            safe_path(config / 'Notion Electron', self.home, self.repo)
         if name != 'dropbox':
             # Snap's current -> revision symlink is normal. Resolve that one
             # before checking the application's actual profile directories.

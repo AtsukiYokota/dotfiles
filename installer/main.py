@@ -148,6 +148,8 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             print('  OneDrive: Ubuntu-release-specific upstream signed APT repository; no account or sync setup during installation')
         if 'dropbox' in modules:
             print('  Dropbox ' + versions['dropbox']['version'] + ': verified official DEB launcher; signed daemon downloaded on first manual launch')
+        if 'notion-electron' in modules:
+            print('  Notion Electron ' + versions['notion_electron']['version'] + ': verified upstream DEB; unofficial client, manual sign-in')
         for module in ('slack', 'obsidian', 'teams-for-linux'):
             if module in modules:
                 print('  Snap: ' + module + ' latest/stable' + (' --classic' if module == 'obsidian' else ' (strict)'))
@@ -170,7 +172,7 @@ def show_plan(modules, requested, target, arch, args, versions, home):
     if 'shell' in modules:
         print('  shell: Gruvbox Rainbow prompt, a new tmux session per interactive terminal, vi=nvim, readline, ROS/formatting helpers, clipboard')
     print('  doctor: read-only checks; successful installations record selected modules locally')
-    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}):
+    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux', 'notion-electron'}):
         print('  dotfiles-apps: manual onboarding after installation; authentication is separate from installer logs/backups')
         print('  No application login or cloud synchronization starts during installation. Choose accounts and sync folders yourself.')
     if set(modules).intersection({'cpp', 'ros2', 'just'}):
@@ -327,7 +329,7 @@ def main(argv=None):
             print('Fix the error and rerun the selection, or use --restore for configuration.', file=sys.stderr)
             raise
     print('\nInstallation complete. Open a new terminal to load the settings.')
-    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}):
+    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux', 'notion-electron'}):
         print('Service setup: run ~/.local/bin/dotfiles-apps in an interactive terminal; see docs/services.md.')
     if 'launcher' in modules:
         print('Albert: launch it from the application menu once, or log out and in; Ctrl+Space opens application search.')

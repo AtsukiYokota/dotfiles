@@ -11,7 +11,7 @@ import tempfile
 import urllib.request
 import zipfile
 
-SERVICE_MODULES = ('dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux')
+SERVICE_MODULES = ('dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux', 'notion-electron')
 SNAPS = {
     'slack': ('JUJH91Ved74jd4ZgJCpzMBtYbPOzTlsD', 'slack', False),
     'obsidian': ('XSpRD8poWONFIT1z9TleS4XrS1u0MlfG', 'obsidianmd', True),
@@ -72,6 +72,18 @@ def install_dropbox(ctx):
     # python3-gpg enables verification of the daemon download on that launch.
     ctx.runner.run(['sudo', 'apt-get', 'install', '-y', '--no-remove', '--no-install-recommends',
                     'python3-gpg', str(archive)])
+
+
+def install_notion(ctx):
+    artifact = ctx.versions['notion_electron'][ctx.arch]
+    archive = ctx.temp / 'notion-electron.deb'
+    ctx.runner.download(artifact['url'], archive, artifact['sha256'])
+    ctx.temp.chmod(0o755)
+    archive.chmod(0o644)
+    # The upstream package installs the Chromium sandbox and a scoped AppArmor
+    # user-namespace profile for Ubuntu 24+. Do not add --no-sandbox or change
+    # host-wide user-namespace restrictions. Login remains an explicit user step.
+    ctx.runner.run(['sudo', 'apt-get', 'install', '-y', '--no-remove', '--no-install-recommends', str(archive)])
 
 
 def existing_onedrive_source(directory, series):
@@ -167,6 +179,8 @@ def install_service(ctx, module):
         install_onedrive(ctx)
     elif module == 'google-drive':
         install_rclone(ctx)
+    elif module == 'notion-electron':
+        install_notion(ctx)
     elif module in SNAPS:
         install_snap(ctx, module)
     else:

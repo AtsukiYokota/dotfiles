@@ -214,7 +214,7 @@ def install_modules(ctx):
         elif name == 'screen-capture':
             from flatpak_apps import install_capture
             install_capture(ctx)
-        elif name in ('dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'):
+        elif name in ('dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux', 'notion-electron'):
             from service_apps import install_service
             install_service(ctx, name)
         elif name == 'python':

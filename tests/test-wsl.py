@@ -18,7 +18,7 @@ import runtime
 import ui
 
 NATIVE_MODULES = {'desktop', 'keyboard', 'japanese-input', 'vscode', 'chrome', 'ibis-office', 'macos-theme', 'launcher', 'screen-capture',
-                  'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}
+                  'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux', 'notion-electron'}
 
 
 class DetectionTests(unittest.TestCase):
