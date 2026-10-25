@@ -17,7 +17,8 @@ import main as installer_main
 import runtime
 import ui
 
-NATIVE_MODULES = {'desktop', 'keyboard', 'japanese-input', 'vscode', 'chrome', 'ibis-office', 'macos-theme', 'launcher', 'screen-capture'}
+NATIVE_MODULES = {'desktop', 'keyboard', 'japanese-input', 'vscode', 'chrome', 'ibis-office', 'macos-theme', 'launcher', 'screen-capture',
+                  'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}
 
 
 class DetectionTests(unittest.TestCase):

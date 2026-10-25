@@ -1,5 +1,33 @@
 {
   "reviewed": "2026-10-25",
+  "rclone": {
+    "version": "1.75.2",
+    "amd64": {
+      "url": "https://github.com/rclone/rclone/releases/download/v1.75.2/rclone-v1.75.2-linux-amd64.zip",
+      "sha256": "349ac8fba6ff65d6247043f1750cdcb518ec5d500ef91463a10d37c0ccdf3702",
+      "size": 31615572,
+      "installed_size": 85659810
+    },
+    "arm64": {
+      "url": "https://github.com/rclone/rclone/releases/download/v1.75.2/rclone-v1.75.2-linux-arm64.zip",
+      "sha256": "7e1e8d69654941b7b7df84ee74c5f7fb09cce7d5496947fb7bf16b55ff427d10",
+      "size": 28773641,
+      "installed_size": 78643362
+    }
+  },
+  "dropbox": {
+    "version": "2026.09.28",
+    "amd64": {
+      "url": "https://linux.dropbox.com/packages/ubuntu/dropbox_2026.09.28_amd64.deb",
+      "sha256": "e9d16490e9a346a09fa7c3f9afddc2ab8c18266576d99ce72673c75122fb3ca1",
+      "size": 82650,
+      "installed_size": 266240
+    }
+  },
+  "onedrive_repository": {
+    "key_url": "https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_24.04/Release.key",
+    "sha256": "c24de47c825ad8fb4688527fa3887fe0666e3e46ce4ad25ca98e0dbeff74d80d"
+  },
   "ibis_office": {
     "version": "0.8.4",
     "amd64": {
