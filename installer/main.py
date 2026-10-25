@@ -98,9 +98,9 @@ def preflight(modules, configs_only):
     for tool in ('sudo', 'apt-get', 'bash'):
         if not shutil.which(tool):
             raise ValueError(f'Required command is missing: {tool}')
-    if set(modules).intersection({'ssh-server', 'vscode'}):
+    if set(modules).intersection({'ssh-server', 'vscode', 'slack', 'obsidian', 'teams-for-linux', 'onedrive', 'google-drive'}):
         if Path('/proc/1/comm').read_text(encoding='utf-8').strip() != 'systemd':
-            raise ValueError('SSH server / Snap require systemd. Enable it first, or deselect these modules.')
+            raise ValueError('SSH server / Snap / scheduled cloud sync require systemd. Enable it first, or deselect these modules.')
     if 'ros2' in modules:
         for name in ('ros-latest.list', 'ros2.list'):
             path = Path('/etc/apt/sources.list.d') / name
@@ -142,6 +142,15 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             print('  Google APT repository + scoped signing key; google-chrome-stable')
         if 'vscode' in modules:
             print('  Snap: install code --classic, or refresh the existing code installation on its current channel')
+        if 'google-drive' in modules:
+            print('  rclone ' + versions['rclone']['version'] + ': verified user binary; no account or sync setup during installation')
+        if 'onedrive' in modules:
+            print('  OneDrive: Ubuntu-release-specific upstream signed APT repository; no account or sync setup during installation')
+        if 'dropbox' in modules:
+            print('  Dropbox ' + versions['dropbox']['version'] + ': verified official DEB launcher; signed daemon downloaded on first manual launch')
+        for module in ('slack', 'obsidian', 'teams-for-linux'):
+            if module in modules:
+                print('  Snap: ' + module + ' latest/stable' + (' --classic' if module == 'obsidian' else ' (strict)'))
         if 'ibis-office' in modules:
             print(f'  ibisOffice {versions["ibis_office"]["version"]} official Linux x86_64 AppImage (HTTPS + pinned SHA-256)')
         if 'macos-theme' in modules:
@@ -161,6 +170,9 @@ def show_plan(modules, requested, target, arch, args, versions, home):
     if 'shell' in modules:
         print('  shell: Gruvbox Rainbow prompt, a new tmux session per interactive terminal, vi=nvim, readline, ROS/formatting helpers, clipboard')
     print('  doctor: read-only checks; successful installations record selected modules locally')
+    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}):
+        print('  dotfiles-apps: manual onboarding after installation; authentication is separate from installer logs/backups')
+        print('  No application login or cloud synchronization starts during installation. Choose accounts and sync folders yourself.')
     if set(modules).intersection({'cpp', 'ros2', 'just'}):
         print('  ros-workspace: build / aggregate compile_commands.json / opt-in justfile template; no project files changed during installation')
     if 'atuin' in modules:
@@ -315,6 +327,8 @@ def main(argv=None):
             print('Fix the error and rerun the selection, or use --restore for configuration.', file=sys.stderr)
             raise
     print('\nInstallation complete. Open a new terminal to load the settings.')
+    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}):
+        print('Service setup: run ~/.local/bin/dotfiles-apps in an interactive terminal; see docs/services.md.')
     if 'launcher' in modules:
         print('Albert: launch it from the application menu once, or log out and in; Ctrl+Space opens application search.')
     if 'screen-capture' in modules and not args.configs_only:

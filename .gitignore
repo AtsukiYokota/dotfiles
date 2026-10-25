@@ -6,3 +6,9 @@ __pycache__/
 .fonts/
 *.local
 .DS_Store
+rclone.conf
+rclone.conf.old
+refresh_token
+.dropbox/
+.dropbox-dist/
+.config/dotfiles-services/

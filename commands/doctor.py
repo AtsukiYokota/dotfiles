@@ -43,6 +43,12 @@ TOOLS = {
     'desktop': [('inkscape', None, None), ('vlc', None, None)],
     'launcher': [('albert', None, None)],
     'screen-capture': [('flatpak', '--version', None)],
+    'dropbox': [('dropbox', None, None), ('dotfiles-apps', None, None)],
+    'onedrive': [('onedrive', None, None), ('dotfiles-apps', None, None)],
+    'google-drive': [('rclone', 'version', 'rclone'), ('dotfiles-drive', None, None), ('dotfiles-apps', None, None)],
+    'slack': [('slack', None, None), ('dotfiles-apps', None, None)],
+    'obsidian': [('obsidian', None, None), ('dotfiles-apps', None, None)],
+    'teams-for-linux': [('teams-for-linux', None, None), ('dotfiles-apps', None, None)],
 }
 DEPENDENCIES = {
     'file-tools': ('shell',),
@@ -242,7 +248,8 @@ class Doctor:
 
     def desktop(self, modules):
         graphical = bool(self.env.get('DISPLAY') or self.env.get('WAYLAND_DISPLAY'))
-        needs_display = bool(modules & {'neovim', 'latex', 'diagrams', 'ros-desktop', 'desktop', 'macos-theme', 'japanese-input', 'keyboard', 'vscode', 'chrome', 'ibis-office', 'launcher', 'screen-capture'})
+        needs_display = bool(modules & {'neovim', 'latex', 'diagrams', 'ros-desktop', 'desktop', 'macos-theme', 'japanese-input', 'keyboard', 'vscode', 'chrome', 'ibis-office', 'launcher', 'screen-capture',
+                                        'dropbox', 'slack', 'obsidian', 'teams-for-linux'})
         self.add('display', 'PASS' if graphical else ('WARN' if needs_display else 'SKIP'),
                  ('A display variable is present; server connectivity was not tested.' if graphical else 'No GUI display is advertised in this shell.'),
                  None if graphical or not needs_display else ('For GUI previews use WSLg; open a fresh WSL terminal.' if self.wsl else 'Run GUI previews from your desktop session. Headless/SSH use is valid.'))
@@ -304,6 +311,8 @@ class Doctor:
                      'Managed Nerd Font files are present; font registration and terminal selection need a visual check.' if ok else 'The managed Nerd Font files are incomplete or missing.',
                      None if ok else self.fix('fonts'))
         self.desktop(selected)
+        if selected & {'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}:
+            self.add('service-accounts', 'SKIP', 'Accounts and credentials are not inspected. Use dotfiles-apps for manual setup and synchronization status; see docs/services.md.')
         for module in sorted(selected & {'ssh-server', 'keyboard', 'macos-theme', 'launcher', 'screen-capture'}):
             self.add(module + '-runtime', 'SKIP', 'Service/desktop behavior is not actively tested by this read-only check; use docs/verification.md.')
         self.add('security-scope', 'SKIP', 'This is an installation check, not a vulnerability scan. For the dated Node/Brotli inventory: python3 scripts/check-security.py')

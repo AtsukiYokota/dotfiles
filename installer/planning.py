@@ -50,6 +50,10 @@ def file_operations(repo, home, config, modules):
               + shlex.quote(str(repo)) + ' "$@"\n', 0o755)
 
     wrapper('doctor', 'doctor.py')
+    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'}):
+        wrapper('dotfiles-apps', 'service_setup.py')
+    if 'google-drive' in modules:
+        wrapper('dotfiles-drive', 'cloud_drive.py')
     if set(modules).intersection({'cpp', 'ros2', 'just'}):
         wrapper('ros-workspace', 'ros-workspace.py')
     if 'shell' in modules:
@@ -309,7 +313,8 @@ def user_tools_report(modules, versions, home, data, arch, no_plugins=False):
     selections = [('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'),
                   ('latex', 'texlab'), ('rust', 'rustup'), ('fonts', 'nerd_font'), ('diagrams', 'plantuml'),
                   ('ibis-office', 'ibis_office'), ('zoxide', 'zoxide'), ('atuin', 'atuin'), ('just', 'just'),
-                  ('git-tools', 'lazygit'), ('git-tools', 'delta'), ('direnv', 'direnv'), ('file-tools', 'fd'), ('file-tools', 'bat')]
+                  ('git-tools', 'lazygit'), ('git-tools', 'delta'), ('direnv', 'direnv'), ('file-tools', 'fd'), ('file-tools', 'bat'),
+                  ('google-drive', 'rclone')]
     for module, name in selections:
         if module not in modules or name not in versions:
             continue
@@ -346,6 +351,19 @@ def user_tools_report(modules, versions, home, data, arch, no_plugins=False):
             result.append({'name': 'preview/' + name, 'installed': 'validated during installation', 'candidate': package['version'],
                            'status': 'VERIFY', 'download_bytes': package.get('size'), 'note': 'archive plus locked Mermaid dependencies'})
     extras = []
+    if 'dropbox' in modules:
+        artifact = versions['dropbox']['amd64']
+        result.append({'name': 'Dropbox (system DEB launcher)', 'installed': 'checked by APT during installation',
+                       'candidate': versions['dropbox']['version'], 'status': 'VERIFY/INSTALL',
+                       'download_bytes': artifact.get('size'), 'installed_bytes': artifact.get('installed_size')})
+        extras.append('Dropbox daemon is downloaded and verified on first manual launch; its size and synced files are not included')
+    if 'onedrive' in modules:
+        extras.append('OneDrive upstream signed APT repository: candidate and dependencies are resolved after adding the release-specific source')
+    for module in ('slack', 'obsidian', 'teams-for-linux'):
+        if module in modules:
+            extras.append(module + ' stable Snap and shared runtimes: versions/download/retained-revision sizes require Store metadata')
+    if set(modules).intersection({'dropbox', 'onedrive', 'google-drive'}):
+        extras.append('Cloud files and local sync backups: size depends on folders selected during later manual setup')
     if 'launcher' in modules:
         artifact = versions['albert'][arch]
         result.append({'name': 'Albert (system DEB)', 'installed': 'checked by APT during installation',

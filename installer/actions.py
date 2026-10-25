@@ -214,6 +214,9 @@ def install_modules(ctx):
         elif name == 'screen-capture':
             from flatpak_apps import install_capture
             install_capture(ctx)
+        elif name in ('dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux'):
+            from service_apps import install_service
+            install_service(ctx, name)
         elif name == 'python':
             install_archive(ctx, 'uv', {'uv': 'uv', 'uvx': 'uvx'})
             uv = ctx.home / '.local/bin/uv'
