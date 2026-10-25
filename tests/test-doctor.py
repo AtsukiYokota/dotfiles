@@ -74,12 +74,34 @@ class DoctorTests(unittest.TestCase):
         self.assertNotIn('ros2', result['modules'])
         self.assertEqual(self.check(result, 'bash-language-server')['status'], 'WARN')
 
+    def test_file_tools_diagnose_missing_or_wrong_versions(self):
+        self.versions.update(fd={'version': '10.5.0'}, bat={'version': '0.26.1'})
+        self.write_versions()
+        self.run.return_value.stdout = 'fd 10.4.0\n'
+        result = self.make_doctor({'fd'}).diagnose(['file-tools'])
+        self.assertEqual(self.check(result, 'fd')['status'], 'WARN')
+        self.assertEqual(self.check(result, 'bat')['status'], 'FAIL')
+        self.assertIn('shell', result['modules'])
+
     def test_explicit_selection_reports_missing_dependencies(self):
         result = self.make_doctor().diagnose(['neovim'])
         self.assertTrue({'shell', 'fonts', 'node', 'python', 'cpp'} <= set(result['modules']))
         self.assertEqual(self.check(result, 'clangd')['status'], 'FAIL')
         self.assertEqual(self.check(result, 'basedpyright-langserver')['status'], 'FAIL')
         self.assertEqual(self.check(result, 'markdown-assets')['status'], 'FAIL')
+        self.run.assert_not_called()
+
+    def test_capture_checks_user_app_metadata_without_launching_gui(self):
+        flatpak_data = self.home / 'custom-flatpak'
+        self.env['FLATPAK_USER_DIR'] = str(flatpak_data)
+        checker = self.make_doctor()
+        self.assertEqual(self.check(checker.diagnose(['screen-capture']), 'kooha')['status'], 'FAIL')
+        metadata = flatpak_data / 'app/io.github.seadve.Kooha/current/active/metadata'
+        metadata.parent.mkdir(parents=True)
+        metadata.write_text('[Application]\nname=io.github.seadve.Kooha\n')
+        result = self.make_doctor().diagnose(['screen-capture'])
+        self.assertEqual(self.check(result, 'kooha')['status'], 'PASS')
+        self.assertEqual(self.check(result, 'screen-capture-runtime')['status'], 'SKIP')
         self.run.assert_not_called()
 
     def test_version_commands_have_clean_environment_timeout_and_safe_cwd(self):

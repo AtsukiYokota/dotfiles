@@ -79,6 +79,12 @@ def check_platform(info, arch):
 
 
 def preflight(modules, configs_only):
+    if 'launcher' in modules:
+        from desktop_extras import preflight_launcher
+        preflight_launcher(configs_only=configs_only)
+    if 'screen-capture' in modules and ('GNOME' not in os.environ.get('XDG_CURRENT_DESKTOP', '').upper()
+                                      or not os.environ.get('DBUS_SESSION_BUS_ADDRESS')):
+        raise ValueError('Run screen-capture in a terminal inside your native GNOME desktop session.')
     if 'keyboard' in modules:
         from keyboard import require_session
         require_session()
@@ -117,7 +123,7 @@ def show_plan(modules, requested, target, arch, args, versions, home):
             print(f'  ROS official repository: ros2-apt-source {versions["ros_source"]["version"]}; {ros} ros-dev-tools')
             print('  rosdep init if needed; rosdep update --rosdistro lyrical')
         for module, tool in (('shell', 'starship'), ('python', 'uv'), ('neovim', 'neovim'), ('node', 'node'), ('rust', 'rustup'), ('latex', 'texlab'),
-                             ('zoxide', 'zoxide'), ('atuin', 'atuin'), ('just', 'just'), ('git-tools', 'lazygit'), ('git-tools', 'delta'), ('direnv', 'direnv')):
+                             ('file-tools', 'fd'), ('file-tools', 'bat'), ('zoxide', 'zoxide'), ('atuin', 'atuin'), ('just', 'just'), ('git-tools', 'lazygit'), ('git-tools', 'delta'), ('direnv', 'direnv')):
             if module in modules:
                 print(f'  User tool: {tool} {versions[tool]["version"]} (HTTPS + pinned SHA-256)')
         if 'python' in modules:
@@ -163,6 +169,15 @@ def show_plan(modules, requested, target, arch, args, versions, home):
         print('  git-tools: delta display settings via a managed ~/.gitconfig include; existing identity and credentials retained')
     if 'direnv' in modules:
         print('  direnv: Bash hook; project .envrc requires explicit direnv allow')
+    if 'launcher' in modules:
+        print('  launcher: Albert ' + versions['albert']['version'] + '; GNOME Ctrl+Space, application search and login autostart; previous settings backed up')
+        print('  Ctrl+Space opens Albert globally. In Neovim, use Ctrl+G then Space for manual completion; automatic completion is unchanged.')
+    if 'screen-capture' in modules:
+        if args.configs_only:
+            print('  screen-capture: no configuration deployment; --configs-only skips Kooha installation/update')
+        else:
+            print('  screen-capture: Kooha stable from signed Flathub, installed per user; capture requires your screen-sharing permission')
+        print('  GNOME Print opens screenshots/recording; Kooha adds microphone and desktop audio. No screen capture starts during installation.')
     if 'keyboard' in modules:
         print('  keyboard: Caps Lock -> Ctrl in GNOME xkb-options; preserve unrelated options, back up original')
     if 'japanese-input' in modules:
@@ -220,6 +235,9 @@ def main(argv=None):
             return 0
         selection_file = args.restore / 'selection.json'
         selection = json.loads(selection_file.read_text(encoding='utf-8')) if selection_file.is_file() else {}
+        if 'launcher' in selection.get('modules', []):
+            from desktop_extras import require_launcher_stopped
+            require_launcher_stopped()
         if 'japanese-input' in selection.get('modules', []):
             from japanese_input import restore_japanese_input
             restore_japanese_input(args.restore, home)
@@ -297,6 +315,10 @@ def main(argv=None):
             print('Fix the error and rerun the selection, or use --restore for configuration.', file=sys.stderr)
             raise
     print('\nInstallation complete. Open a new terminal to load the settings.')
+    if 'launcher' in modules:
+        print('Albert: launch it from the application menu once, or log out and in; Ctrl+Space opens application search.')
+    if 'screen-capture' in modules and not args.configs_only:
+        print('Kooha: open the application menu (log out and in if absent), or run flatpak run io.github.seadve.Kooha.')
     if 'japanese-input' in modules:
         print('Japanese input: save your work, log out of GNOME, then log in again to activate Fcitx 5 and application input modules.')
     print(f'Configuration restore: bash setup_all.sh --restore {str(backup.directory)!r}')

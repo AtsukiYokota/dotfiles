@@ -34,6 +34,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | --- | --- |
 | `fonts` | JetBrainsMono Nerd Font Mono、端末フォント設定 |
 | `shell` | Bash、Starship、tmux、検索・クリップボード・Git補助 |
+| `file-tools` | fdによるファイル検索、batによる構文色分け表示 |
 | `zoxide` | 訪問したディレクトリへ素早く移動 |
 | `atuin` | ローカル履歴の検索（Ctrl+R） |
 | `just` | プロジェクトの作業コマンド集 |
@@ -49,6 +50,8 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `latex` | 日本語TeX、LuaLaTeX、latexmk、Texlab、PDFライブプレビュー |
 | `diagrams` | PlantUML、Graphviz、画像のライブプレビュー・EPS変換 |
 | `desktop` | Inkscape、VLC、フォント |
+| `launcher` | Albertのアプリ検索（Ctrl+Space）、ログイン時に自動起動 |
+| `screen-capture` | Koohaの画面・音声録画、GNOME標準のスクリーンショット |
 | `keyboard` | Caps LockをCtrlへ変更 |
 | `japanese-input` | Fcitx 5＋Mozc、日本語入力の有効・無効キー |
 | `vscode` | VS Code |
@@ -57,7 +60,7 @@ WSLでもリポジトリはLinux側のホームに置きます。
 | `macos-theme` | WhiteSurテーマ・アイコン・カーソル・壁紙、Dock自動非表示 |
 | `ssh-server` | OpenSSHサーバー |
 
-`desktop,keyboard,japanese-input,vscode,chrome,ibis-office,macos-theme`はネイティブ用です。`chrome,ibis-office`はamd64用、`keyboard,japanese-input,macos-theme`はGNOMEセッションが必要です。
+`desktop,launcher,screen-capture,keyboard,japanese-input,vscode,chrome,ibis-office,macos-theme`はネイティブ用です。`chrome,ibis-office`はamd64用、`launcher,screen-capture,keyboard,japanese-input,macos-theme`はGNOMEセッションが必要です。
 WSLのGUIにはWSLgなどの表示環境を使います。`ssh-server`を選ぶとSSH待ち受けサービスを導入します。
 WSLは自動検出し、ネイティブ専用モジュールを選択対象から外します。GNOMEのデスクトップ設定も適用しません。
 `python`・`neovim`を選ぶと、言語サーバーの実行に必要な`node`も自動で導入します。
@@ -86,10 +89,11 @@ Node.js・Brotliの確認には`python3 scripts/check-security.py`を使えま�
 
 - [診断コマンド](docs/doctor.md)
 - [インストール前の差分・容量確認](docs/installer-preview.md)
-- [zoxide・Atuin・just・Git・direnv](docs/workflow-tools.md)
+- [fd・bat・zoxide・Atuin・just・Git・direnv](docs/workflow-tools.md)
 - [ROSワークスペース・compile_commands.json](docs/project-workflow.md)
 - [ターミナル操作](docs/terminal-workflow.md)
 - [外観・フォント設定と既存環境への反映](docs/appearance.md)
+- [アプリ検索・スクリーンショット・画面録画](docs/desktop-tools.md)
 - [日本語入力](docs/japanese-input.md)
 - [NeovimのTeX・Markdown・PlantUMLプレビューと整形](docs/editor-preview.md)
 - [ROS 2コード整形](docs/ros-formatting.md)

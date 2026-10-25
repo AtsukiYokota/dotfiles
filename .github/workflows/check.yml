@@ -33,6 +33,8 @@ jobs:
           python3 -B tests/test-doctor.py
           python3 -B tests/test-ros-workspace.py
           python3 -B tests/test-workflow-tools.py
+          python3 -B tests/test-desktop-extras.py
+          python3 -B tests/test-flatpak-apps.py
           python3 -B tests/test-office.py
           python3 -B tests/test-cli.py
           python3 -B tests/test-wsl.py
@@ -161,6 +163,25 @@ jobs:
         run: |
           source /opt/ros/lyrical/setup.bash
           /usr/bin/python3 -B tests/check-ros-distribution.py
+  desktop-extras:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-26.04, ubuntu-26.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Use public Ubuntu APT mirrors
+        run: sudo --preserve-env=GITHUB_ACTIONS python3 -B tests/configure-ci-apt.py
+      - name: Desktop integration test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends flatpak gnome-settings-daemon-common libglib2.0-bin dbus-x11 xvfb xauth xwayland desktop-file-utils
+      - name: Albert package, shortcuts and signed Kooha Flatpak
+        run: dbus-run-session -- xvfb-run -a python3 -B tests/check-desktop-extras.py
   windows-settings:
     runs-on: windows-latest
     timeout-minutes: 5
