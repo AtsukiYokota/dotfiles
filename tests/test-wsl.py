@@ -150,7 +150,8 @@ class DesktopIsolationTests(unittest.TestCase):
             target.symlink_to(directory, target_is_directory=True)
             with patch.dict(os.environ, {'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME',
                                          'DBUS_SESSION_BUS_ADDRESS': 'session'}), \
-                    patch.object(fonts, 'configure_windows_terminal') as windows:
+                    patch.object(fonts, 'configure_windows_terminal') as windows, \
+                    patch('wsl_setup.ensure_interop', return_value=True):
                 fonts.configure_fonts(ctx)
             windows.assert_called_once_with(ctx, directory)
             ctx.backup.set_setting.assert_not_called()

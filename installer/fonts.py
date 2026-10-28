@@ -83,6 +83,9 @@ def configure_fonts(ctx):
         # download. A normal full install already made the link/cache.
         install_fonts(ctx)
     if ctx.platform == 'wsl':
+        from wsl_setup import ensure_interop
+        if not ensure_interop(ctx):
+            return
         configure_windows_terminal(ctx, directory)
         return
     if ('GNOME' not in os.environ.get('XDG_CURRENT_DESKTOP', '').upper()
@@ -245,6 +248,7 @@ def patch_windows_terminal(text, profile_id, distro):
 def configure_windows_terminal(ctx, directory):
     powershell = shutil.which('powershell.exe')
     if not powershell or not shutil.which('wslpath'):
+        ctx.wsl_windows_pending = True
         print(f'  Windows interop unavailable. Install/select "{FAMILY}" on the Windows terminal host.')
         return
     windows_path = lambda path: ctx.runner.capture(['wslpath', '-w', str(path)])
@@ -258,6 +262,7 @@ def configure_windows_terminal(ctx, directory):
         # and failures during font/settings writes must still be reported.
         if error.errno not in (errno.ENOEXEC, errno.ENOENT, errno.EACCES, errno.EPERM):
             raise
+        ctx.wsl_windows_pending = True
         print(f'  Windows interop unavailable: PowerShell could not start ({error.strerror}).')
         print('  Skipping Windows font registration and Windows Terminal settings; Ubuntu setup continues.')
         print('  After Windows interop is available, rerun: bash setup_all.sh --modules fonts --configs-only')

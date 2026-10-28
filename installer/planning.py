@@ -427,6 +427,10 @@ def show_details(repo, home, config, data, modules, versions, arch, platform,
             operations.append(FileOperation('write', config / 'dotfiles/node.env',
                                             content='export NPM_CONFIG_PREFIX="$HOME/.local"\n'))
         report['configurations'] = config_report(operations, home, show_diff)
+        if platform == 'wsl' and 'fonts' in modules:
+            from wsl_setup import configuration_plan
+            report['wsl_interop'] = configuration_plan(show_diff)
+            report['configurations'].append(report['wsl_interop'])
         for item in report['configurations']:
             path = Path(item['path'])
             label = '~/' + str(path.relative_to(home)) if path.is_relative_to(home) else str(path)

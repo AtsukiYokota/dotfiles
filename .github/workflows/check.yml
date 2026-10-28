@@ -42,6 +42,8 @@ jobs:
           python3 -B tests/test-office.py
           python3 -B tests/test-cli.py
           python3 -B tests/test-wsl.py
+          python3 -B tests/test-wsl-interop.py
+          python3 -B tests/test-wsl-setup.py
           python3 -B tests/test-terminal-setup.py
           python3 -B tests/test-japanese-input.py
           python3 -B tests/test-fonts.py

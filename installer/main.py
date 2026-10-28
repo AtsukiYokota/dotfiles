@@ -47,6 +47,10 @@ class Context:
     backup: Backup
     runner: Runner
     no_plugins: bool
+    wsl_interop_plan: dict | None = None
+    wsl_restart_required: bool = False
+    wsl_windows_pending: bool = False
+    configs_only: bool = False
 
 
 def parser():
@@ -167,6 +171,8 @@ def show_plan(modules, requested, target, arch, args, versions, home):
     if 'fonts' in modules:
         if target == 'wsl':
             print('  fonts: install/register the font for the Windows user; set the active WSL Windows Terminal profile font with a separate Windows backup')
+            print('  WSL: enable Windows interop and Windows PATH in /etc/wsl.conf with sudo only if needed; preserve other settings and back up the original separately')
+            print('  If WSL needs restarting, finish Ubuntu setup first, then show manual restart and font-resume commands; never restart automatically')
         else:
             print('  fonts: GNOME monospace font, Ptyxis font and existing GNOME Terminal profile fonts with backup (when a desktop session is available)')
     if 'shell' in modules:
@@ -313,6 +319,8 @@ def main(argv=None):
     os.environ['LC_ALL'] = 'C.UTF-8'
     with tempfile.TemporaryDirectory(prefix='dotfiles-') as temporary:
         ctx = Context(REPO, home, config, data, Path(temporary), target, arch, modules, versions, backup, runner, args.no_plugins)
+        ctx.wsl_interop_plan = details.get('wsl_interop')
+        ctx.configs_only = args.configs_only
         (backup.directory / 'selection.json').write_text(json.dumps({'modules': modules, 'platform': target, 'arch': arch, 'configs_only': args.configs_only}, indent=2) + '\n', encoding='utf-8')
         try:
             if args.configs_only:
@@ -327,8 +335,15 @@ def main(argv=None):
         except BaseException:
             print(f'\nStopped. Completed changes: {backup.directory}', file=sys.stderr)
             print('Fix the error and rerun the selection, or use --restore for configuration.', file=sys.stderr)
+            from wsl_setup import report_pending
+            report_pending(ctx, installation_complete=False)
             raise
-    print('\nInstallation complete. Open a new terminal to load the settings.')
+    if ctx.wsl_windows_pending:
+        print('\nUbuntu setup complete. Windows font setup requires the steps below.')
+        from wsl_setup import report_pending
+        report_pending(ctx, installation_complete=True)
+    else:
+        print('\nInstallation complete. Open a new terminal to load the settings.')
     if set(modules).intersection({'dropbox', 'onedrive', 'google-drive', 'slack', 'obsidian', 'teams-for-linux', 'notion-electron'}):
         print('Service setup: run ~/.local/bin/dotfiles-apps in an interactive terminal; see docs/services.md.')
     if 'launcher' in modules:
