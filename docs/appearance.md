@@ -61,15 +61,48 @@ Lazyの記号が四角になる場合は、フォントが未導入か、端末�
 | UbuntuのGNOME | ユーザー用フォントを導入し、等幅フォントと既存のGNOME Terminalプロファイルを`JetBrainsMono Nerd Font Mono 11`に変更 |
 | WSL + Windows Terminal | Windowsユーザーにもフォントを登録し、対象のWSLプロファイルのフォントを`JetBrainsMono NFM`に変更 |
 
-WSLからのWindows連携を無効化している場合や、別の端末を使う場合は、インストーラーの案内に従って端末側のフォントを選択してください。
-`powershell.exe`が見つかっても、WSLから起動できなければWindows側のフォント登録と端末設定をスキップし、Ubuntu側のセットアップを続行します。
-Windows側に設定を反映したい場合は、[WSLのWindows連携設定](https://learn.microsoft.com/en-us/windows/wsl/wsl-config#interop-settings)を確認し、Windowsアプリを実行できる端末から次を実行してください。
+WSLでは、`fonts`の確認画面に`/etc/wsl.conf`の変更予定も表示します。
+インストール開始を確認した後、必要な場合だけ`sudo`を使い、[Windows連携の設定](https://learn.microsoft.com/en-us/windows/wsl/wsl-config#interop-settings)を次の値にします。
 
-```bash
-bash setup_all.sh --modules fonts --configs-only
+```ini
+[interop]
+enabled=true
+appendWindowsPath=true
 ```
 
-Windows連携を無効のまま使う場合は、インストーラーが表示するフォント保存先のTTFファイルをWindows側でインストールします。
+既存の`[boot]`、`[user]`、ネットワーク設定、コメント、改行形式、ファイルの所有者とアクセス権は維持します。
+変更前のファイルは`/etc/wsl.conf.dotfiles-backup-*`へroot所有・`0600`の権限で保存し、その場所を表示します。
+ファイルが未作成なら新規作成します。
+すでに設定済みなら書き換えや追加のバックアップは行いません。
+ネイティブUbuntuでは`wsl.conf`を変更しません。
+
+設定を変更した場合、Ubuntu側のインストールを続け、Windows側のフォント登録は再起動後に行います。
+インストーラーはWSLを自動終了せず、最後に再開手順を表示します。
+
+1. 作業を保存し、Windows側のPowerShellで次を実行します。すべてのWSL環境と、その中のtmux・実行中プログラムが停止します。
+
+   ```powershell
+   wsl --shutdown
+   ```
+
+2. Windows Terminalから対象Ubuntuを新しいタブで開き、インストーラーが表示した再開コマンドを実行します。次はclone先が`~/dotfiles`の場合です。
+
+   ```bash
+   cd ~/dotfiles
+   bash setup_all.sh --modules fonts --configs-only
+   ```
+
+3. Windowsユーザーへのフォント登録と、対象のWindows Terminalプロファイルの設定が完了したら、Windows Terminalの全ウィンドウを閉じて開き直します。
+
+`--configs-only`は導入済みのフォントを使います。
+フォントが未導入と表示された場合は、取得を含めて次を実行してください。
+
+```bash
+bash setup_all.sh --modules fonts
+```
+
+設定後も`powershell.exe`を起動できない場合は、Windows側の設定を保留して再起動の案内を表示します。
+別の端末を使う場合は、表示された保存先のTTFファイルを端末側でインストールし、フォントを選択してください。
 Windows Terminalの設定場所は「設定 → Ubuntuのプロファイル → 外観 → フォントフェイス」です。
 設定項目は[Windows Terminal公式資料](https://learn.microsoft.com/en-us/windows/terminal/customize-settings/profile-appearance#font-face)を参照してください。
 
@@ -125,6 +158,9 @@ DOTFILES_AUTO_TMUX=0
 ## 設定を戻す
 
 Ubuntu側の設定は通常の[バックアップ復元](verification.md#ログと失敗時の確認)で戻せます。
+`/etc/wsl.conf`はシステム設定のため、`--restore`の対象に含めません。
+元に戻す場合は、インストール時に表示された`/etc`内のバックアップと現在のファイルを比較し、導入後に加えた設定を残して必要な箇所だけ戻してください。
+変更の反映にはWSLの再起動が必要です。
 Windows Terminalの設定はWindows側にも別途保存します。
 対応するUbuntu側バックアップの`windows-terminal-backups.txt`に、Windows側のmanifestの場所を記録しています。
 
