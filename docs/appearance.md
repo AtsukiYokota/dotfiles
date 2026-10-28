@@ -64,6 +64,14 @@ Lazyの記号が四角になる場合は、フォントが未導入か、端末�
 | WSL + Windows Terminal | Windowsユーザーにもフォントを登録し、対象のWSLプロファイルのフォントを`JetBrainsMono NFM`に変更 |
 
 WSLからのWindows連携を無効化している場合や、別の端末を使う場合は、インストーラーの案内に従って端末側のフォントを選択してください。
+`powershell.exe`が見つかっても、WSLから起動できなければWindows側のフォント登録と端末設定をスキップし、Ubuntu側のセットアップを続行します。
+Windows側に設定を反映したい場合は、[WSLのWindows連携設定](https://learn.microsoft.com/en-us/windows/wsl/wsl-config#interop-settings)を確認し、Windowsアプリを実行できる端末から次を実行してください。
+
+```bash
+bash setup_all.sh --modules fonts --configs-only
+```
+
+Windows連携を無効のまま使う場合は、インストーラーが表示するフォント保存先のTTFファイルをWindows側でインストールします。
 Windows Terminalの設定場所は「設定 → Ubuntuのプロファイル → 外観 → フォントフェイス」です。
 設定項目は[Windows Terminal公式資料](https://learn.microsoft.com/en-us/windows/terminal/customize-settings/profile-appearance#font-face)を参照してください。
 Ubuntu 26.04標準の端末はPtyxisです。フォントとコピー・貼り付けの設定は[Ptyxisの設定定義](https://gitlab.gnome.org/GNOME/ptyxis/-/blob/50.1/src/org.gnome.Ptyxis.gschema.xml.in)に従っています。

@@ -261,6 +261,7 @@ def install_modules(ctx):
         elif name == 'macos-theme':
             from theme import install_theme
             install_theme(ctx)
+    print('\nApplying selected configuration...', flush=True)
     deploy_configs(ctx)
     if 'neovim' in ctx.modules and not ctx.no_plugins:
         ctx.runner.run([str(ctx.home / '.local/bin/nvim'), '--headless', '-u', 'NONE', '-i', 'NONE', '-l', str(ctx.repo / 'configs/nvim/bootstrap.lua')])

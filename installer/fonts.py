@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import ast
 from dataclasses import dataclass, field
+import errno
 import hashlib
 import json
 import os
@@ -249,7 +250,20 @@ def configure_windows_terminal(ctx, directory):
     windows_path = lambda path: ctx.runner.capture(['wslpath', '-w', str(path)])
     script = windows_path(ctx.repo / 'scripts/setup-windows-fonts.ps1')
     command = [powershell, '-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', script]
-    info = json.loads(ctx.runner.capture(command + ['-Action', 'Inspect']))
+    try:
+        inspection = ctx.runner.capture(command + ['-Action', 'Inspect'])
+    except OSError as error:
+        # PATH can expose Windows executables while WSL interop is disabled.
+        # Only skip launch failures before any Windows changes; script errors
+        # and failures during font/settings writes must still be reported.
+        if error.errno not in (errno.ENOEXEC, errno.ENOENT, errno.EACCES, errno.EPERM):
+            raise
+        print(f'  Windows interop unavailable: PowerShell could not start ({error.strerror}).')
+        print('  Skipping Windows font registration and Windows Terminal settings; Ubuntu setup continues.')
+        print('  After Windows interop is available, rerun: bash setup_all.sh --modules fonts --configs-only')
+        print(f'  Or install the TTF files from {directory} on Windows and select "{WINDOWS_FAMILY}" in your terminal.')
+        return
+    info = json.loads(inspection)
     ctx.runner.run(command + ['-Action', 'InstallFonts', '-FontDirectory', windows_path(directory)])
     matched = False
     for path in info.get('settings', []):
