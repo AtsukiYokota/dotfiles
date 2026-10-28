@@ -1,14 +1,17 @@
 """Font deployment and comment-preserving terminal settings in temporary homes."""
+import contextlib
+import errno
 import io
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tarfile
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'installer'))
@@ -219,6 +222,96 @@ class FontsTests(unittest.TestCase):
         profile = {'guid': PROFILE}
         with self.assertRaisesRegex(ValueError, 'Ambiguous'):
             fonts.patch_windows_terminal(json.dumps({'profiles': [profile, profile]}), PROFILE, '')
+
+
+class WindowsInteropTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        root = Path(self.directory.name)
+        self.ctx = SimpleNamespace(repo=root / 'repo', runner=Mock())
+        self.fonts = root / 'fonts'
+        self.powershell = str(root / 'powershell.exe')
+        self.ctx.runner.capture.side_effect = self.capture
+
+    def capture(self, argv):
+        if argv[0] == 'wslpath':
+            return 'C:\\dotfiles\\setup-windows-fonts.ps1'
+        return '{"settings": []}'
+
+    def configure(self):
+        output = io.StringIO()
+        with patch.object(fonts.shutil, 'which', side_effect=lambda name: self.powershell if name == 'powershell.exe' else '/usr/bin/wslpath'), \
+                contextlib.redirect_stdout(output):
+            fonts.configure_windows_terminal(self.ctx, self.fonts)
+        return output.getvalue()
+
+    def test_unavailable_tools_do_not_run_windows_commands(self):
+        for missing in ('powershell.exe', 'wslpath'):
+            with self.subTest(missing=missing), \
+                    patch.object(fonts.shutil, 'which', side_effect=lambda name: None if name == missing else name), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                fonts.configure_windows_terminal(self.ctx, self.fonts)
+                self.ctx.runner.capture.assert_not_called()
+                self.ctx.runner.run.assert_not_called()
+
+    def test_unavailable_interop_skips_only_windows_configuration(self):
+        for code in (errno.ENOEXEC, errno.ENOENT, errno.EACCES, errno.EPERM):
+            with self.subTest(errno=code):
+                self.ctx.runner.capture.side_effect = [self.capture(['wslpath']), OSError(code, os.strerror(code), self.powershell)]
+                output = self.configure()
+                self.assertIn('Ubuntu setup continues', output)
+                self.assertIn('--modules fonts --configs-only', output)
+                self.assertNotIn('Windows font installed', output)
+                self.ctx.runner.run.assert_not_called()
+
+    @unittest.skipUnless(sys.platform == 'linux', 'Exercise Linux execve format rejection')
+    def test_real_exec_format_error_is_nonfatal(self):
+        executable = Path(self.powershell)
+        # Avoid an MZ header: WSL's active Windows binfmt handler would consume
+        # that file instead of reproducing execve's ENOEXEC launch failure.
+        executable.write_bytes(b'not-an-executable-format\x00')
+        executable.chmod(0o700)
+
+        def capture(argv):
+            if argv[0] == 'wslpath':
+                return self.capture(argv)
+            return subprocess.check_output(argv, text=True)
+
+        self.ctx.runner.capture.side_effect = capture
+        output = self.configure()
+        self.assertIn(os.strerror(errno.ENOEXEC), output)
+        self.assertIn('Skipping Windows font registration', output)
+        self.ctx.runner.run.assert_not_called()
+
+    def test_script_output_and_unexpected_os_errors_are_not_hidden(self):
+        for result in (OSError(errno.EIO, 'I/O error'), subprocess.CalledProcessError(1, ['powershell.exe']), 'invalid JSON'):
+            with self.subTest(result=result):
+                self.ctx.runner.capture.side_effect = [self.capture(['wslpath']), result]
+                with self.assertRaises((OSError, subprocess.CalledProcessError, ValueError)):
+                    self.configure()
+                self.ctx.runner.run.assert_not_called()
+
+    def test_path_conversion_failure_is_not_misreported_as_interop(self):
+        self.ctx.runner.capture.side_effect = OSError(errno.ENOEXEC, 'Invalid wslpath')
+        with self.assertRaisesRegex(OSError, 'Invalid wslpath'):
+            self.configure()
+        self.ctx.runner.run.assert_not_called()
+
+    def test_success_still_registers_windows_fonts(self):
+        output = self.configure()
+        self.ctx.runner.run.assert_called_once()
+        command = self.ctx.runner.run.call_args.args[0]
+        self.assertEqual(command[0], self.powershell)
+        self.assertEqual(command[-4:-2], ['-Action', 'InstallFonts'])
+        self.assertIn('Windows font installed', output)
+
+    def test_failures_after_inspection_still_stop_installation(self):
+        for error in (RuntimeError('Windows font installation failed'), OSError(errno.ENOEXEC, 'Exec format error')):
+            with self.subTest(error=error):
+                self.ctx.runner.run.side_effect = error
+                with self.assertRaises(type(error)):
+                    self.configure()
 
 
 if __name__ == '__main__':
